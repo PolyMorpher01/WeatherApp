@@ -1,4 +1,4 @@
-package com.example.ayush.weatherapp.core;
+package com.ayush.weatherapp.core;
 
 import android.app.Application;
 import com.example.ayush.weatherapp.BuildConfig;

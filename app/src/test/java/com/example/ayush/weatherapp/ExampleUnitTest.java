@@ -1,4 +1,4 @@
-package com.example.ayush.weatherapp;
+package ayush.example.ayush.weatherapp;
 
 import org.junit.Test;
 
