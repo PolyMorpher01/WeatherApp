@@ -1,11 +1,11 @@
-package com.ayush.weatherapp.core;
+package com.ayush.weatherapp;
 
 import android.app.Application;
-import com.example.ayush.weatherapp.BuildConfig;
+import com.ayush.weatherapp.BuildConfig;
 import timber.log.Timber;
 import timber.log.Timber.DebugTree;
 
-public class MyApplication extends Application {
+public class WeatherApplication extends Application {
 
   @Override public void onCreate() {
     super.onCreate();
