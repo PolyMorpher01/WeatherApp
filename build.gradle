@@ -10,6 +10,7 @@ buildscript {
     }
   }
   dependencies {
+    //Error when connecting to FireBase so downgraded version to realm version
     classpath 'com.android.tools.build:gradle:3.0.0'
 
     //old version for compatibility with stetho
