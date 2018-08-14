@@ -25,6 +25,7 @@ public class MainActivity extends BaseActivity {
   }
 
   @Override protected void onCreate(Bundle savedInstanceState) {
+    //override theme defined in the xml for splash screen effect
     setTheme(R.style.AppTheme);
 
     super.onCreate(savedInstanceState);
@@ -54,11 +55,9 @@ public class MainActivity extends BaseActivity {
 
     ActionBar actionbar = getSupportActionBar();
 
-    if (actionbar != null) {
-      actionbar.setDisplayShowTitleEnabled(false);
-      actionbar.setDisplayHomeAsUpEnabled(true);
-      actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
-    }
+    actionbar.setDisplayShowTitleEnabled(false);
+    actionbar.setDisplayHomeAsUpEnabled(true);
+    actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
   }
 
   private void setNavigationView() {
