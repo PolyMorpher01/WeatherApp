@@ -4,7 +4,12 @@
   <dimen name="txt_mid">16sp</dimen>
   <dimen name="txt_large">32sp</dimen>
 
+  <dimen name="x0">0dp</dimen>
   <dimen name="x1">8dp</dimen>
   <dimen name="x2">16dp</dimen>
-  <dimen name="x3">32dp</dimen>
+  <dimen name="x3">24dp</dimen>
+  <dimen name="x4">32dp</dimen>
+
+  <dimen name="nav_header_height">96dp</dimen>
+
 </resources>
