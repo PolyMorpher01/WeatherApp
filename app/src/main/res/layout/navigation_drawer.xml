@@ -19,7 +19,12 @@
         android:layout_height="?attr/actionBarSize"
         android:theme="@style/ActionBarTheme"
         />
-
+    <include
+        layout="@layout/main"
+        android:id="@+id/layout_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
   </FrameLayout>
 
   <android.support.design.widget.NavigationView
