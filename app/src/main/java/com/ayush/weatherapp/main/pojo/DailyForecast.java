@@ -3,7 +3,7 @@ package com.ayush.weatherapp.main.pojo;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
-public class Daily {
+public class DailyForecast {
   @SerializedName("summary") private String summary;
   @SerializedName("icon") private String icon;
   @SerializedName("data") private List<DailyData> dailyDataList = null;

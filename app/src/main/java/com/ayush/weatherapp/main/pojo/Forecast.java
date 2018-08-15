@@ -7,9 +7,9 @@ public class Forecast {
   @SerializedName("longitude") private double longitude;
   @SerializedName("timezone") private String timezone;
 
-  @SerializedName("currently") private Currently currently = null;
-  @SerializedName("hourly") private Hourly hourly = null;
-  @SerializedName("daily") private Daily daily = null;
+  @SerializedName("currently") private CurrentForecast currentForecast;
+  @SerializedName("hourly") private HourlyForecast hourlyForecast;
+  @SerializedName("daily") private DailyForecast dailyForecast;
 
   public double getLatitude() {
     return latitude;
@@ -23,15 +23,15 @@ public class Forecast {
     return timezone;
   }
 
-  public Currently getCurrently() {
-    return currently;
+  public CurrentForecast getCurrentForecast() {
+    return currentForecast;
   }
 
-  public Hourly getHourly() {
-    return hourly;
+  public HourlyForecast getHourlyForecast() {
+    return hourlyForecast;
   }
 
-  public Daily getDaily() {
-    return daily;
+  public DailyForecast getDailyForecast() {
+    return dailyForecast;
   }
 }
