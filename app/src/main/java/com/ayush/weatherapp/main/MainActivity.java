@@ -1,8 +1,6 @@
 package com.ayush.weatherapp.main;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,22 +14,17 @@ import android.widget.Toast;
 import butterknife.BindView;
 import com.ayush.weatherapp.BaseActivity;
 import com.ayush.weatherapp.R;
-import com.ayush.weatherapp.main.pojo.Currently;
-import com.ayush.weatherapp.main.pojo.Forecast;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class MainActivity extends BaseActivity {
-
-  final ProgressDialog progress = new ProgressDialog(this);
+public class MainActivity extends BaseActivity implements MainContract.View {
 
   @BindView(R.id.layout_drawer) DrawerLayout drawerLayout;
   @BindView(R.id.nav_view) NavigationView navigationView;
   @BindView(R.id.toolbar) Toolbar toolbar;
   @BindView(R.id.txt_main) TextView textView;
 
-  APIInterface apiInterface;
+  ActionBar actionbar;
+
+  MainContract.Presenter presenter;
 
   @Override protected int getContextView() {
     return R.layout.navigation_drawer;
@@ -46,37 +39,10 @@ public class MainActivity extends BaseActivity {
 
     setNavigationView();
 
-    apiInterface = APIClient.getClient().create(APIInterface.class);
-    apiResponse();
-  }
+    presenter = new MainPresenter(this);
+    presenter.setView(this);
 
-  private void apiResponse() {
-
-    showProgressDialog();
-
-    final double TEST_LATITUDE = 37.8267;
-    final double TEST_LONGITUDE = -122.4233;
-    String requestString = TEST_LATITUDE + "," + TEST_LONGITUDE;
-
-    Call<Forecast> forecastCall = apiInterface.getForecast(requestString);
-
-    forecastCall.enqueue(new Callback<Forecast>() {
-      @Override
-      public void onResponse(@NonNull Call<Forecast> call, @NonNull Response<Forecast> response) {
-        Forecast forecast = response.body();
-
-        Currently currently = forecast.getCurrently();
-
-        textView.setText(currently.getSummary());
-
-        closeProgressDialog();
-      }
-
-      @Override public void onFailure(@NonNull Call<Forecast> call, @NonNull Throwable t) {
-        call.cancel();
-        closeProgressDialog();
-      }
-    });
+    presenter.apiCall();
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -97,13 +63,11 @@ public class MainActivity extends BaseActivity {
   private void setActionBar() {
     setSupportActionBar(toolbar);
 
-    ActionBar actionbar = getSupportActionBar();
+    actionbar = getSupportActionBar();
 
-    if (actionbar != null) {
-      actionbar.setDisplayShowTitleEnabled(false);
-      actionbar.setDisplayHomeAsUpEnabled(true);
-      actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
-    }
+    actionbar.setDisplayShowTitleEnabled(false);
+    actionbar.setDisplayHomeAsUpEnabled(true);
+    actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
   }
 
   private void setNavigationView() {
@@ -123,12 +87,7 @@ public class MainActivity extends BaseActivity {
         });
   }
 
-  private void closeProgressDialog() {
-    progress.dismiss();
-  }
-
-  private void showProgressDialog() {
-    progress.setMessage("Loading");
-    progress.show();
+  @Override public void setText(String s) {
+    textView.setText(s);
   }
 }
