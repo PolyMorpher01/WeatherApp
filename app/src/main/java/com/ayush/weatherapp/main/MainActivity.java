@@ -1,11 +1,10 @@
 package com.ayush.weatherapp.main;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,10 +18,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
 
   @BindView(R.id.layout_drawer) DrawerLayout drawerLayout;
   @BindView(R.id.nav_view) NavigationView navigationView;
-  @BindView(R.id.toolbar) Toolbar toolbar;
-  @BindView(R.id.txt_main) TextView textView;
-
-  ActionBar actionbar;
+  @BindView(R.id.txt_main) TextView txtCurrentForecastSummary;
 
   MainContract.Presenter presenter;
 
@@ -30,19 +26,23 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     return R.layout.navigation_drawer;
   }
 
+  @Override protected int getToolbarResource() {
+    return R.id.toolbar;
+  }
+
   @Override protected void onCreate(Bundle savedInstanceState) {
     setTheme(R.style.AppTheme);
 
     super.onCreate(savedInstanceState);
 
-    setActionBar();
-
     setNavigationView();
+
+    getCurrentActionBar().setDisplayShowTitleEnabled(false);
 
     presenter = new MainPresenter(this);
     presenter.setView(this);
 
-    presenter.fetchWeatherDetail();
+    presenter.fetchWeatherDetails();
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -60,16 +60,6 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     return super.onOptionsItemSelected(item);
   }
 
-  private void setActionBar() {
-    setSupportActionBar(toolbar);
-
-    actionbar = getSupportActionBar();
-
-    actionbar.setDisplayShowTitleEnabled(false);
-    actionbar.setDisplayHomeAsUpEnabled(true);
-    actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
-  }
-
   private void setNavigationView() {
     navigationView.setNavigationItemSelectedListener(menuItem -> {
       //TODO
@@ -83,7 +73,11 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     });
   }
 
-  @Override public void setText(String s) {
-    textView.setText(s);
+  @Override public ProgressDialog getProgressDialog() {
+    return progressDialog;
+  }
+
+  @Override public void setCurrentTemperatureSummary(String s) {
+    txtCurrentForecastSummary.setText(s);
   }
 }
