@@ -31,6 +31,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
   }
 
   @Override protected void onCreate(Bundle savedInstanceState) {
+    //override theme defined in the xml for splash screen effect
     setTheme(R.style.AppTheme);
 
     super.onCreate(savedInstanceState);
@@ -66,7 +67,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
       Toast.makeText(MainActivity.this, menuItem.toString(), Toast.LENGTH_SHORT).show();
 
       drawerLayout.closeDrawers();
-
+      
       // Add code here to update the UI based on the item selected
       // For example, swap UI fragments here
       return true;
