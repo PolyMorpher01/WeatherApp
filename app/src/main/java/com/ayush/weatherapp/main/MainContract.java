@@ -14,6 +14,6 @@ public interface MainContract {
 
     void setView(View view);
 
-    void apiCall();
+    void fetchWeatherDetail();
   }
 }

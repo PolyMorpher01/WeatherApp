@@ -42,7 +42,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     presenter = new MainPresenter(this);
     presenter.setView(this);
 
-    presenter.apiCall();
+    presenter.fetchWeatherDetail();
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -71,20 +71,16 @@ public class MainActivity extends BaseActivity implements MainContract.View {
   }
 
   private void setNavigationView() {
-    navigationView.setNavigationItemSelectedListener(
-        new NavigationView.OnNavigationItemSelectedListener() {
+    navigationView.setNavigationItemSelectedListener(menuItem -> {
+      //TODO
+      Toast.makeText(MainActivity.this, menuItem.toString(), Toast.LENGTH_SHORT).show();
 
-          @Override public boolean onNavigationItemSelected(MenuItem menuItem) {
-            //TODO
-            Toast.makeText(MainActivity.this, menuItem.toString(), Toast.LENGTH_SHORT).show();
+      drawerLayout.closeDrawers();
 
-            drawerLayout.closeDrawers();
-
-            // Add code here to update the UI based on the item selected
-            // For example, swap UI fragments here
-            return true;
-          }
-        });
+      // Add code here to update the UI based on the item selected
+      // For example, swap UI fragments here
+      return true;
+    });
   }
 
   @Override public void setText(String s) {

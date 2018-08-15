@@ -34,7 +34,7 @@ public class MainPresenter implements MainContract.Presenter {
     this.view = view;
   }
 
-  @Override public void apiCall() {
+  @Override public void fetchWeatherDetail() {
     showProgressDialog();
 
     APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
