@@ -1,10 +1,13 @@
 package com.ayush.weatherapp.main;
 
+import android.app.ProgressDialog;
 import com.ayush.weatherapp.BasePresenter;
 
 public interface MainContract {
   interface View {
-    void setText(String s);
+    ProgressDialog getProgressDialog();
+
+    void setCurrentTemperatureSummary(String s);
   }
 
   interface Presenter extends BasePresenter {
@@ -14,6 +17,6 @@ public interface MainContract {
 
     void setView(View view);
 
-    void fetchWeatherDetail();
+    void fetchWeatherDetails();
   }
 }
