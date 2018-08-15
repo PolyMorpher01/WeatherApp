@@ -1,10 +1,11 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="app_name">Weather App</string>
 
   <string name="settings">Settings</string>
 
   <string name="help_feedback"><![CDATA[Help & feedback]]></string>
 
-  <string name="celsius">°C</string>
-  <string name="fahrenheit">°F</string>
+  <string name="celsius"><xliff:g id="label_celsius">°C</xliff:g></string>
+  <string name="fahrenheit"><xliff:g id="label_fahrenheit">°F</xliff:g></string>
+  <string name="search_title">Search Location</string>
 </resources>
