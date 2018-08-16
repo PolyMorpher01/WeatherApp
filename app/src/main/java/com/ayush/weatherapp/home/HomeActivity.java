@@ -23,7 +23,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
   HomeContract.Presenter presenter;
 
   @Override protected int getContextView() {
-    return R.layout.navigation_drawer;
+    return R.layout.activity_home;
   }
 
   @Override protected void onCreate(Bundle savedInstanceState) {
