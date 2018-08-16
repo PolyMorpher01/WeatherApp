@@ -1,4 +1,4 @@
-package com.ayush.weatherapp.main;
+package com.ayush.weatherapp.home;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;

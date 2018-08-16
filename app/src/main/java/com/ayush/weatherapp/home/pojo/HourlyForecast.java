@@ -1,12 +1,12 @@
-package com.ayush.weatherapp.main.pojo;
+package com.ayush.weatherapp.home.pojo;
 
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
-public class DailyForecast {
+public class HourlyForecast {
   @SerializedName("summary") private String summary;
   @SerializedName("icon") private String icon;
-  @SerializedName("data") private List<DailyData> dailyDataList = null;
+  @SerializedName("data") private List<HourlyData> hourlyDataList;
 
   public String getSummary() {
     return summary;
@@ -16,23 +16,16 @@ public class DailyForecast {
     return icon;
   }
 
-  public List<DailyData> getDailyDataList() {
-    return dailyDataList;
+  public List<HourlyData> getHourlyDataList() {
+    return hourlyDataList;
   }
 
-  public static class DailyData {
+  public static class HourlyData {
     @SerializedName("time") private int time;
     @SerializedName("summary") private String summary;
     @SerializedName("icon") private String icon;
-    @SerializedName("sunriseTime") private int sunriseTime;
-    @SerializedName("sunsetTime") private int sunsetTime;
-    @SerializedName("moonPhase") private float moonPhase;
     @SerializedName("precipIntensity") private float precipIntensity;
-    @SerializedName("precipIntensityMax") private float precipIntensityMax;
-    @SerializedName("precipIntensityMaxTime") private int precipIntensityMaxTime;
     @SerializedName("precipProbability") private float precipProbability;
-    @SerializedName("precipAccumulation") private float precipAccumulation;
-    @SerializedName("precipType") private String precipType;
     @SerializedName("temperature") private float temperature;
     @SerializedName("apparentTemperature") private float apparentTemperature;
     @SerializedName("dewPoint") private float dewPoint;
@@ -43,6 +36,7 @@ public class DailyForecast {
     @SerializedName("cloudCover") private float cloudCover;
     @SerializedName("uvIndex") private float uvIndex;
     @SerializedName("visibility") private float visibility;
+    @SerializedName("ozone") private float ozone;
 
     public int getTime() {
       return time;
@@ -56,40 +50,12 @@ public class DailyForecast {
       return icon;
     }
 
-    public int getSunriseTime() {
-      return sunriseTime;
-    }
-
-    public int getSunsetTime() {
-      return sunsetTime;
-    }
-
-    public float getMoonPhase() {
-      return moonPhase;
-    }
-
     public float getPrecipIntensity() {
       return precipIntensity;
     }
 
-    public float getPrecipIntensityMax() {
-      return precipIntensityMax;
-    }
-
-    public int getPrecipIntensityMaxTime() {
-      return precipIntensityMaxTime;
-    }
-
     public float getPrecipProbability() {
       return precipProbability;
-    }
-
-    public float getPrecipAccumulation() {
-      return precipAccumulation;
-    }
-
-    public String getPrecipType() {
-      return precipType;
     }
 
     public float getTemperature() {
@@ -131,9 +97,11 @@ public class DailyForecast {
     public float getVisibility() {
       return visibility;
     }
+
+    public float getOzone() {
+      return ozone;
+    }
   }
 }
-
-
 
 

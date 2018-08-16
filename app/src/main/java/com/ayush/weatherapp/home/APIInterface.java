@@ -1,6 +1,6 @@
-package com.ayush.weatherapp.main;
+package com.ayush.weatherapp.home;
 
-import com.ayush.weatherapp.main.pojo.Forecast;
+import com.ayush.weatherapp.home.pojo.Forecast;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;

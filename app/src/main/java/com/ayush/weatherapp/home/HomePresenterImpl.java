@@ -1,39 +1,31 @@
-package com.ayush.weatherapp.main;
+package com.ayush.weatherapp.home;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.ayush.weatherapp.main.pojo.CurrentForecast;
-import com.ayush.weatherapp.main.pojo.Forecast;
+import com.ayush.weatherapp.home.pojo.CurrentForecast;
+import com.ayush.weatherapp.home.pojo.Forecast;
+import com.ayush.weatherapp.mvp.BaseContract;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
-public class MainPresenter implements MainContract.Presenter {
+public class HomePresenterImpl implements HomeContract.Presenter {
 
   private final Context context;
+  private HomeContract.View view;
 
-  MainContract.View view;
-
-  MainPresenter(Context context) {
+  HomePresenterImpl(Context context, BaseContract.View view) {
     this.context = context;
+    this.view = (HomeContract.View) view;
   }
 
-  @Override public void showProgressDialog() {
-    view.getProgressDialog().setMessage("Loading");
-    view.getProgressDialog().show();
-  }
-
-  @Override public void hideProgressDialog() {
-    view.getProgressDialog().dismiss();
-  }
-
-  @Override public void setView(MainContract.View view) {
-    this.view = view;
+  @Override public HomeContract.View getView() {
+    return view;
   }
 
   @Override public void fetchWeatherDetails() {
-    showProgressDialog();
+    getView().showProgressDialog("Loading");
 
     APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
 
@@ -51,14 +43,14 @@ public class MainPresenter implements MainContract.Presenter {
 
         CurrentForecast currentForecast = forecast.getCurrentForecast();
 
-        view.setCurrentTemperatureSummary(currentForecast.getSummary());
+        getView().setCurrentTemperatureSummary(currentForecast.getSummary());
 
-        hideProgressDialog();
+        getView().hideProgressDialog();
       }
 
       @Override public void onFailure(@NonNull Call<Forecast> call, @NonNull Throwable t) {
         Timber.e("Request Failed");
-        hideProgressDialog();
+        getView().hideProgressDialog();
       }
     });
   }
