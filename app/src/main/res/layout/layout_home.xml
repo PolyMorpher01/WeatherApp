@@ -5,11 +5,21 @@
     >
 
   <TextView
-      android:id="@+id/txt_main"
+      android:id="@+id/txt_location"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_centerInParent="true"
-      android:inputType="textMultiLine"
-      android:text="main"
+      android:layout_centerHorizontal="true"
+      android:layout_marginTop="@dimen/x8"
+      android:layout_alignParentTop="true"
+      android:text="location"
+      />
+  <TextView
+      android:id="@+id/txt_temp_summary"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerHorizontal="true"
+      android:layout_margin="@dimen/x1"
+      android:layout_below="@id/txt_location"
+      android:text="temp summary"
       />
 </RelativeLayout>

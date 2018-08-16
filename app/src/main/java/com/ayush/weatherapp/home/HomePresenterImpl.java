@@ -12,11 +12,9 @@ import timber.log.Timber;
 
 public class HomePresenterImpl implements HomeContract.Presenter {
 
-  private final Context context;
   private HomeContract.View view;
 
-  HomePresenterImpl(Context context, BaseContract.View view) {
-    this.context = context;
+  HomePresenterImpl(BaseContract.View view) {
     this.view = (HomeContract.View) view;
   }
 

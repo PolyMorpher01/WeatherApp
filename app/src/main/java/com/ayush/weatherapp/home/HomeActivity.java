@@ -1,5 +1,6 @@
 package com.ayush.weatherapp.home;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -37,7 +38,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
 
     setNavigationView();
 
-    presenter = new HomePresenterImpl(this, this );
+    presenter = new HomePresenterImpl(this);
 
     presenter.fetchWeatherDetails();
   }
@@ -68,6 +69,10 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
       // For example, swap UI fragments here
       return true;
     });
+  }
+
+  @Override public Context getContext() {
+    return this;
   }
 
   @Override public void showProgressDialog(String message) {
