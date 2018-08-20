@@ -56,27 +56,15 @@ public class ForecastDetailCompoundView extends RelativeLayout {
     tvBottom.setText(typedArray.getString(R.styleable.ForecastDetailCompoundView_txt_bottom));
   }
 
-  public ImageView getIvLeftIcon() {
-    return ivLeftIcon;
-  }
-
-  public void setIvLeftIcon(int imgResource) {
+  public void setLeftImage(int imgResource) {
     ivLeftIcon.setImageResource(imgResource);
   }
 
-  public TextView getTvTop() {
-    return tvTop;
-  }
-
-  public void setTvTop(String text) {
+  public void setTopText(String text) {
     tvTop.setText(text);
   }
 
-  public TextView getTvBottom() {
-    return tvBottom;
-  }
-
-  public void setTvBottom(String text) {
+  public void setBottomImage(String text) {
     tvBottom.setText(text);
   }
 }

@@ -56,28 +56,16 @@ public class ForecastCompoundView extends LinearLayout {
         typedArray.getDrawable(R.styleable.ForecastCompoundView_weather_icon));
     tvBottom.setText(typedArray.getString(R.styleable.ForecastCompoundView_temperature));
   }
-
-  public TextView getTvTop() {
-    return tvTop;
-  }
-
-  public void setTvTop(String text) {
+  
+  public void setTopText(String text) {
     tvTop.setText(text);
   }
 
-  public ImageView getIvMid() {
-    return ivMid;
-  }
-
-  public void setIvMid(int imageResource) {
+  public void setMidImage(int imageResource) {
     ivMid.setImageResource(imageResource);
   }
 
-  public TextView getTvBottom() {
-    return tvBottom;
-  }
-
-  public void setTvBottom(String text) {
+  public void setBottomText(String text) {
     tvBottom.setText(text);
   }
 }

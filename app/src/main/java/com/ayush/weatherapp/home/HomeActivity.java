@@ -144,22 +144,22 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
         (ForecastCompoundView) layoutInflater.inflate(R.layout.item_forecast_compound_view,
             grpListForecast, false);
 
-    forecastCompoundView.setTvTop(DateUtils.getDayOfTheWeek(dailyData.getTime()));
-    forecastCompoundView.setIvMid(
+    forecastCompoundView.setTopText(DateUtils.getDayOfTheWeek(dailyData.getTime()));
+    forecastCompoundView.setMidImage(
         MapperUtils.getSmallWeatherImageResource(dailyData.getIcon()));
-    forecastCompoundView.setTvBottom(averageTemperature);
+    forecastCompoundView.setBottomText(averageTemperature);
 
     grpListForecast.addView(forecastCompoundView, grpListForecast.getChildCount());
   }
 
   private void setForecastDetails(DailyForecast.DailyData todaysForecast) {
 
-    detailSun.setTvTop((String.valueOf(DateUtils.getTime(todaysForecast.getSunriseTime()))));
-    detailSun.setTvBottom((DateUtils.getTime(todaysForecast.getSunsetTime())));
+    detailSun.setTopText((String.valueOf(DateUtils.getTime(todaysForecast.getSunriseTime()))));
+    detailSun.setBottomImage((DateUtils.getTime(todaysForecast.getSunsetTime())));
 
-    detailWind.setTvBottom(String.valueOf(todaysForecast.getWindSpeed()));
+    detailWind.setBottomImage(String.valueOf(todaysForecast.getWindSpeed()));
 
-    detailTemperature.setTvTop(String.valueOf(Math.round(todaysForecast.getTemperatureHigh())));
-    detailTemperature.setTvBottom(String.valueOf(Math.round(todaysForecast.getTemperatureLow())));
+    detailTemperature.setTopText(String.valueOf(Math.round(todaysForecast.getTemperatureHigh())));
+    detailTemperature.setBottomImage(String.valueOf(Math.round(todaysForecast.getTemperatureLow())));
   }
 }
