@@ -24,8 +24,8 @@ public class HourlyForecast {
     @SerializedName("time") private int time;
     @SerializedName("summary") private String summary;
     @SerializedName("icon") private String icon;
-    @SerializedName("temperature") private float temperature;
-    @SerializedName("apparentTemperature") private float apparentTemperature;
+    @SerializedName("temperature") private double temperature;
+    @SerializedName("apparentTemperature") private double apparentTemperature;
 
     public int getTime() {
       return time;
@@ -39,11 +39,11 @@ public class HourlyForecast {
       return icon;
     }
 
-    public float getTemperature() {
+    public double getTemperature() {
       return temperature;
     }
 
-    public float getApparentTemperature() {
+    public double getApparentTemperature() {
       return apparentTemperature;
     }
 

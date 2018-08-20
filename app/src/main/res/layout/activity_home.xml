@@ -4,8 +4,8 @@
     android:id="@+id/layout_drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
     android:fitsSystemWindows="true"
+    android:background="@android:color/holo_red_light"
     >
   <FrameLayout
       android:id="@+id/content_frame"
@@ -21,7 +21,7 @@
         />
     <include
         layout="@layout/layout_home"
-        android:id="@+id/layout_main"
+        android:id="@+id/layout_home"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />

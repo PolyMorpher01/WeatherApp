@@ -24,8 +24,13 @@ public class DailyForecast {
     @SerializedName("time") private int time;
     @SerializedName("summary") private String summary;
     @SerializedName("icon") private String icon;
-    @SerializedName("temperature") private float temperature;
-    @SerializedName("apparentTemperature") private float apparentTemperature;
+    @SerializedName("sunriseTime") private int sunriseTime;
+    @SerializedName("sunsetTime") private int sunsetTime;
+    @SerializedName("temperatureHigh") private double temperatureHigh;
+    @SerializedName("temperatureLow") private double temperatureLow;
+    @SerializedName("apparentTemperatureHigh") private double apparentTemperatureHigh;
+    @SerializedName("apparentTemperatureLow") private double apparentTemperatureLow;
+    @SerializedName("windSpeed") private double windSpeed;
 
     public int getTime() {
       return time;
@@ -39,12 +44,32 @@ public class DailyForecast {
       return icon;
     }
 
-    public float getTemperature() {
-      return temperature;
+    public int getSunriseTime() {
+      return sunriseTime;
     }
 
-    public float getApparentTemperature() {
-      return apparentTemperature;
+    public int getSunsetTime() {
+      return sunsetTime;
+    }
+
+    public double getTemperatureHigh() {
+      return temperatureHigh;
+    }
+
+    public double getTemperatureLow() {
+      return temperatureLow;
+    }
+
+    public double getApparentTemperatureHigh() {
+      return apparentTemperatureHigh;
+    }
+
+    public double getApparentTemperatureLow() {
+      return apparentTemperatureLow;
+    }
+
+    public double getWindSpeed() {
+      return windSpeed;
     }
   }
 }

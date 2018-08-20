@@ -1,10 +1,13 @@
 package com.ayush.weatherapp.home;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import com.ayush.weatherapp.home.pojo.CurrentForecast;
+import com.ayush.weatherapp.home.pojo.DailyForecast;
 import com.ayush.weatherapp.home.pojo.Forecast;
 import com.ayush.weatherapp.mvp.BaseContract;
+import com.ayush.weatherapp.utils.MapperUtils;
+import java.util.Calendar;
+import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -23,7 +26,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   @Override public void fetchWeatherDetails() {
-    getView().showProgressDialog("Loading");
+    getView().showProgressDialog("Loading", false);
 
     APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
 
@@ -41,7 +44,12 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
         CurrentForecast currentForecast = forecast.getCurrentForecast();
 
-        getView().setCurrentTemperatureSummary(currentForecast.getSummary());
+        DailyForecast dailyForecast = forecast.getDailyForecast();
+        List<DailyForecast.DailyData> dailyForecastList = dailyForecast.getDailyDataList();
+
+        getView().setCurrentForecast(TEST_LATITUDE, TEST_LONGITUDE, currentForecast);
+
+        getView().setDailyForeCast(dailyForecastList);
 
         getView().hideProgressDialog();
       }

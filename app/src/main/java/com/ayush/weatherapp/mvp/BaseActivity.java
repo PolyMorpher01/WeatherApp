@@ -8,10 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import butterknife.ButterKnife;
 import com.ayush.weatherapp.R;
+import com.ayush.weatherapp.utils.LocationUtils;
+import com.ayush.weatherapp.utils.MapperUtils;
+import com.ayush.weatherapp.utils.MiscUtils;
 
 public abstract class BaseActivity extends AppCompatActivity {
   private ActionBar actionBar;
   private ProgressDialog progressDialog;
+
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -20,6 +24,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     ButterKnife.bind(this);
 
     progressDialog = new ProgressDialog(this);
+
   }
 
   protected abstract int getContextView();
@@ -40,4 +45,5 @@ public abstract class BaseActivity extends AppCompatActivity {
   public ProgressDialog getProgressDialog() {
     return progressDialog;
   }
+
 }
