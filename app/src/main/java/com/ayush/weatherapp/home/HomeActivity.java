@@ -10,10 +10,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
@@ -40,7 +38,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
   @BindView(R.id.tv_temp_current) TextView tvTempCurrent;
   @BindView(R.id.iv_weather) ImageView ivWeather;
 
-  @BindView(R.id.layout_home) RelativeLayout layoutHome;
   @BindView(R.id.grp_list_forecast) LinearLayout grpListForecast;
 
   @BindView(R.id.detail_sun) ForecastDetailCompoundView detailSun;
@@ -49,7 +46,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
 
   HomeContract.Presenter presenter;
 
-  @Override protected int getContextView() {
+  @Override protected int getLayoutId() {
     return R.layout.activity_home;
   }
 
@@ -59,15 +56,12 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
 
     super.onCreate(savedInstanceState);
 
-    layoutHome.setVisibility(View.INVISIBLE);
-
     initToolbar(toolbar);
     showTitleBar(false);
 
     setNavigationView();
 
     presenter = new HomePresenterImpl(this);
-
     presenter.fetchWeatherDetails();
   }
 
@@ -115,8 +109,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
 
   @Override public void setCurrentForecast(double latitude, double longitude,
       CurrentForecast currentForecast) {
-    layoutHome.setVisibility(View.VISIBLE);
-
     tvLocation.setText(LocationUtils.getLocality(latitude, longitude, this));
     tvCurrentForecastSummary.setText(currentForecast.getSummary());
     tvTempCurrent.setText(String.valueOf(Math.round(currentForecast.getTemperature())));
@@ -160,6 +152,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
     detailWind.setBottomImage(String.valueOf(todaysForecast.getWindSpeed()));
 
     detailTemperature.setTopText(String.valueOf(Math.round(todaysForecast.getTemperatureHigh())));
-    detailTemperature.setBottomImage(String.valueOf(Math.round(todaysForecast.getTemperatureLow())));
+    detailTemperature.setBottomImage(
+        String.valueOf(Math.round(todaysForecast.getTemperatureLow())));
   }
 }

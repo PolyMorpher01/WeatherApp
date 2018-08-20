@@ -51,12 +51,12 @@ public class ForecastCompoundView extends LinearLayout {
   }
 
   private void setValues(TypedArray typedArray) {
-    tvTop.setText(typedArray.getString(R.styleable.ForecastCompoundView_day));
-    ivMid.setImageDrawable(
-        typedArray.getDrawable(R.styleable.ForecastCompoundView_weather_icon));
-    tvBottom.setText(typedArray.getString(R.styleable.ForecastCompoundView_temperature));
+    this.setTopText(typedArray.getString(R.styleable.ForecastCompoundView_day));
+    this.setMidImage(typedArray.getResourceId(R.styleable.ForecastCompoundView_weather_icon,
+        R.drawable.img_no_connection));
+    this.setBottomText(typedArray.getString(R.styleable.ForecastCompoundView_temperature));
   }
-  
+
   public void setTopText(String text) {
     tvTop.setText(text);
   }

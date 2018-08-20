@@ -8,9 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import butterknife.ButterKnife;
 import com.ayush.weatherapp.R;
-import com.ayush.weatherapp.utils.LocationUtils;
-import com.ayush.weatherapp.utils.MapperUtils;
-import com.ayush.weatherapp.utils.MiscUtils;
 
 public abstract class BaseActivity extends AppCompatActivity {
   private ActionBar actionBar;
@@ -19,7 +16,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(getContextView());
+    setContentView(getLayoutId());
 
     ButterKnife.bind(this);
 
@@ -27,7 +24,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
   }
 
-  protected abstract int getContextView();
+  protected abstract int getLayoutId();
 
   @SuppressWarnings("ConstantConditions")
   public void initToolbar(Toolbar toolbar) {

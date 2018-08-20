@@ -50,10 +50,10 @@ public class ForecastDetailCompoundView extends RelativeLayout {
   }
 
   private void setValues(TypedArray typedArray) {
-    ivLeftIcon.setImageDrawable(
-        typedArray.getDrawable(R.styleable.ForecastDetailCompoundView_detail_icon));
-    tvTop.setText(typedArray.getString(R.styleable.ForecastDetailCompoundView_txt_top));
-    tvBottom.setText(typedArray.getString(R.styleable.ForecastDetailCompoundView_txt_bottom));
+    this.setLeftImage(typedArray.getResourceId(R.styleable.ForecastDetailCompoundView_detail_icon,
+        R.drawable.img_small_cloudy));
+    this.setTopText(typedArray.getString(R.styleable.ForecastDetailCompoundView_txt_top));
+    this.setBottomImage(typedArray.getString(R.styleable.ForecastDetailCompoundView_txt_bottom));
   }
 
   public void setLeftImage(int imgResource) {

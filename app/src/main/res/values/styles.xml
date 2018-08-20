@@ -16,33 +16,8 @@
     <item name="colorControlNormal">@color/colorAccent</item>
   </style>
 
-  <style name="StyleLineHorizontal">
-    <item name="android:layout_marginTop">@dimen/x4</item>
-    <item name="android:layout_marginBottom">@dimen/x4</item>
-    <item name="android:background">@android:color/holo_blue_dark</item>
-  </style>
-
   <style name="StyleHomeCommon">
     <item name="android:fontFamily">@font/nunito_regular</item>
-  </style>
-
-  <style name="StyleLocation" parent="StyleHomeCommon">
-    <item name="android:layout_marginTop">@dimen/x5</item>
-    <item name="android:textSize">@dimen/h4</item>
-  </style>
-
-  <style name="StyleTempSummary" parent="StyleHomeCommon">
-    <item name="android:textSize">@dimen/caption</item>
-    <item name="android:layout_margin">@dimen/x1</item>
-  </style>
-
-  <style name="StyleCurrentTemp" parent="StyleHomeCommon">
-    <item name="android:textSize">@dimen/h1</item>
-  </style>
-
-  <style name="StyleTitle" parent="StyleHomeCommon">
-    <item name="android:textSize">@dimen/h5</item>
-    <item name="android:textStyle">bold</item>
   </style>
 
 </resources>
