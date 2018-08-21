@@ -1,7 +1,7 @@
 package com.ayush.weatherapp.home;
 
-import com.ayush.weatherapp.home.pojo.CurrentForecast;
-import com.ayush.weatherapp.home.pojo.DailyForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.mvp.BaseContract;
 import java.util.List;
 

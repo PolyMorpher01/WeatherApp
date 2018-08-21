@@ -18,13 +18,13 @@ import butterknife.BindView;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.customViews.ForecastCompoundView;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
-import com.ayush.weatherapp.home.pojo.CurrentForecast;
-import com.ayush.weatherapp.home.pojo.DailyForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.mvp.BaseActivity;
 import com.ayush.weatherapp.utils.DateUtils;
 import com.ayush.weatherapp.utils.LocationUtils;
-import com.ayush.weatherapp.utils.MapperUtils;
-import com.ayush.weatherapp.utils.MiscUtils;
+import com.ayush.weatherapp.mapper.WeatherImageMapper;
+import com.ayush.weatherapp.utils.MathUtils;
 import java.util.List;
 
 public class HomeActivity extends BaseActivity implements HomeContract.View {
@@ -113,7 +113,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
     tvCurrentForecastSummary.setText(currentForecast.getSummary());
     tvTempCurrent.setText(String.valueOf(Math.round(currentForecast.getTemperature())));
     ivWeather.setImageResource(
-        MapperUtils.getWeatherImageResource(currentForecast.getIcon()));
+        WeatherImageMapper.getImageResource(currentForecast.getIcon()));
   }
 
   @Override public void setDailyForeCast(List<DailyForecast.DailyData> dailyForecastList) {
@@ -128,7 +128,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
 
   private void addDailyForecastView(DailyForecast.DailyData dailyData) {
     String averageTemperature = String.valueOf(Math.round(
-        MiscUtils.getAverage(dailyData.getTemperatureHigh(),
+        MathUtils.getAverage(dailyData.getTemperatureHigh(),
             dailyData.getTemperatureLow())));
 
     LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -138,7 +138,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
 
     forecastCompoundView.setTopText(DateUtils.getDayOfTheWeek(dailyData.getTime()));
     forecastCompoundView.setMidImage(
-        MapperUtils.getSmallWeatherImageResource(dailyData.getIcon()));
+        WeatherImageMapper.getSmallImageResource(dailyData.getIcon()));
     forecastCompoundView.setBottomText(averageTemperature);
 
     grpListForecast.addView(forecastCompoundView, grpListForecast.getChildCount());
