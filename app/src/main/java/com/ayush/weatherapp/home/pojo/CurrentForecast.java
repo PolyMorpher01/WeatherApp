@@ -1,4 +1,4 @@
-package com.ayush.weatherapp.main.pojo;
+package com.ayush.weatherapp.home.pojo;
 
 import com.google.gson.annotations.SerializedName;
 

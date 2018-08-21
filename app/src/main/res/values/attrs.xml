@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <declare-styleable name="ForecastCompoundView">
+    <attr format="string" name="day"/>
+    <attr format="reference" name="weather_icon"/>
+    <attr format="string" name="temperature"/>
+  </declare-styleable>
+
+  <declare-styleable name="ForecastDetailCompoundView">
+    <attr format="reference" name="detail_icon"/>
+    <attr format="string" name="txt_top"/>
+    <attr format="string" name="txt_bottom"/>
+  </declare-styleable>
+
+</resources>
