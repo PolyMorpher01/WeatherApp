@@ -1,18 +1,15 @@
-package com.ayush.weatherapp.retrofit.weatherApi;
+package com.ayush.weatherapp.retrofit.geocodingApi;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-//API client website: https://darksky.net/dev
-
-public final class WeatherAPIClient {
-  private static final String API_SECRET_KEY = "b2cfbbc390af11ee7513401d568aef13";
+public class GeocodingAPIClient {
   private static final String API_BASE_URL =
-      "https://api.darksky.net/forecast/" + API_SECRET_KEY + "/";
+      "https://maps.googleapis.com/maps/api/geocode/";
 
-  private WeatherAPIClient() {
+  private GeocodingAPIClient() {
   }
 
   public static Retrofit getClient() {
