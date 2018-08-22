@@ -15,7 +15,7 @@ public final class WeatherAPIClient {
   private WeatherAPIClient() {
   }
 
-  static Retrofit getClient() {
+  public static Retrofit getClient() {
 
     HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
     interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
