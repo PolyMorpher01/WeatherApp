@@ -4,6 +4,7 @@ import com.ayush.weatherapp.mvp.BaseContract;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.ReverseGeoLocation;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
 import java.util.List;
 
 public interface HomeContract {
@@ -12,12 +13,12 @@ public interface HomeContract {
 
     void setDailyForeCast(List<DailyForecast.DailyData> dailyForecastList);
 
+    void setHourlyForeCast(List<HourlyForecast.HourlyData> hourlyForeCastList);
+
     void setLocality(String locality);
   }
 
   interface Presenter extends BaseContract.Presenter {
-    View getView();
-
     void fetchWeatherDetails();
 
     void fetchLocality(String requestString);

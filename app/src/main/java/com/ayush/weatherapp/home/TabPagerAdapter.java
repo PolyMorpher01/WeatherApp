@@ -4,23 +4,37 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
+import java.util.List;
 
 public class TabPagerAdapter extends FragmentPagerAdapter {
   private final static int NUMBER_OF_TABS = 2;
-  private String tabTitles[] = new String[] { "Tab1", "Tab2" };
+  private String tabTitles[] = new String[] { "Daily", "Hourly" };
+  private DailyForecastFragment dailyForecastFragment;
+  private HourlyForecastFragment hourlyForecastFragment;
 
   TabPagerAdapter(FragmentManager fm) {
     super(fm);
+    dailyForecastFragment = new DailyForecastFragment();
+    hourlyForecastFragment = new HourlyForecastFragment();
+  }
+
+  void setDailyForecastData(List<DailyForecast.DailyData> dailyForecastList) {
+    dailyForecastFragment.setData(dailyForecastList);
+  }
+
+  void setHourlyForecastData(List<HourlyForecast.HourlyData> hourlyForeCastList) {
+    hourlyForecastFragment.setData(hourlyForeCastList);
   }
 
   @Override public Fragment getItem(int position) {
-    Fragment fragment = null;
     if (position == 0) {
-      fragment = new Fragment1();
+      return dailyForecastFragment;
     } else if (position == 1) {
-      fragment = new Fragment2();
+      return hourlyForecastFragment;
     }
-    return fragment;
+    return null;
   }
 
   @Override public int getCount() {
@@ -28,6 +42,6 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
   }
 
   @Nullable @Override public CharSequence getPageTitle(int position) {
-    return "Tab " + (position + 1);
+    return tabTitles[position];
   }
 }

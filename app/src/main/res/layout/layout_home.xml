@@ -72,14 +72,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         >
-      <!--<com.ayush.weatherapp.customViews.ForecastCompoundView-->
-      <!--android:layout_width="0dp"-->
-      <!--android:layout_height="wrap_content"-->
-      <!--android:layout_weight="1"-->
-      <!--app:day="sunday"-->
-      <!--app:temperature="22"-->
-      <!--app:weather_icon="@drawable/img_small_rainy"-->
-      <!--/>-->
+
     </LinearLayout>
 
 

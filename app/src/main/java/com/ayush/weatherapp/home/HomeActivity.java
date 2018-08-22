@@ -11,7 +11,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,14 +20,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import com.ayush.weatherapp.R;
-import com.ayush.weatherapp.customViews.ForecastCompoundView;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.mvp.BaseActivity;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
 import com.ayush.weatherapp.utils.DateUtils;
-import com.ayush.weatherapp.utils.MathUtils;
 import java.util.List;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -74,9 +72,9 @@ public class HomeActivity extends BaseActivity
 
     setNavigationView();
 
-    presenter = new HomePresenterImpl(this);
-
     setTabLayout();
+
+    presenter = new HomePresenterImpl(this);
 
     checkLocationPermission();
   }
@@ -84,7 +82,6 @@ public class HomeActivity extends BaseActivity
   private void setTabLayout() {
     tabPagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
     viewPager.setAdapter(tabPagerAdapter);
-
     tabLayout.setupWithViewPager(viewPager);
     viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
   }
@@ -139,35 +136,21 @@ public class HomeActivity extends BaseActivity
   }
 
   @Override public void setDailyForeCast(List<DailyForecast.DailyData> dailyForecastList) {
-    for (DailyForecast.DailyData dailyData : dailyForecastList) {
-      addDailyForecastView(dailyData);
-    }
 
+    tabPagerAdapter.setDailyForecastData(dailyForecastList);
+
+    //get forecast detail of today
     DailyForecast.DailyData forecastDetailToday = dailyForecastList.get(0);
 
     setForecastDetails(forecastDetailToday);
   }
 
-  @Override public void setLocality(String locality) {
-    tvLocation.setText(locality);
+  @Override public void setHourlyForeCast(List<HourlyForecast.HourlyData> hourlyForeCastList) {
+    tabPagerAdapter.setHourlyForecastData(hourlyForeCastList);
   }
 
-  private void addDailyForecastView(DailyForecast.DailyData dailyData) {
-    String averageTemperature = String.valueOf(Math.round(
-        MathUtils.getAverage(dailyData.getTemperatureHigh(),
-            dailyData.getTemperatureLow())));
-
-    LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-    ForecastCompoundView forecastCompoundView =
-        (ForecastCompoundView) layoutInflater.inflate(R.layout.item_forecast_compound_view,
-            grpListForecast, false);
-
-    forecastCompoundView.setTopText(DateUtils.getDayOfTheWeek(dailyData.getTime()));
-    forecastCompoundView.setMidImage(
-        WeatherImageMapper.getSmallImageResource(dailyData.getIcon()));
-    forecastCompoundView.setBottomText(averageTemperature);
-
-    grpListForecast.addView(forecastCompoundView, grpListForecast.getChildCount());
+  @Override public void setLocality(String locality) {
+    tvLocation.setText(locality);
   }
 
   private void setForecastDetails(DailyForecast.DailyData todaysForecast) {
@@ -206,7 +189,6 @@ public class HomeActivity extends BaseActivity
 
   @Override
   public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
-    Timber.e("onPermissionsGranted:" + requestCode + ":" + perms.size());
     presenter.fetchWeatherDetails();
   }
 
