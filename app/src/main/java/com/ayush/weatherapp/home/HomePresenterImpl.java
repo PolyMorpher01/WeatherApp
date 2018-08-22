@@ -60,7 +60,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   @Override public void attachView() {
-    
+
   }
 
   @Override public void detachView() {
