@@ -18,12 +18,11 @@ import butterknife.BindView;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.customViews.ForecastCompoundView;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
+import com.ayush.weatherapp.mapper.WeatherImageMapper;
+import com.ayush.weatherapp.mvp.BaseActivity;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
-import com.ayush.weatherapp.mvp.BaseActivity;
 import com.ayush.weatherapp.utils.DateUtils;
-import com.ayush.weatherapp.utils.LocationUtils;
-import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.utils.MathUtils;
 import java.util.List;
 
@@ -50,6 +49,10 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
     return R.layout.activity_home;
   }
 
+  @Override protected void setupPresenter() {
+    presenter = new HomePresenterImpl(this);
+  }
+
   @Override protected void onCreate(Bundle savedInstanceState) {
     //override theme defined in the xml for splash screen effect
     setTheme(R.style.AppTheme);
@@ -60,8 +63,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
     showTitleBar(false);
 
     setNavigationView();
-
-    presenter = new HomePresenterImpl(this);
     presenter.fetchWeatherDetails();
   }
 
@@ -109,7 +110,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
 
   @Override public void setCurrentForecast(double latitude, double longitude,
       CurrentForecast currentForecast) {
-    tvLocation.setText(LocationUtils.getLocality(latitude, longitude, this));
+    //tvLocation.setText(LocationUtils.getLocality(latitude, longitude, this));
     tvCurrentForecastSummary.setText(currentForecast.getSummary());
     tvTempCurrent.setText(String.valueOf(Math.round(currentForecast.getTemperature())));
     ivWeather.setImageResource(

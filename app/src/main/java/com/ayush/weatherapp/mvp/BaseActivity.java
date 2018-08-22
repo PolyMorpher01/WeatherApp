@@ -13,24 +13,24 @@ public abstract class BaseActivity extends AppCompatActivity {
   private ActionBar actionBar;
   private ProgressDialog progressDialog;
 
-
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(getLayoutId());
+    setupPresenter();
 
     ButterKnife.bind(this);
 
     progressDialog = new ProgressDialog(this);
-
   }
 
   protected abstract int getLayoutId();
+
+  protected abstract void setupPresenter();
 
   @SuppressWarnings("ConstantConditions")
   public void initToolbar(Toolbar toolbar) {
     setSupportActionBar(toolbar);
     actionBar = getSupportActionBar();
-
     actionBar.setDisplayHomeAsUpEnabled(true);
     actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
   }
@@ -42,5 +42,4 @@ public abstract class BaseActivity extends AppCompatActivity {
   public ProgressDialog getProgressDialog() {
     return progressDialog;
   }
-
 }
