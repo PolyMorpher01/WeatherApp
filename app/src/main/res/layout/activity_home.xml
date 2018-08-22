@@ -21,7 +21,7 @@
         />
     <include
         layout="@layout/layout_home"
-        android:id="@+id/layout_home"
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
