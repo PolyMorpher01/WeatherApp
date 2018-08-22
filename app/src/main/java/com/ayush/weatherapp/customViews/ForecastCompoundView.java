@@ -11,6 +11,9 @@ import com.ayush.weatherapp.R;
 
 public class ForecastCompoundView extends LinearLayout {
 
+  private static final int TYPE_CELSIUS = 0;
+  private static final int TYPE_FAHRENHEIT = 1;
+
   private TextView tvTop;
   private ImageView ivMid;
   private TextView tvBottom;
@@ -51,10 +54,10 @@ public class ForecastCompoundView extends LinearLayout {
   }
 
   private void setValues(TypedArray typedArray) {
-    setTopText(typedArray.getString(R.styleable.ForecastCompoundView_day));
-    setMidImage(typedArray.getResourceId(R.styleable.ForecastCompoundView_weather_icon,
+    this.setTopText(typedArray.getString(R.styleable.ForecastCompoundView_day));
+    this.setMidImage(typedArray.getResourceId(R.styleable.ForecastCompoundView_weather_icon,
         R.drawable.img_no_connection));
-    setBottomText(typedArray.getString(R.styleable.ForecastCompoundView_temperature));
+    this.setBottomText(typedArray.getString(R.styleable.ForecastCompoundView_temperature));
   }
 
   public void setTopText(String text) {

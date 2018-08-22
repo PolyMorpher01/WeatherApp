@@ -10,5 +10,6 @@
     android:layout_weight="1"
     app:day="sunday"
     app:temperature="22"
+    app:unit="celsius"
     app:weather_icon="@drawable/img_small_rainy"
     />
