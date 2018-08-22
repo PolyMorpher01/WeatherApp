@@ -9,7 +9,7 @@ import static android.text.format.DateUtils.isToday;
 public final class DateUtils {
 
   private static final String DAY_OF_THE_WEEK = "EE";
-  private static final String TIME = "hh:mm aa";
+  private static final String HH_MM_AA = "hh:mm aa";
   private DateUtils() {
   }
 
@@ -27,6 +27,6 @@ public final class DateUtils {
   public static String getTime(int timeStamp) {
     Date date = new Date((long) timeStamp * 1000);
 
-    return new SimpleDateFormat(TIME, Locale.getDefault()).format(date);
+    return new SimpleDateFormat(HH_MM_AA, Locale.getDefault()).format(date);
   }
 }
