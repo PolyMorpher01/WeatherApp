@@ -1,12 +1,12 @@
 package com.ayush.weatherapp.home;
 
 import android.support.annotation.NonNull;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.Forecast;
 import com.ayush.weatherapp.mvp.BaseContract;
 import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIClient;
 import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIInterface;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.Forecast;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,14 +21,11 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     this.view = (HomeContract.View) view;
   }
 
-  @Override public HomeContract.View getView() {
-    return view;
-  }
-
   @Override public void fetchWeatherDetails() {
-    getView().showProgressDialog("Loading", false);
+    view.showProgressDialog("Loading", false);
 
-    WeatherAPIInterface weatherApiInterface = WeatherAPIClient.getClient().create(WeatherAPIInterface.class);
+    WeatherAPIInterface weatherApiInterface =
+        WeatherAPIClient.getClient().create(WeatherAPIInterface.class);
 
     //TODO get coordinates based on a location
     final double TEST_LATITUDE = 37.8267;
@@ -47,16 +44,17 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         DailyForecast dailyForecast = forecast.getDailyForecast();
         List<DailyForecast.DailyData> dailyForecastList = dailyForecast.getDailyDataList();
 
-        getView().setCurrentForecast(TEST_LATITUDE, TEST_LONGITUDE, currentForecast);
+        view.setCurrentForecast(TEST_LATITUDE, TEST_LONGITUDE, currentForecast);
 
-        getView().setDailyForeCast(dailyForecastList);
+        view.setDailyForeCast(dailyForecastList);
 
-        getView().hideProgressDialog();
+        view.hideProgressDialog();
       }
 
       @Override public void onFailure(@NonNull Call<Forecast> call, @NonNull Throwable t) {
+        Timber.e(t);
         Timber.e("Request Failed");
-        getView().hideProgressDialog();
+        view.hideProgressDialog();
       }
     });
   }
