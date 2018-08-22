@@ -42,7 +42,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         CurrentForecast currentForecast = forecast.getCurrentForecast();
 
         DailyForecast dailyForecast = forecast.getDailyForecast();
-        List<DailyForecast.DailyData> dailyForecastList = dailyForecast.getDailyDataList();
+        List<DailyForecast.DailyData> dailyForecastList = dailyForecast.getDailyForecastDataList();
 
         view.setCurrentForecast(TEST_LATITUDE, TEST_LONGITUDE, currentForecast);
 
