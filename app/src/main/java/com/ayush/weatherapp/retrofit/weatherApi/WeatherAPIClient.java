@@ -1,4 +1,4 @@
-package com.ayush.weatherapp.main;
+package com.ayush.weatherapp.retrofit.weatherApi;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -7,12 +7,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 //API client website: https://darksky.net/dev
 
-public class APIClient {
+public final class WeatherAPIClient {
   private static final String API_SECRET_KEY = "b2cfbbc390af11ee7513401d568aef13";
+  private static final String API_BASE_URL =
+      "https://api.darksky.net/forecast/" + API_SECRET_KEY + "/";
 
-  private static final String API_BASE_URL = "https://api.darksky.net/forecast/" + API_SECRET_KEY + "/";
+  private WeatherAPIClient() {
+  }
 
-  static Retrofit getClient() {
+  public static Retrofit getClient() {
 
     HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
     interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);

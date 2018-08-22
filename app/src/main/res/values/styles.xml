@@ -15,4 +15,5 @@
   <style name="ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
     <item name="colorControlNormal">@color/colorAccent</item>
   </style>
+
 </resources>
