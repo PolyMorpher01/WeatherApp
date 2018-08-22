@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -49,6 +51,12 @@ public class HomeActivity extends BaseActivity
   @BindView(R.id.detail_sun) ForecastDetailCompoundView detailSun;
   @BindView(R.id.detail_wind) ForecastDetailCompoundView detailWind;
   @BindView(R.id.detail_temperature) ForecastDetailCompoundView detailTemperature;
+
+  @BindView(R.id.tab_layout) TabLayout tabLayout;
+  @BindView(R.id.view_pager) ViewPager viewPager;
+
+  TabPagerAdapter tabPagerAdapter;
+
   HomeContract.Presenter presenter;
 
   @Override protected int getLayoutId() {
@@ -68,7 +76,17 @@ public class HomeActivity extends BaseActivity
 
     presenter = new HomePresenterImpl(this);
 
+    setTabLayout();
+
     checkLocationPermission();
+  }
+
+  private void setTabLayout() {
+    tabPagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
+    viewPager.setAdapter(tabPagerAdapter);
+
+    tabLayout.setupWithViewPager(viewPager);
+    viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
