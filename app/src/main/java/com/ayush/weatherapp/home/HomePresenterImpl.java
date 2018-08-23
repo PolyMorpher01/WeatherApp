@@ -1,6 +1,7 @@
 package com.ayush.weatherapp.home;
 
 import android.support.annotation.NonNull;
+import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.mvp.BaseContract;
 import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIClient;
 import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIInterface;
@@ -55,7 +56,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         DailyForecast dailyForecast = forecast.getDailyForecast();
         List<DailyForecast.DailyData> dailyForecastList = dailyForecast.getDailyDataList();
         view.setDailyForeCast(dailyForecastList);
-        
+
         HourlyForecast hourlyForecast = forecast.getHourlyForecast();
         List<HourlyForecast.HourlyData> hourlyDataList = hourlyForecast.getHourlyDataList();
         view.setHourlyForeCast(hourlyDataList);
@@ -87,20 +88,21 @@ public class HomePresenterImpl implements HomeContract.Presenter {
       public void onResponse(Call<ReverseGeoLocation> call, Response<ReverseGeoLocation> response) {
         ReverseGeoLocation reverseGeoLocation = response.body();
 
-        List<Address> addressList;
+        List<Address> addressList = reverseGeoLocation.getAddresses();
 
-        if (reverseGeoLocation != null) {
-          addressList = reverseGeoLocation.getAddresses();
+        if (addressList != null && !addressList.isEmpty()) {
           List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
           localityAddress = addressComponentsList.get(LOCALITY_INDEX).getLongName();
+          view.setLocality(localityAddress);
+        }
+        else {
+         Timber.e("Address list null");
         }
 
-        view.setLocality(localityAddress);
       }
 
       @Override public void onFailure(Call<ReverseGeoLocation> call, Throwable t) {
         Timber.e(t);
-        Timber.e("Request fetch locality failed");
       }
     });
   }
