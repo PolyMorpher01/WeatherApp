@@ -188,8 +188,7 @@ public class HomeActivity extends BaseActivity
 
   @Override
   public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
-    Timber.e("onPermissionsGranted:" + requestCode + ":" + perms.size());
-    presenter.fetchWeatherDetails();
+        presenter.fetchWeatherDetails();
   }
 
   @Override
