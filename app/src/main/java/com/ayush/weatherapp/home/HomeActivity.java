@@ -61,6 +61,10 @@ public class HomeActivity extends BaseActivity
     return R.layout.activity_home;
   }
 
+  @Override protected void setupPresenter() {
+    presenter = new HomePresenterImpl(this);
+  }
+
   @Override protected void onCreate(Bundle savedInstanceState) {
     //override theme defined in the xml for splash screen effect
     setTheme(R.style.AppTheme);
@@ -71,7 +75,7 @@ public class HomeActivity extends BaseActivity
     showTitleBar(false);
 
     setNavigationView();
-
+    
     setTabLayout();
 
     presenter = new HomePresenterImpl(this);

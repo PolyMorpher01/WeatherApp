@@ -7,9 +7,9 @@ public final class WeatherImageMapper {
   private WeatherImageMapper() {
   }
 
-  public static int getImageResource(String icon) {
+  public static int getImageResource(String weather) {
 
-    switch (icon) {
+    switch (weather) {
       case WeatherImageConstant.PARTLY_CLOUDY_DAY:
         return R.drawable.img_cloudy_day;
 
@@ -24,8 +24,8 @@ public final class WeatherImageMapper {
     }
   }
 
-  public static int getSmallImageResource(String icon) {
-    switch (icon) {
+  public static int getSmallImageResource(String weather) {
+    switch (weather) {
       case WeatherImageConstant.PARTLY_CLOUDY_DAY:
         return R.drawable.img_small_cloudy;
 

@@ -21,13 +21,13 @@ public class HourlyForecast {
   }
 
   public static class HourlyData {
-    @SerializedName("time") private int time;
+    @SerializedName("time") private long time;
     @SerializedName("summary") private String summary;
     @SerializedName("icon") private String icon;
     @SerializedName("temperature") private double temperature;
     @SerializedName("apparentTemperature") private double apparentTemperature;
 
-    public int getTime() {
+    public long getTime() {
       return time;
     }
 
