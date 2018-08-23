@@ -21,7 +21,7 @@ public class DailyForecast {
   }
 
   public static class DailyData {
-    @SerializedName("time") private int time;
+    @SerializedName("time") private long time;
     @SerializedName("summary") private String summary;
     @SerializedName("icon") private String icon;
     @SerializedName("sunriseTime") private int sunriseTime;
@@ -32,7 +32,7 @@ public class DailyForecast {
     @SerializedName("apparentTemperatureLow") private double apparentTemperatureLow;
     @SerializedName("windSpeed") private double windSpeed;
 
-    public int getTime() {
+    public long getTime() {
       return time;
     }
 

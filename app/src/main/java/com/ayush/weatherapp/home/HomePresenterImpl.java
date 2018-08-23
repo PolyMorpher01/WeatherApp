@@ -98,7 +98,16 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
       @Override public void onFailure(Call<ReverseGeoLocation> call, Throwable t) {
         Timber.e(t);
+        Timber.e("Request fetch locality failed");
       }
     });
+  }
+
+  @Override public void attachView() {
+
+  }
+
+  @Override public void detachView() {
+
   }
 }

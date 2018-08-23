@@ -11,6 +11,9 @@ import com.ayush.weatherapp.R;
 
 public class ForecastCompoundView extends LinearLayout {
 
+  private static final int TYPE_CELSIUS = 0;
+  private static final int TYPE_FAHRENHEIT = 1;
+
   private TextView tvTop;
   private ImageView ivMid;
   private TextView tvBottom;
