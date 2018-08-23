@@ -19,7 +19,7 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 public class HomePresenterImpl implements HomeContract.Presenter {
-  final static String GEOCODING_API_KEY = "AIzaSyDMc5J7b2o_oa9n3KiPf_8zqzRQEraLpTw";
+  final static String GEOCODING_API_KEY = "AIzaSyBKlS7jO0NvkX580X-ifkdfe12Mwzxhgc4";
 
   private HomeContract.View view;
 
