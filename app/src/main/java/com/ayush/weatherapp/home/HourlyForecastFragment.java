@@ -18,7 +18,6 @@ import java.util.List;
 
 public class HourlyForecastFragment extends Fragment {
 
-  final int MAX_NUMBER_OF_DATA = 6;
   @BindView(R.id.forecast_detail) LinearLayout forecastDetail;
 
   @Nullable @Override
@@ -30,8 +29,8 @@ public class HourlyForecastFragment extends Fragment {
   }
 
   public void setData(List<HourlyForecast.HourlyData> hourlyForeCastList) {
-    for (int i = 0; i < MAX_NUMBER_OF_DATA; i++) {
-      setView(hourlyForeCastList.get(i));
+    for (HourlyForecast.HourlyData hourlyData : hourlyForeCastList) {
+      setView(hourlyData);
     }
   }
 

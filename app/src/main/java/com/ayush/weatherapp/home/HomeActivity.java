@@ -15,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
@@ -45,7 +44,6 @@ public class HomeActivity extends BaseActivity
   @BindView(R.id.tv_temperature_summary) TextView tvCurrentForecastSummary;
   @BindView(R.id.tv_temp_current) TextView tvTempCurrent;
   @BindView(R.id.iv_weather) ImageView ivWeather;
-  @BindView(R.id.grp_list_forecast) LinearLayout grpListForecast;
   @BindView(R.id.detail_sun) ForecastDetailCompoundView detailSun;
   @BindView(R.id.detail_wind) ForecastDetailCompoundView detailWind;
   @BindView(R.id.detail_temperature) ForecastDetailCompoundView detailTemperature;
@@ -146,7 +144,9 @@ public class HomeActivity extends BaseActivity
   }
 
   @Override public void setHourlyForeCast(List<HourlyForecast.HourlyData> hourlyForeCastList) {
-    tabPagerAdapter.setHourlyForecastData(hourlyForeCastList);
+    //show only 6 data
+    final int MAX_NUMBER_OF_DATA = 6;
+    tabPagerAdapter.setHourlyForecastData(hourlyForeCastList.subList(0, MAX_NUMBER_OF_DATA - 1));
   }
 
   @Override public void setLocality(String locality) {
