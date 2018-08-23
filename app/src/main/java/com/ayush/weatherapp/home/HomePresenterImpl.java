@@ -12,6 +12,7 @@ import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIInterface;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.Forecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,19 +50,21 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
         CurrentForecast currentForecast = forecast.getCurrentForecast();
 
-        DailyForecast dailyForecast = forecast.getDailyForecast();
-        List<DailyForecast.DailyData> dailyForecastList = dailyForecast.getDailyDataList();
-
         view.setCurrentForecast(currentForecast);
 
+        DailyForecast dailyForecast = forecast.getDailyForecast();
+        List<DailyForecast.DailyData> dailyForecastList = dailyForecast.getDailyDataList();
         view.setDailyForeCast(dailyForecastList);
+        
+        HourlyForecast hourlyForecast = forecast.getHourlyForecast();
+        List<HourlyForecast.HourlyData> hourlyDataList = hourlyForecast.getHourlyDataList();
+        view.setHourlyForeCast(hourlyDataList);
 
         view.hideProgressDialog();
       }
 
       @Override public void onFailure(@NonNull Call<Forecast> call, @NonNull Throwable t) {
         Timber.e(t);
-        Timber.e("Request fetch forecast failed");
         view.hideProgressDialog();
       }
     });
@@ -83,10 +86,14 @@ public class HomePresenterImpl implements HomeContract.Presenter {
       @Override
       public void onResponse(Call<ReverseGeoLocation> call, Response<ReverseGeoLocation> response) {
         ReverseGeoLocation reverseGeoLocation = response.body();
-        List<Address> addressList = reverseGeoLocation.getAddresses();
-        List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
 
-        localityAddress = addressComponentsList.get(LOCALITY_INDEX).getLongName();
+        List<Address> addressList;
+
+        if (reverseGeoLocation != null) {
+          addressList = reverseGeoLocation.getAddresses();
+          List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
+          localityAddress = addressComponentsList.get(LOCALITY_INDEX).getLongName();
+        }
 
         view.setLocality(localityAddress);
       }
@@ -96,5 +103,13 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         Timber.e("Request fetch locality failed");
       }
     });
+  }
+
+  @Override public void attachView() {
+
+  }
+
+  @Override public void detachView() {
+
   }
 }

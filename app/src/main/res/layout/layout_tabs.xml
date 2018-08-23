@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pager"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+  <android.support.design.widget.TabLayout
+      android:id="@+id/tab_layout"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/x4"
+      android:layout_margin="@dimen/x1"
+      app:tabBackground="@drawable/rounded_layout_bg"
+      app:tabGravity="center"
+      app:tabIndicatorColor="@android:color/transparent"
+      app:tabMode="fixed"
+      app:tabSelectedTextColor="#ffffff"
+      app:tabTextAppearance="@style/MineCustomTabText"
+      />
+  <com.ayush.weatherapp.customViews.WrapContentHeightViewPager
+      android:id="@+id/view_pager"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
+
+</LinearLayout>

@@ -5,7 +5,12 @@ public final class MathUtils {
   private MathUtils() {
   }
 
-  public static double getAverage(double firstNum, double secondNum) {
-    return (firstNum + secondNum) / 2;
+  public static double getAverage(double... numbers) {
+    int sum = 0;
+    for (double number : numbers) {
+      sum += number;
+    }
+
+    return sum / numbers.length;
   }
 }

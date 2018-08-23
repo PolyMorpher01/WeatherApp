@@ -6,27 +6,26 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import com.ayush.weatherapp.R;
-import com.ayush.weatherapp.customViews.ForecastCompoundView;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.mvp.BaseActivity;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
 import com.ayush.weatherapp.utils.DateUtils;
-import com.ayush.weatherapp.utils.MathUtils;
 import java.util.List;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -45,14 +44,23 @@ public class HomeActivity extends BaseActivity
   @BindView(R.id.tv_temperature_summary) TextView tvCurrentForecastSummary;
   @BindView(R.id.tv_temp_current) TextView tvTempCurrent;
   @BindView(R.id.iv_weather) ImageView ivWeather;
-  @BindView(R.id.grp_list_forecast) LinearLayout grpListForecast;
   @BindView(R.id.detail_sun) ForecastDetailCompoundView detailSun;
   @BindView(R.id.detail_wind) ForecastDetailCompoundView detailWind;
   @BindView(R.id.detail_temperature) ForecastDetailCompoundView detailTemperature;
+
+  @BindView(R.id.tab_layout) TabLayout tabLayout;
+  @BindView(R.id.view_pager) ViewPager viewPager;
+
+  TabPagerAdapter tabPagerAdapter;
+
   HomeContract.Presenter presenter;
 
   @Override protected int getLayoutId() {
     return R.layout.activity_home;
+  }
+
+  @Override protected void setupPresenter() {
+    presenter = new HomePresenterImpl(this);
   }
 
   @Override protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +73,24 @@ public class HomeActivity extends BaseActivity
     showTitleBar(false);
 
     setNavigationView();
+    
+    setTabLayout();
 
     presenter = new HomePresenterImpl(this);
 
     checkLocationPermission();
+  }
+
+  private void setTabLayout() {
+
+    DailyForecastFragment dailyForecastFragment = new DailyForecastFragment();
+    HourlyForecastFragment hourlyForecastFragment = new HourlyForecastFragment();
+
+    tabPagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
+    tabPagerAdapter.setForecastFragments(dailyForecastFragment, hourlyForecastFragment);
+    viewPager.setAdapter(tabPagerAdapter);
+    tabLayout.setupWithViewPager(viewPager);
+    viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -121,38 +143,26 @@ public class HomeActivity extends BaseActivity
   }
 
   @Override public void setDailyForeCast(List<DailyForecast.DailyData> dailyForecastList) {
-    for (DailyForecast.DailyData dailyData : dailyForecastList) {
-      addDailyForecastView(dailyData);
-    }
 
+    tabPagerAdapter.setDailyForecastData(dailyForecastList);
+
+    //get forecast detail of today
     DailyForecast.DailyData forecastDetailToday = dailyForecastList.get(0);
 
-    setForecastDetails(forecastDetailToday);
+    setTodayForecastDetails(forecastDetailToday);
+  }
+
+  @Override public void setHourlyForeCast(List<HourlyForecast.HourlyData> hourlyForeCastList) {
+    //show only 6 data
+    final int MAX_NUMBER_OF_DATA = 6;
+    tabPagerAdapter.setHourlyForecastData(hourlyForeCastList.subList(0, MAX_NUMBER_OF_DATA));
   }
 
   @Override public void setLocality(String locality) {
     tvLocation.setText(locality);
   }
 
-  private void addDailyForecastView(DailyForecast.DailyData dailyData) {
-    String averageTemperature = String.valueOf(Math.round(
-        MathUtils.getAverage(dailyData.getTemperatureHigh(),
-            dailyData.getTemperatureLow())));
-
-    LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-    ForecastCompoundView forecastCompoundView =
-        (ForecastCompoundView) layoutInflater.inflate(R.layout.item_forecast_compound_view,
-            grpListForecast, false);
-
-    forecastCompoundView.setTopText(DateUtils.getDayOfTheWeek(dailyData.getTime()));
-    forecastCompoundView.setMidImage(
-        WeatherImageMapper.getSmallImageResource(dailyData.getIcon()));
-    forecastCompoundView.setBottomText(averageTemperature);
-
-    grpListForecast.addView(forecastCompoundView, grpListForecast.getChildCount());
-  }
-
-  private void setForecastDetails(DailyForecast.DailyData todaysForecast) {
+  private void setTodayForecastDetails(DailyForecast.DailyData todaysForecast) {
 
     detailSun.setTopText((String.valueOf(DateUtils.getTime(todaysForecast.getSunriseTime()))));
     detailSun.setBottomImage((DateUtils.getTime(todaysForecast.getSunsetTime())));

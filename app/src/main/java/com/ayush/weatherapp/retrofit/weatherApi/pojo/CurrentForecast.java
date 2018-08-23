@@ -3,7 +3,7 @@ package com.ayush.weatherapp.retrofit.weatherApi.pojo;
 import com.google.gson.annotations.SerializedName;
 
 public class CurrentForecast {
-  @SerializedName("time") private int time;
+  @SerializedName("time") private long time;
   @SerializedName("summary") private String summary;
   @SerializedName("icon") private String icon;
   @SerializedName("temperature") private double temperature;
@@ -14,7 +14,7 @@ public class CurrentForecast {
   @SerializedName("windSpeed") private double windSpeed;
   @SerializedName("visibility") private double visibility;
 
-  public int getTime() {
+  public long getTime() {
     return time;
   }
 

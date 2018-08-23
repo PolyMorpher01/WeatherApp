@@ -16,8 +16,8 @@
     <item name="colorControlNormal">@color/colorAccent</item>
   </style>
 
-  <style name="StyleHomeCommon">
-    <item name="android:fontFamily">@font/nunito_regular</item>
+  <style name="MineCustomTabText" parent="TextAppearance.Design.Tab">
+    <item name="android:textSize">@dimen/body1</item>
+    <item name="textAllCaps">true</item>
   </style>
-
 </resources>
