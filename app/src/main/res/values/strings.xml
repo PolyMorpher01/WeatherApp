@@ -10,4 +10,6 @@
   <string name="search_title">Search Location</string>
   <string name="not_available">N/A</string>
   <string name="details_caps">DETAILS</string>
+
+  <string name="request_permission_location">This app needs access to your location  to know where you are</string>
 </resources>
