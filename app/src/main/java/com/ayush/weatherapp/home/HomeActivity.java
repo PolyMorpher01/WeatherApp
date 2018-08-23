@@ -188,7 +188,7 @@ public class HomeActivity extends BaseActivity
 
   @Override
   public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
-        presenter.fetchWeatherDetails();
+    presenter.fetchWeatherDetails();
   }
 
   @Override

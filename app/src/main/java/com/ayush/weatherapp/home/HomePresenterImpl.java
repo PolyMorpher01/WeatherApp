@@ -26,19 +26,16 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     this.view = (HomeContract.View) view;
   }
 
-  @Override public HomeContract.View getView() {
-    return view;
-  }
-
-  @Override public void fetchWeatherDetails() {
+   @Override public void fetchWeatherDetails() {
     //TODO get coordinates based on a location
     final double TEST_LATITUDE = 37.8267;
     final double TEST_LONGITUDE = -122.4233;
     String requestString = TEST_LATITUDE + "," + TEST_LONGITUDE;
 
+    view.showProgressDialog("Loading", false);
+
     fetchLocality(requestString);
 
-    getView().showProgressDialog("Loading", false);
 
     WeatherAPIInterface weatherApiInterface =
         WeatherAPIClient.getClient().create(WeatherAPIInterface.class);
@@ -55,21 +52,21 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         DailyForecast dailyForecast = forecast.getDailyForecast();
         List<DailyForecast.DailyData> dailyForecastList = dailyForecast.getDailyDataList();
 
-        getView().setCurrentForecast(currentForecast);
+        view.setCurrentForecast(currentForecast);
 
-        getView().setDailyForeCast(dailyForecastList);
+        view.setDailyForeCast(dailyForecastList);
 
-        getView().hideProgressDialog();
+        view.hideProgressDialog();
       }
 
       @Override public void onFailure(@NonNull Call<Forecast> call, @NonNull Throwable t) {
         Timber.e("Request fetch forecast failed");
-        getView().hideProgressDialog();
+        view.hideProgressDialog();
       }
     });
   }
 
-  @Override public void fetchLocality(String requestString) {
+  @Override public void fetchLocality(String latLang) {
 
     final int LOCALITY_INDEX = 1;
 
@@ -77,7 +74,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
 
     Call<ReverseGeoLocation> reverseGeoLocationCall =
-        geocodingAPIInterface.getLocationDetails(requestString);
+        geocodingAPIInterface.getLocationDetails(latLang);
 
     reverseGeoLocationCall.enqueue(new Callback<ReverseGeoLocation>() {
       String localityAddress;
@@ -92,7 +89,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
         localityAddress = addressComponentsList.get(LOCALITY_INDEX).getLongName();
 
-        getView().setLocality(localityAddress);
+        view.setLocality(localityAddress);
       }
 
       @Override public void onFailure(Call<ReverseGeoLocation> call, Throwable t) {
