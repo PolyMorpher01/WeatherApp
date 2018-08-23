@@ -85,10 +85,13 @@ public class HomePresenterImpl implements HomeContract.Presenter {
       @Override
       public void onResponse(Call<ReverseGeoLocation> call, Response<ReverseGeoLocation> response) {
         ReverseGeoLocation reverseGeoLocation = response.body();
-        List<Address> addressList = reverseGeoLocation.getAddresses();
-        List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
+        List<Address> addressList;
 
-        localityAddress = addressComponentsList.get(LOCALITY_INDEX).getLongName();
+        if (reverseGeoLocation != null) {
+          addressList = reverseGeoLocation.getAddresses();
+          List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
+          localityAddress = addressComponentsList.get(LOCALITY_INDEX).getLongName();
+        }
 
         view.setLocality(localityAddress);
       }
