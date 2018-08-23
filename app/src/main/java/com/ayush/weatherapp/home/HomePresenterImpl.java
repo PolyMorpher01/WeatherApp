@@ -20,6 +20,7 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 public class HomePresenterImpl implements HomeContract.Presenter {
+  final static String GEOCODING_API_KEY = "AIzaSyBKlS7jO0NvkX580X-ifkdfe12Mwzxhgc4";
 
   private HomeContract.View view;
 
@@ -33,9 +34,9 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     final double TEST_LONGITUDE = -122.4233;
     String requestString = TEST_LATITUDE + "," + TEST_LONGITUDE;
 
-    fetchLocality(requestString);
-
     view.showProgressDialog("Loading", false);
+
+    fetchLocality(requestString);
 
     WeatherAPIInterface weatherApiInterface =
         WeatherAPIClient.getClient().create(WeatherAPIInterface.class);
@@ -54,7 +55,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         DailyForecast dailyForecast = forecast.getDailyForecast();
         List<DailyForecast.DailyData> dailyForecastList = dailyForecast.getDailyDataList();
         view.setDailyForeCast(dailyForecastList);
-
+        
         HourlyForecast hourlyForecast = forecast.getHourlyForecast();
         List<HourlyForecast.HourlyData> hourlyDataList = hourlyForecast.getHourlyDataList();
         view.setHourlyForeCast(hourlyDataList);
@@ -69,7 +70,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     });
   }
 
-  @Override public void fetchLocality(String requestString) {
+  @Override public void fetchLocality(String latLang) {
 
     final int LOCALITY_INDEX = 1;
 
@@ -77,7 +78,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
 
     Call<ReverseGeoLocation> reverseGeoLocationCall =
-        geocodingAPIInterface.getLocationDetails(requestString);
+        geocodingAPIInterface.getLocationDetails(latLang, GEOCODING_API_KEY);
 
     reverseGeoLocationCall.enqueue(new Callback<ReverseGeoLocation>() {
       String localityAddress;
@@ -85,6 +86,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
       @Override
       public void onResponse(Call<ReverseGeoLocation> call, Response<ReverseGeoLocation> response) {
         ReverseGeoLocation reverseGeoLocation = response.body();
+
         List<Address> addressList;
 
         if (reverseGeoLocation != null) {
