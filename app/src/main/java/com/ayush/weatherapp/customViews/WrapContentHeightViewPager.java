@@ -6,6 +6,8 @@ import android.util.AttributeSet;
 import android.view.View;
 
 //Reference: https://stackoverflow.com/questions/8394681/android-i-am-unable-to-have-viewpager-wrap-content
+
+//Custom ViewPager that defaults to wrap content in height rather than match parent
 public class WrapContentHeightViewPager extends ViewPager {
   public WrapContentHeightViewPager(Context context) {
     super(context);

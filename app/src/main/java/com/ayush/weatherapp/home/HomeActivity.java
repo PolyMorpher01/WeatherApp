@@ -142,7 +142,7 @@ public class HomeActivity extends BaseActivity
     //get forecast detail of today
     DailyForecast.DailyData forecastDetailToday = dailyForecastList.get(0);
 
-    setForecastDetails(forecastDetailToday);
+    setTodayForecastDetails(forecastDetailToday);
   }
 
   @Override public void setHourlyForeCast(List<HourlyForecast.HourlyData> hourlyForeCastList) {
@@ -153,7 +153,7 @@ public class HomeActivity extends BaseActivity
     tvLocation.setText(locality);
   }
 
-  private void setForecastDetails(DailyForecast.DailyData todaysForecast) {
+  private void setTodayForecastDetails(DailyForecast.DailyData todaysForecast) {
 
     detailSun.setTopText((String.valueOf(DateUtils.getTime(todaysForecast.getSunriseTime()))));
     detailSun.setBottomImage((DateUtils.getTime(todaysForecast.getSunsetTime())));

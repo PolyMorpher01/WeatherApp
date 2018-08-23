@@ -64,7 +64,6 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
       @Override public void onFailure(@NonNull Call<Forecast> call, @NonNull Throwable t) {
         Timber.e(t);
-        Timber.e("Request fetch forecast failed");
         view.hideProgressDialog();
       }
     });
@@ -96,7 +95,6 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
       @Override public void onFailure(Call<ReverseGeoLocation> call, Throwable t) {
         Timber.e(t);
-        Timber.e("Request fetch locality failed");
       }
     });
   }
