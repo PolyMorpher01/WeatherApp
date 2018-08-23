@@ -6,7 +6,8 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface GeocodingAPIInterface {
-
   @GET("json?")
-  Call<ReverseGeoLocation> getLocationDetails(@Query("latlng") String latlng);
+  Call<ReverseGeoLocation> getLocationDetails(
+      @Query("latlng") String latlng,
+      @Query("key") String key);
 }

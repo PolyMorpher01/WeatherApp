@@ -19,6 +19,7 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 public class HomePresenterImpl implements HomeContract.Presenter {
+  final static String GEOCODING_API_KEY = "AIzaSyDMc5J7b2o_oa9n3KiPf_8zqzRQEraLpTw";
 
   private HomeContract.View view;
 
@@ -26,7 +27,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     this.view = (HomeContract.View) view;
   }
 
-   @Override public void fetchWeatherDetails() {
+  @Override public void fetchWeatherDetails() {
     //TODO get coordinates based on a location
     final double TEST_LATITUDE = 37.8267;
     final double TEST_LONGITUDE = -122.4233;
@@ -35,7 +36,6 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     view.showProgressDialog("Loading", false);
 
     fetchLocality(requestString);
-
 
     WeatherAPIInterface weatherApiInterface =
         WeatherAPIClient.getClient().create(WeatherAPIInterface.class);
@@ -75,7 +75,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
 
     Call<ReverseGeoLocation> reverseGeoLocationCall =
-        geocodingAPIInterface.getLocationDetails(latLang);
+        geocodingAPIInterface.getLocationDetails(latLang, GEOCODING_API_KEY);
 
     reverseGeoLocationCall.enqueue(new Callback<ReverseGeoLocation>() {
       String localityAddress;
@@ -85,8 +85,6 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         ReverseGeoLocation reverseGeoLocation = response.body();
         List<Address> addressList = reverseGeoLocation.getAddresses();
         List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
-
-        //Timber.e(reverseGeoLocation.getStatus());
 
         localityAddress = addressComponentsList.get(LOCALITY_INDEX).getLongName();
 
