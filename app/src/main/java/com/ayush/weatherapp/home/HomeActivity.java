@@ -151,7 +151,7 @@ public class HomeActivity extends BaseActivity
   @Override public void setHourlyForeCast(List<HourlyForecast.HourlyData> hourlyForeCastList) {
     //show only 6 data
     final int MAX_NUMBER_OF_DATA = 6;
-    tabPagerAdapter.setHourlyForecastData(hourlyForeCastList.subList(0, MAX_NUMBER_OF_DATA - 1));
+    tabPagerAdapter.setHourlyForecastData(hourlyForeCastList.subList(0, MAX_NUMBER_OF_DATA));
   }
 
   @Override public void setLocality(String locality) {
