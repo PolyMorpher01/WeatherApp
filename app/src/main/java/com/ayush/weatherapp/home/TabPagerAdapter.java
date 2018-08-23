@@ -16,8 +16,12 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
 
   TabPagerAdapter(FragmentManager fm) {
     super(fm);
-    dailyForecastFragment = new DailyForecastFragment();
-    hourlyForecastFragment = new HourlyForecastFragment();
+  }
+
+  public void setForecastFragments(DailyForecastFragment dailyForecastFragment,
+      HourlyForecastFragment hourlyForecastFragment) {
+    this.dailyForecastFragment = dailyForecastFragment;
+    this.hourlyForecastFragment = hourlyForecastFragment;
   }
 
   void setDailyForecastData(List<DailyForecast.DailyData> dailyForecastList) {
