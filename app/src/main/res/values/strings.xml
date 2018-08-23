@@ -8,8 +8,8 @@
   <string name="celsius"><xliff:g id="label_celsius">°C</xliff:g></string>
   <string name="fahrenheit"><xliff:g id="label_fahrenheit">°F</xliff:g></string>
   <string name="search_title">Search Location</string>
-  <string name="location_not_available">N/A</string>
-  <string name="details">DETAILS</string>
+  <string name="not_available">N/A</string>
+  <string name="details_caps">DETAILS</string>
 
   <string name="request_permission_location">This app needs access to your location  to know where you are</string>
 </resources>
