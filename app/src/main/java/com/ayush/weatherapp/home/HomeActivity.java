@@ -82,14 +82,7 @@ public class HomeActivity extends BaseActivity
 
   @Override protected void onResume() {
     super.onResume();
-    presenter.attachView();
-
     checkLocationPermission();
-  }
-
-  @Override protected void onPause() {
-    super.onPause();
-    presenter.detachView();
   }
 
   private void setTabLayout() {
