@@ -20,6 +20,10 @@ public class HourlyForecastFragment extends Fragment {
 
   @BindView(R.id.ll_forecast_details) LinearLayout llForecastDetails;
 
+  public static HourlyForecastFragment getInstance() {
+    return new HourlyForecastFragment();
+  }
+
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       Bundle savedInstanceState) {

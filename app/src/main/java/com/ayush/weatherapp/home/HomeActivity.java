@@ -86,12 +86,9 @@ public class HomeActivity extends BaseActivity
   }
 
   private void setTabLayout() {
-
-    DailyForecastFragment dailyForecastFragment = new DailyForecastFragment();
-    HourlyForecastFragment hourlyForecastFragment = new HourlyForecastFragment();
-
     tabPagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
-    tabPagerAdapter.setForecastFragments(dailyForecastFragment, hourlyForecastFragment);
+    tabPagerAdapter.setForecastFragments(DailyForecastFragment.getInstance(),
+        HourlyForecastFragment.getInstance());
     viewPager.setAdapter(tabPagerAdapter);
     tabLayout.setupWithViewPager(viewPager);
     viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));

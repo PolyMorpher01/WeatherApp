@@ -21,6 +21,10 @@ public class DailyForecastFragment extends Fragment {
 
   @BindView(R.id.ll_forecast_details) LinearLayout llForecastDetails;
 
+  public static DailyForecastFragment getInstance(){
+    return new DailyForecastFragment();
+  }
+
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       Bundle savedInstanceState) {
