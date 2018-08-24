@@ -19,7 +19,7 @@ import java.util.List;
 
 public class DailyForecastFragment extends Fragment {
 
-  @BindView(R.id.forecast_details) LinearLayout forecastDetails;
+  @BindView(R.id.ll_forecast_details) LinearLayout llForecastDetails;
 
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -27,13 +27,6 @@ public class DailyForecastFragment extends Fragment {
     View view = inflater.inflate(R.layout.forecast_fragment, container, false);
     ButterKnife.bind(this, view);
     return view;
-  }
-
-  @Override public void onResume() {
-    super.onResume();
-    if ((forecastDetails).getChildCount() > 0) {
-      (forecastDetails).removeAllViews();
-    }
   }
 
   public void setData(List<DailyForecast.DailyData> dailyForecastList) {
@@ -49,13 +42,13 @@ public class DailyForecastFragment extends Fragment {
 
     ForecastCompoundView forecastCompoundView =
         (ForecastCompoundView) getLayoutInflater().inflate(R.layout.item_forecast_compound_view,
-            forecastDetails, false);
+            llForecastDetails, false);
 
     forecastCompoundView.setTopText(DateUtils.getDayOfTheWeek(dailyData.getTime()));
     forecastCompoundView.setMidImage(
         WeatherImageMapper.getSmallImageResource(dailyData.getIcon()));
     forecastCompoundView.setBottomText(averageTemperature);
 
-    forecastDetails.addView(forecastCompoundView, forecastDetails.getChildCount());
+    llForecastDetails.addView(forecastCompoundView, llForecastDetails.getChildCount());
   }
 }
