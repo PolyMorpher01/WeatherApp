@@ -57,8 +57,6 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         LocationServices.getFusedLocationProviderClient(view.getContext());
 
     fetchCurrentLocation();
-
-    startLocationUpdates();
   }
 
   private void fetchCurrentLocation() {
@@ -76,17 +74,16 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
         //get only first location
         Location currentLocation = locationResult.getLocations().get(0);
-
         String latLng =
             String.valueOf(currentLocation.getLatitude()) + "," + currentLocation.getLongitude();
 
         fetchLocality(latLng);
-
         fetchWeatherForecast(latLng);
 
         stopLocationUpdates();
       }
     };
+    startLocationUpdates();
   }
 
   private void startLocationUpdates() {
