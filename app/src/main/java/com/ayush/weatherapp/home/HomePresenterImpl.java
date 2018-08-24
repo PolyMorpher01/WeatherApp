@@ -115,7 +115,8 @@ public class HomePresenterImpl implements HomeContract.Presenter {
       String localityAddress;
 
       @Override
-      public void onResponse(Call<ReverseGeoLocation> call, Response<ReverseGeoLocation> response) {
+      public void onResponse(@NonNull Call<ReverseGeoLocation> call,
+          @NonNull Response<ReverseGeoLocation> response) {
         ReverseGeoLocation reverseGeoLocation = response.body();
 
         List<Address> addressList = reverseGeoLocation.getAddresses();
@@ -129,7 +130,8 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         }
       }
 
-      @Override public void onFailure(Call<ReverseGeoLocation> call, Throwable t) {
+      @Override
+      public void onFailure(@NonNull Call<ReverseGeoLocation> call, @NonNull Throwable t) {
         Timber.e(t);
       }
     });
