@@ -18,8 +18,6 @@ public interface HomeContract {
   }
 
   interface Presenter extends BaseContract.Presenter {
-    void fetchWeatherDetails();
-
-    void fetchLocality(String latLang);
+    void fetchHomeDetails();
   }
 }
