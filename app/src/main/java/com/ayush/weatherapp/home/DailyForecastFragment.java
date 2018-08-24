@@ -30,6 +30,11 @@ public class DailyForecastFragment extends Fragment {
   }
 
   public void setData(List<DailyForecast.DailyData> dailyForecastList) {
+    //remove child views
+    if (llForecastDetails.getChildCount() > 0) {
+      llForecastDetails.removeAllViews();
+    }
+
     for (DailyForecast.DailyData dailyData : dailyForecastList) {
       setView(dailyData);
     }

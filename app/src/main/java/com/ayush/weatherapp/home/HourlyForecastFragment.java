@@ -29,6 +29,11 @@ public class HourlyForecastFragment extends Fragment {
   }
 
   public void setData(List<HourlyForecast.HourlyData> hourlyForeCastList) {
+    //remove child views
+    if (llForecastDetails.getChildCount() > 0) {
+      llForecastDetails.removeAllViews();
+    }
+
     for (HourlyForecast.HourlyData hourlyData : hourlyForeCastList) {
       setView(hourlyData);
     }
