@@ -36,6 +36,7 @@ public class HomeActivity extends BaseActivity
     implements HomeContract.View, EasyPermissions.PermissionCallbacks {
 
   private static final int RC_LOCATION_PERM = 123;
+  private static final int TODAY = 0;
 
   @BindView(R.id.layout_drawer) DrawerLayout drawerLayout;
   @BindView(R.id.nav_view) NavigationView navigationView;
@@ -73,12 +74,22 @@ public class HomeActivity extends BaseActivity
     showTitleBar(false);
 
     setNavigationView();
-    
+
     setTabLayout();
 
     presenter = new HomePresenterImpl(this);
+  }
+
+  @Override protected void onResume() {
+    super.onResume();
+    presenter.attachView();
 
     checkLocationPermission();
+  }
+
+  @Override protected void onPause() {
+    super.onPause();
+    presenter.detachView();
   }
 
   private void setTabLayout() {
@@ -143,11 +154,10 @@ public class HomeActivity extends BaseActivity
   }
 
   @Override public void setDailyForeCast(List<DailyForecast.DailyData> dailyForecastList) {
-
     tabPagerAdapter.setDailyForecastData(dailyForecastList);
 
     //get forecast detail of today
-    DailyForecast.DailyData forecastDetailToday = dailyForecastList.get(0);
+    DailyForecast.DailyData forecastDetailToday = dailyForecastList.get(TODAY);
 
     setTodayForecastDetails(forecastDetailToday);
   }
@@ -189,7 +199,7 @@ public class HomeActivity extends BaseActivity
   @AfterPermissionGranted(RC_LOCATION_PERM)
   public void checkLocationPermission() {
     if (hasLocationPermission()) {
-      presenter.fetchWeatherDetails();
+      presenter.fetchHomeDetails();
     } else {
       EasyPermissions.requestPermissions(this, getString(R.string.request_permission_location),
           RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -198,7 +208,7 @@ public class HomeActivity extends BaseActivity
 
   @Override
   public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
-    presenter.fetchWeatherDetails();
+    presenter.fetchHomeDetails();
   }
 
   @Override
