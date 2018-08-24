@@ -1,5 +1,7 @@
 package com.ayush.weatherapp.retrofit.weatherApi.pojo;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
@@ -20,7 +22,18 @@ public class DailyForecast {
     return dailyDataList;
   }
 
-  public static class DailyData {
+  public static class DailyData implements Parcelable {
+    public static final Creator<DailyData> CREATOR = new Creator<DailyData>() {
+      @Override
+      public DailyData createFromParcel(Parcel in) {
+        return new DailyData(in);
+      }
+
+      @Override
+      public DailyData[] newArray(int size) {
+        return new DailyData[size];
+      }
+    };
     @SerializedName("time") private long time;
     @SerializedName("summary") private String summary;
     @SerializedName("icon") private String icon;
@@ -31,6 +44,19 @@ public class DailyForecast {
     @SerializedName("apparentTemperatureHigh") private double apparentTemperatureHigh;
     @SerializedName("apparentTemperatureLow") private double apparentTemperatureLow;
     @SerializedName("windSpeed") private double windSpeed;
+
+    DailyData(Parcel in) {
+      time = in.readLong();
+      summary = in.readString();
+      icon = in.readString();
+      sunriseTime = in.readInt();
+      sunsetTime = in.readInt();
+      temperatureHigh = in.readDouble();
+      temperatureLow = in.readDouble();
+      apparentTemperatureHigh = in.readDouble();
+      apparentTemperatureLow = in.readDouble();
+      windSpeed = in.readDouble();
+    }
 
     public long getTime() {
       return time;
@@ -70,6 +96,23 @@ public class DailyForecast {
 
     public double getWindSpeed() {
       return windSpeed;
+    }
+
+    @Override public int describeContents() {
+      return 0;
+    }
+
+    @Override public void writeToParcel(Parcel dest, int flags) {
+      dest.writeLong(time);
+      dest.writeString(summary);
+      dest.writeString(icon);
+      dest.writeInt(sunriseTime);
+      dest.writeInt(sunsetTime);
+      dest.writeDouble(temperatureHigh);
+      dest.writeDouble(temperatureLow);
+      dest.writeDouble(apparentTemperatureHigh);
+      dest.writeDouble(apparentTemperatureLow);
+      dest.writeDouble(windSpeed);
     }
   }
 }

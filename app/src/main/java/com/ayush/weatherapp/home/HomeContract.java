@@ -15,6 +15,7 @@ public interface HomeContract {
     void setHourlyForeCast(List<HourlyForecast.HourlyData> hourlyForeCastList);
 
     void setLocality(String locality);
+    void setTabLayout();
   }
 
   interface Presenter extends BaseContract.Presenter {

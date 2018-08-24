@@ -1,6 +1,7 @@
 package com.ayush.weatherapp.home;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,14 +16,23 @@ import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.utils.DateUtils;
 import com.ayush.weatherapp.utils.MathUtils;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DailyForecastFragment extends Fragment {
+  public static final String EXTRA_DAILY_FORECAST = "DailyForecastList";
 
   @BindView(R.id.ll_forecast_details) LinearLayout llForecastDetails;
 
-  public static DailyForecastFragment getInstance(){
-    return new DailyForecastFragment();
+  public static DailyForecastFragment getInstance(List<DailyForecast.DailyData> dailyDataList) {
+    DailyForecastFragment dailyForecastFragment = new DailyForecastFragment();
+    Bundle bundle = new Bundle();
+
+    bundle.putParcelableArrayList(EXTRA_DAILY_FORECAST,
+        (ArrayList<? extends Parcelable>) dailyDataList);
+
+    dailyForecastFragment.setArguments(bundle);
+    return dailyForecastFragment;
   }
 
   @Nullable @Override
@@ -30,6 +40,7 @@ public class DailyForecastFragment extends Fragment {
       Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.forecast_fragment, container, false);
     ButterKnife.bind(this, view);
+    setData(getArguments().getParcelableArrayList(EXTRA_DAILY_FORECAST));
     return view;
   }
 

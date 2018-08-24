@@ -14,14 +14,25 @@ import com.ayush.weatherapp.customViews.ForecastCompoundView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
 import com.ayush.weatherapp.utils.DateUtils;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HourlyForecastFragment extends Fragment {
 
+  public static final String EXTRA_HOURLY_FORECAST = "HourlyForecastList";
   @BindView(R.id.ll_forecast_details) LinearLayout llForecastDetails;
 
-  public static HourlyForecastFragment getInstance() {
-    return new HourlyForecastFragment();
+  public static HourlyForecastFragment getInstance(List<HourlyForecast.HourlyData> hourlyDataList) {
+
+    HourlyForecastFragment hourlyForecastFragment = new HourlyForecastFragment();
+    Bundle bundle = new Bundle();
+
+    bundle.putParcelableArrayList(EXTRA_HOURLY_FORECAST,
+        (ArrayList<HourlyForecast.HourlyData>) hourlyDataList);
+
+    hourlyForecastFragment.setArguments(bundle);
+
+    return hourlyForecastFragment;
   }
 
   @Nullable @Override
@@ -29,6 +40,7 @@ public class HourlyForecastFragment extends Fragment {
       Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.forecast_fragment, container, false);
     ButterKnife.bind(this, view);
+    setData(getArguments().getParcelableArrayList(EXTRA_HOURLY_FORECAST));
     return view;
   }
 

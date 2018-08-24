@@ -157,6 +157,8 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         List<HourlyForecast.HourlyData> hourlyDataList = hourlyForecast.getHourlyDataList();
         view.setHourlyForeCast(hourlyDataList);
 
+        view.setTabLayout();
+
         view.hideProgressDialog();
       }
 

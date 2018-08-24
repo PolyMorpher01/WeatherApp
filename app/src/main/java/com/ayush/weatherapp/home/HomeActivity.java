@@ -26,6 +26,7 @@ import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
 import com.ayush.weatherapp.utils.DateUtils;
+import java.util.ArrayList;
 import java.util.List;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -75,23 +76,13 @@ public class HomeActivity extends BaseActivity
 
     setNavigationView();
 
-    setTabLayout();
-
     presenter = new HomePresenterImpl(this);
+    tabPagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
   }
 
   @Override protected void onResume() {
     super.onResume();
     checkLocationPermission();
-  }
-
-  private void setTabLayout() {
-    tabPagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
-    tabPagerAdapter.setForecastFragments(DailyForecastFragment.getInstance(),
-        HourlyForecastFragment.getInstance());
-    viewPager.setAdapter(tabPagerAdapter);
-    tabLayout.setupWithViewPager(viewPager);
-    viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -155,7 +146,8 @@ public class HomeActivity extends BaseActivity
   @Override public void setHourlyForeCast(List<HourlyForecast.HourlyData> hourlyForeCastList) {
     //show only 6 data
     final int MAX_NUMBER_OF_DATA = 6;
-    tabPagerAdapter.setHourlyForecastData(hourlyForeCastList.subList(0, MAX_NUMBER_OF_DATA));
+    tabPagerAdapter.setHourlyForecastData(
+        new ArrayList<>(hourlyForeCastList.subList(0, MAX_NUMBER_OF_DATA)));
   }
 
   @Override public void setLocality(String locality) {
@@ -189,7 +181,7 @@ public class HomeActivity extends BaseActivity
   @AfterPermissionGranted(RC_LOCATION_PERM)
   public void checkLocationPermission() {
     if (hasLocationPermission()) {
-      presenter.fetchHomeDetails();
+      fetchHomeDetails();
     } else {
       EasyPermissions.requestPermissions(this, getString(R.string.request_permission_location),
           RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -198,7 +190,7 @@ public class HomeActivity extends BaseActivity
 
   @Override
   public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
-    presenter.fetchHomeDetails();
+    fetchHomeDetails();
   }
 
   @Override
@@ -220,5 +212,15 @@ public class HomeActivity extends BaseActivity
       // Do something after user returned from app settings screen
       checkLocationPermission();
     }
+  }
+
+  private void fetchHomeDetails() {
+    presenter.fetchHomeDetails();
+  }
+
+  @Override public void setTabLayout() {
+    viewPager.setAdapter(tabPagerAdapter);
+    tabLayout.setupWithViewPager(viewPager);
+    viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
   }
 }
