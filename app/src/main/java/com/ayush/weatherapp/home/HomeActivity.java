@@ -22,10 +22,12 @@ import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.mvp.BaseActivity;
+import com.ayush.weatherapp.mvp.BaseContract;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
 import com.ayush.weatherapp.utils.DateUtils;
+import java.util.ArrayList;
 import java.util.List;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -36,6 +38,7 @@ public class HomeActivity extends BaseActivity
     implements HomeContract.View, EasyPermissions.PermissionCallbacks {
 
   private static final int RC_LOCATION_PERM = 123;
+  private static final int TODAY = 0;
 
   @BindView(R.id.layout_drawer) DrawerLayout drawerLayout;
   @BindView(R.id.nav_view) NavigationView navigationView;
@@ -63,6 +66,10 @@ public class HomeActivity extends BaseActivity
     presenter = new HomePresenterImpl(this);
   }
 
+  @Override protected BaseContract.Presenter getPresenter() {
+    return presenter;
+  }
+
   @Override protected void onCreate(Bundle savedInstanceState) {
     //override theme defined in the xml for splash screen effect
     setTheme(R.style.AppTheme);
@@ -73,24 +80,14 @@ public class HomeActivity extends BaseActivity
     showTitleBar(false);
 
     setNavigationView();
-    
-    setTabLayout();
 
     presenter = new HomePresenterImpl(this);
-
-    checkLocationPermission();
+    tabPagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
   }
 
-  private void setTabLayout() {
-
-    DailyForecastFragment dailyForecastFragment = new DailyForecastFragment();
-    HourlyForecastFragment hourlyForecastFragment = new HourlyForecastFragment();
-
-    tabPagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
-    tabPagerAdapter.setForecastFragments(dailyForecastFragment, hourlyForecastFragment);
-    viewPager.setAdapter(tabPagerAdapter);
-    tabLayout.setupWithViewPager(viewPager);
-    viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+  @Override protected void onResume() {
+    super.onResume();
+    checkLocationPermission();
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -143,11 +140,10 @@ public class HomeActivity extends BaseActivity
   }
 
   @Override public void setDailyForeCast(List<DailyForecast.DailyData> dailyForecastList) {
-
     tabPagerAdapter.setDailyForecastData(dailyForecastList);
 
     //get forecast detail of today
-    DailyForecast.DailyData forecastDetailToday = dailyForecastList.get(0);
+    DailyForecast.DailyData forecastDetailToday = dailyForecastList.get(TODAY);
 
     setTodayForecastDetails(forecastDetailToday);
   }
@@ -155,7 +151,8 @@ public class HomeActivity extends BaseActivity
   @Override public void setHourlyForeCast(List<HourlyForecast.HourlyData> hourlyForeCastList) {
     //show only 6 data
     final int MAX_NUMBER_OF_DATA = 6;
-    tabPagerAdapter.setHourlyForecastData(hourlyForeCastList.subList(0, MAX_NUMBER_OF_DATA));
+    tabPagerAdapter.setHourlyForecastData(
+        new ArrayList<>(hourlyForeCastList.subList(0, MAX_NUMBER_OF_DATA)));
   }
 
   @Override public void setLocality(String locality) {
@@ -189,7 +186,7 @@ public class HomeActivity extends BaseActivity
   @AfterPermissionGranted(RC_LOCATION_PERM)
   public void checkLocationPermission() {
     if (hasLocationPermission()) {
-      presenter.fetchWeatherDetails();
+      fetchHomeDetails();
     } else {
       EasyPermissions.requestPermissions(this, getString(R.string.request_permission_location),
           RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -198,7 +195,7 @@ public class HomeActivity extends BaseActivity
 
   @Override
   public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
-    presenter.fetchWeatherDetails();
+    fetchHomeDetails();
   }
 
   @Override
@@ -220,5 +217,15 @@ public class HomeActivity extends BaseActivity
       // Do something after user returned from app settings screen
       checkLocationPermission();
     }
+  }
+
+  private void fetchHomeDetails() {
+    presenter.fetchHomeDetails();
+  }
+
+  @Override public void setTabLayout() {
+    viewPager.setAdapter(tabPagerAdapter);
+    tabLayout.setupWithViewPager(viewPager);
+    viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
   }
 }

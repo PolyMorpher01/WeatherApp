@@ -10,33 +10,19 @@ import java.util.List;
 
 public class TabPagerAdapter extends FragmentPagerAdapter {
   private final static int NUMBER_OF_TABS = 2;
-  private String tabTitles[] = new String[] { "Daily", "Hourly" };
-  private DailyForecastFragment dailyForecastFragment;
-  private HourlyForecastFragment hourlyForecastFragment;
+  private final static String TAB_TITLES[] = new String[] { "Daily", "Hourly" };
+  private List<HourlyForecast.HourlyData> hourlyData;
+  private List<DailyForecast.DailyData> dailyData;
 
   TabPagerAdapter(FragmentManager fm) {
     super(fm);
   }
 
-  public void setForecastFragments(DailyForecastFragment dailyForecastFragment,
-      HourlyForecastFragment hourlyForecastFragment) {
-    this.dailyForecastFragment = dailyForecastFragment;
-    this.hourlyForecastFragment = hourlyForecastFragment;
-  }
-
-  void setDailyForecastData(List<DailyForecast.DailyData> dailyForecastList) {
-    dailyForecastFragment.setData(dailyForecastList);
-  }
-
-  void setHourlyForecastData(List<HourlyForecast.HourlyData> hourlyForeCastList) {
-    hourlyForecastFragment.setData(hourlyForeCastList);
-  }
-
   @Override public Fragment getItem(int position) {
     if (position == 0) {
-      return dailyForecastFragment;
+      return DailyForecastFragment.getInstance(dailyData);
     } else if (position == 1) {
-      return hourlyForecastFragment;
+      return HourlyForecastFragment.getInstance(hourlyData);
     }
     return null;
   }
@@ -46,6 +32,14 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
   }
 
   @Nullable @Override public CharSequence getPageTitle(int position) {
-    return tabTitles[position];
+    return TAB_TITLES[position];
+  }
+
+  public void setDailyForecastData(List<DailyForecast.DailyData> dailyData) {
+    this.dailyData = dailyData;
+  }
+
+  public void setHourlyForecastData(List<HourlyForecast.HourlyData> hourlyData) {
+    this.hourlyData = hourlyData;
   }
 }

@@ -16,16 +16,24 @@ public abstract class BaseActivity extends AppCompatActivity {
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(getLayoutId());
-    setupPresenter();
-
     ButterKnife.bind(this);
 
     progressDialog = new ProgressDialog(this);
+
+    setupPresenter();
+    getPresenter().attachView();
+  }
+
+  @Override protected void onDestroy() {
+    super.onDestroy();
+    getPresenter().detachView();
   }
 
   protected abstract int getLayoutId();
 
   protected abstract void setupPresenter();
+
+  protected abstract BaseContract.Presenter getPresenter();
 
   @SuppressWarnings("ConstantConditions")
   public void initToolbar(Toolbar toolbar) {
