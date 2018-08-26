@@ -22,6 +22,7 @@ import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.mvp.BaseActivity;
+import com.ayush.weatherapp.mvp.BaseContract;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
@@ -63,6 +64,10 @@ public class HomeActivity extends BaseActivity
 
   @Override protected void setupPresenter() {
     presenter = new HomePresenterImpl(this);
+  }
+
+  @Override protected BaseContract.Presenter getPresenter() {
+    return presenter;
   }
 
   @Override protected void onCreate(Bundle savedInstanceState) {
