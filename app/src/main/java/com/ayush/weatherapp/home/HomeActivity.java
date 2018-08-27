@@ -138,7 +138,9 @@ public class HomeActivity extends BaseActivity
 
   @Override public void setCurrentForecast(CurrentForecast currentForecast) {
     tvCurrentForecastSummary.setText(currentForecast.getSummary());
-    tvTempCurrent.setTemperature(Math.round(currentForecast.getTemperature()), TemperatureConstant.FAHRENHEIT);
+    //tvTempCurrent.setTemperature(Math.round(currentForecast.getTemperature()), TemperatureConstant.FAHRENHEIT);
+    tvTempCurrent.setTemperatureType(TemperatureConstant.Temperature.FAHRENHEIT);
+    tvTempCurrent.setText(String.valueOf(Math.round(currentForecast.getTemperature())));
     ivWeather.setImageResource(
         WeatherImageMapper.getImageResource(currentForecast.getIcon()));
   }

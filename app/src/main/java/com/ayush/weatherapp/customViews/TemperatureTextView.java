@@ -1,6 +1,7 @@
 package com.ayush.weatherapp.customViews;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.Spannable;
@@ -13,33 +14,51 @@ import com.ayush.weatherapp.constants.TemperatureConstant;
 
 public class TemperatureTextView extends AppCompatTextView {
 
-  private static final char[] temperatureType = { 'F', 'C' };
+  int temperatureType;
+  private static final float PROPORTION_HALF = 0.5f;
 
   public TemperatureTextView(Context context) {
-    super(context);
+    this(context, null);
   }
 
   public TemperatureTextView(Context context, AttributeSet attrs) {
-    super(context, attrs);
+    this(context, attrs, -1);
   }
 
   public TemperatureTextView(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
+    init(attrs);
   }
 
-  public void setTemperature(long temperature, @TemperatureConstant.Temperature int tempType) {
-    String tempString;
+  public void init(AttributeSet attributeSet) {
+    TypedArray typedArray =
+        getContext().obtainStyledAttributes(attributeSet, R.styleable.TemperatureTextView);
+    setValue(typedArray);
+    typedArray.recycle();
+  }
 
-    if (tempType == TemperatureConstant.FAHRENHEIT) {
-      tempString = getResources().getString(R.string.format_temperature_fahrenheit, temperature);
+  private void setValue(TypedArray typedArray) {
+    setTemperatureType(typedArray.getInt(R.styleable.TemperatureTextView_temp_unit, 0));
+  }
+
+  private int getTemperatureType() {
+    return temperatureType;
+  }
+
+  public void setTemperatureType(@TemperatureConstant.Temperature int temperatureType) {
+    this.temperatureType = temperatureType;
+  }
+
+  @Override public void setText(CharSequence text, BufferType type) {
+    if (getTemperatureType() == TemperatureConstant.Temperature.FAHRENHEIT) {
+      text = getResources().getString(R.string.format_temperature_fahrenheit, text);
     } else {
-      tempString = getResources().getString(R.string.format_temperature_celsius, temperature);
+      text = getResources().getString(R.string.format_temperature_celsius, text);
     }
+    Spannable spannableText =
+        getSpannableTextSize((String) text, PROPORTION_HALF, text.length() - 2, text.length());
 
-    //Decrease only the size of the temperature unit by half
-    Spannable spannable =
-        getSpannableTextSize(tempString, 0.5f, tempString.length() - 2, tempString.length());
-    setText(spannable);
+    super.setText(spannableText, type);
   }
 
   @NonNull
