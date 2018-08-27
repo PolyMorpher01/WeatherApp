@@ -165,14 +165,14 @@ public class HomeActivity extends BaseActivity
   private void setTodayForecastDetails(DailyForecast.DailyData todaysForecast) {
 
     detailSun.setTopText((String.valueOf(DateUtils.getTime(todaysForecast.getSunriseTime()))));
-    detailSun.setBottomImage((DateUtils.getTime(todaysForecast.getSunsetTime())));
+    detailSun.setBottomText((DateUtils.getTime(todaysForecast.getSunsetTime())));
 
-    detailWind.setBottomImage(
+    detailWind.setBottomText(
         getString(R.string.format_wind_mph, todaysForecast.getWindSpeed()));
 
     detailTemperature.setTopText("Min " + getString(R.string.temp_in_fahrenheit,
         Math.round(todaysForecast.getTemperatureHigh())));
-    detailTemperature.setBottomImage("Max " + getString(R.string.temp_in_fahrenheit,
+    detailTemperature.setBottomText("Max " + getString(R.string.temp_in_fahrenheit,
         Math.round(todaysForecast.getTemperatureLow())));
   }
 

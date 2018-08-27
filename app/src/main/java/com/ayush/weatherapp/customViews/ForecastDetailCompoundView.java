@@ -53,7 +53,7 @@ public class ForecastDetailCompoundView extends RelativeLayout {
     setLeftImage(typedArray.getResourceId(R.styleable.ForecastDetailCompoundView_detail_icon,
         R.drawable.img_small_cloudy));
     setTopText(typedArray.getString(R.styleable.ForecastDetailCompoundView_txt_top));
-    setBottomImage(typedArray.getString(R.styleable.ForecastDetailCompoundView_txt_bottom));
+    setBottomText(typedArray.getString(R.styleable.ForecastDetailCompoundView_txt_bottom));
   }
 
   public void setLeftImage(int imgResource) {
@@ -64,7 +64,7 @@ public class ForecastDetailCompoundView extends RelativeLayout {
     tvTop.setText(text);
   }
 
-  public void setBottomImage(String text) {
+  public void setBottomText(String text) {
     tvBottom.setText(text);
   }
 }
