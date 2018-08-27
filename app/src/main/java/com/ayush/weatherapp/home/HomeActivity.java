@@ -137,7 +137,7 @@ public class HomeActivity extends BaseActivity
   @Override public void setCurrentForecast(CurrentForecast currentForecast) {
     tvCurrentForecastSummary.setText(currentForecast.getSummary());
     tvTempCurrent.setText(
-        getString(R.string.temp_in_fahrenheit, Math.round(currentForecast.getTemperature())));
+        getString(R.string.formant_temperature, Math.round(currentForecast.getTemperature())));
     ivWeather.setImageResource(
         WeatherImageMapper.getImageResource(currentForecast.getIcon()));
   }
@@ -170,9 +170,9 @@ public class HomeActivity extends BaseActivity
     detailWind.setBottomText(
         getString(R.string.format_wind_mph, todaysForecast.getWindSpeed()));
 
-    detailTemperature.setTopText("Min " + getString(R.string.temp_in_fahrenheit,
+    detailTemperature.setTopText("Min " + getString(R.string.formant_temperature,
         Math.round(todaysForecast.getTemperatureHigh())));
-    detailTemperature.setBottomText("Max " + getString(R.string.temp_in_fahrenheit,
+    detailTemperature.setBottomText("Max " + getString(R.string.formant_temperature,
         Math.round(todaysForecast.getTemperatureLow())));
   }
 
