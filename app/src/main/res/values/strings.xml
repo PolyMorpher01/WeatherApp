@@ -7,6 +7,12 @@
 
   <string name="celsius"><xliff:g id="label_celsius">°C</xliff:g></string>
   <string name="fahrenheit"><xliff:g id="label_fahrenheit">°F</xliff:g></string>
+
+  <string name="format_temperature_celsius"><xliff:g id="temperature">%s°C</xliff:g></string>
+  <string name="format_temperature_fahrenheit"><xliff:g id="temperature">%s°F</xliff:g></string>
+  <string name="format_temperature"><xliff:g id="temperature">%d°</xliff:g></string>
+  <string name="format_wind_mph"><xliff:g id="speed">%.2f mph</xliff:g></string>
+
   <string name="search_title">Search Location</string>
   <string name="not_available">N/A</string>
   <string name="details_caps">DETAILS</string>

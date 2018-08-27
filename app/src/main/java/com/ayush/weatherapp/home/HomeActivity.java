@@ -21,7 +21,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import com.ayush.weatherapp.R;
+import com.ayush.weatherapp.constants.TemperatureConstant;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
+import com.ayush.weatherapp.customViews.TemperatureTextView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.mvp.BaseActivity;
 import com.ayush.weatherapp.mvp.BaseContract;
@@ -47,7 +49,7 @@ public class HomeActivity extends BaseActivity
   @BindView(R.id.toolbar) Toolbar toolbar;
   @BindView(R.id.tv_location) TextView tvLocation;
   @BindView(R.id.tv_temperature_summary) TextView tvCurrentForecastSummary;
-  @BindView(R.id.tv_temp_current) TextView tvTempCurrent;
+  @BindView(R.id.tv_temp_current) TemperatureTextView tvTempCurrent;
   @BindView(R.id.iv_weather) ImageView ivWeather;
   @BindView(R.id.detail_sun) ForecastDetailCompoundView detailSun;
   @BindView(R.id.detail_wind) ForecastDetailCompoundView detailWind;
@@ -136,6 +138,8 @@ public class HomeActivity extends BaseActivity
 
   @Override public void setCurrentForecast(CurrentForecast currentForecast) {
     tvCurrentForecastSummary.setText(currentForecast.getSummary());
+    //tvTempCurrent.setTemperature(Math.round(currentForecast.getTemperature()), TemperatureConstant.FAHRENHEIT);
+    tvTempCurrent.setTemperatureType(TemperatureConstant.Temperature.FAHRENHEIT);
     tvTempCurrent.setText(String.valueOf(Math.round(currentForecast.getTemperature())));
     ivWeather.setImageResource(
         WeatherImageMapper.getImageResource(currentForecast.getIcon()));
@@ -164,13 +168,15 @@ public class HomeActivity extends BaseActivity
   private void setTodayForecastDetails(DailyForecast.DailyData todaysForecast) {
 
     detailSun.setTopText((String.valueOf(DateUtils.getTime(todaysForecast.getSunriseTime()))));
-    detailSun.setBottomImage((DateUtils.getTime(todaysForecast.getSunsetTime())));
+    detailSun.setBottomText((DateUtils.getTime(todaysForecast.getSunsetTime())));
 
-    detailWind.setBottomImage(String.valueOf(todaysForecast.getWindSpeed()));
+    detailWind.setBottomText(
+        getString(R.string.format_wind_mph, todaysForecast.getWindSpeed()));
 
-    detailTemperature.setTopText(String.valueOf(Math.round(todaysForecast.getTemperatureHigh())));
-    detailTemperature.setBottomImage(
-        String.valueOf(Math.round(todaysForecast.getTemperatureLow())));
+    detailTemperature.setTopText("Min " + getString(R.string.format_temperature,
+        Math.round(todaysForecast.getTemperatureHigh())));
+    detailTemperature.setBottomText("Max " + getString(R.string.format_temperature,
+        Math.round(todaysForecast.getTemperatureLow())));
   }
 
   @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
