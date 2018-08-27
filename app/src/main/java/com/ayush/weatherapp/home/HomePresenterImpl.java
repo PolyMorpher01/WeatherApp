@@ -1,10 +1,13 @@
 package com.ayush.weatherapp.home;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.mvp.BaseContract;
 import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIClient;
 import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIInterface;
@@ -56,10 +59,17 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     fusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(view.getContext());
 
-    fetchCurrentLocation();
+    if (isLocationServicesEnabled(view.getContext())) {
+      fetchCurrentLocation();
+    } else {
+      view.showGPSNotEnabledDialog(
+          view.getContext().getResources().getString(R.string.location_services_not_enabled),
+          view.getContext().getResources().getString(R.string.open_location_settings));
+    }
   }
 
   private void fetchCurrentLocation() {
+
     locationRequest = new LocationRequest();
     locationRequest.setInterval(LOCATION_REQ_INTERVAL);
     locationRequest.setFastestInterval(FASTEST_LOCATION_REQ_INTERVAL);
@@ -167,5 +177,17 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         view.hideProgressDialog();
       }
     });
+  }
+
+  private boolean isLocationServicesEnabled(Context context) {
+    LocationManager locationManager =
+        (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+    boolean gpsEnabled;
+    boolean networkEnabled;
+
+    gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+    return gpsEnabled || networkEnabled;
   }
 }
