@@ -14,7 +14,7 @@ import com.ayush.weatherapp.constants.TemperatureConstant;
 
 public class TemperatureTextView extends AppCompatTextView {
 
-  int temperatureType;
+  private int temperatureType;
   private static final float PROPORTION_HALF = 0.5f;
 
   public TemperatureTextView(Context context) {
