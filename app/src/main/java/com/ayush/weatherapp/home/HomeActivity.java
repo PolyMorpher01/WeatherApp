@@ -13,6 +13,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -136,10 +140,26 @@ public class HomeActivity extends BaseActivity
 
   @Override public void setCurrentForecast(CurrentForecast currentForecast) {
     tvCurrentForecastSummary.setText(currentForecast.getSummary());
-    tvTempCurrent.setText(
-        getString(R.string.formant_temperature, Math.round(currentForecast.getTemperature())));
+
+    String currentTemp =
+        getString(R.string.format_temperature_fahrenheit,
+            Math.round(currentForecast.getTemperature()));
+
+    //Decrease only the size of the temperature unit by half
+    Spannable spannableCurrentTemp =
+        getSpannableTextSize(currentTemp, 0.5f, currentTemp.length() - 2, currentTemp.length());
+
+    tvTempCurrent.setText(spannableCurrentTemp);
     ivWeather.setImageResource(
         WeatherImageMapper.getImageResource(currentForecast.getIcon()));
+  }
+
+  @NonNull
+  private Spannable getSpannableTextSize(String currentTemp, float proportion, int start, int end) {
+    Spannable spannableCurrentTemp = new SpannableString(currentTemp);
+    spannableCurrentTemp.setSpan(new RelativeSizeSpan(proportion), start, end,
+        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    return spannableCurrentTemp;
   }
 
   @Override public void setDailyForeCast(List<DailyForecast.DailyData> dailyForecastList) {
@@ -170,9 +190,9 @@ public class HomeActivity extends BaseActivity
     detailWind.setBottomText(
         getString(R.string.format_wind_mph, todaysForecast.getWindSpeed()));
 
-    detailTemperature.setTopText("Min " + getString(R.string.formant_temperature,
+    detailTemperature.setTopText("Min " + getString(R.string.format_temperature,
         Math.round(todaysForecast.getTemperatureHigh())));
-    detailTemperature.setBottomText("Max " + getString(R.string.formant_temperature,
+    detailTemperature.setBottomText("Max " + getString(R.string.format_temperature,
         Math.round(todaysForecast.getTemperatureLow())));
   }
 
