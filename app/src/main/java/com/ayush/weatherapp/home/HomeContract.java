@@ -15,7 +15,10 @@ public interface HomeContract {
     void setHourlyForeCast(List<HourlyForecast.HourlyData> hourlyForeCastList);
 
     void setLocality(String locality);
+
     void setTabLayout();
+
+    void showGPSNotEnabledDialog(String title, String message);
   }
 
   interface Presenter extends BaseContract.Presenter {
