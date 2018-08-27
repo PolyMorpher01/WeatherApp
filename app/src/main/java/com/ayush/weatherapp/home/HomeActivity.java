@@ -136,7 +136,8 @@ public class HomeActivity extends BaseActivity
 
   @Override public void setCurrentForecast(CurrentForecast currentForecast) {
     tvCurrentForecastSummary.setText(currentForecast.getSummary());
-    tvTempCurrent.setText(String.valueOf(Math.round(currentForecast.getTemperature())));
+    tvTempCurrent.setText(
+        getString(R.string.temp_in_fahrenheit, Math.round(currentForecast.getTemperature())));
     ivWeather.setImageResource(
         WeatherImageMapper.getImageResource(currentForecast.getIcon()));
   }
@@ -166,11 +167,13 @@ public class HomeActivity extends BaseActivity
     detailSun.setTopText((String.valueOf(DateUtils.getTime(todaysForecast.getSunriseTime()))));
     detailSun.setBottomImage((DateUtils.getTime(todaysForecast.getSunsetTime())));
 
-    detailWind.setBottomImage(String.valueOf(todaysForecast.getWindSpeed()));
+    detailWind.setBottomImage(
+        getString(R.string.format_wind_mph, todaysForecast.getWindSpeed()));
 
-    detailTemperature.setTopText(String.valueOf(Math.round(todaysForecast.getTemperatureHigh())));
-    detailTemperature.setBottomImage(
-        String.valueOf(Math.round(todaysForecast.getTemperatureLow())));
+    detailTemperature.setTopText("Min " + getString(R.string.temp_in_fahrenheit,
+        Math.round(todaysForecast.getTemperatureHigh())));
+    detailTemperature.setBottomImage("Max " + getString(R.string.temp_in_fahrenheit,
+        Math.round(todaysForecast.getTemperatureLow())));
   }
 
   @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
