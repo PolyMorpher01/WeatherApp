@@ -57,14 +57,14 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     view.showProgressDialog("Loading", false);
 
     fusedLocationProviderClient =
-        LocationServices.getFusedLocationProviderClient(view.getContext());
+        LocationServices.getFusedLocationProviderClient(getContext());
 
-    if (isLocationServicesEnabled(view.getContext())) {
+    if (isLocationServicesEnabled(getContext())) {
       fetchCurrentLocation();
     } else {
       view.showGPSNotEnabledDialog(
-          view.getContext().getResources().getString(R.string.location_services_not_enabled),
-          view.getContext().getResources().getString(R.string.open_location_settings));
+          getContext().getResources().getString(R.string.location_services_not_enabled),
+          getContext().getResources().getString(R.string.open_location_settings));
     }
   }
 
@@ -97,7 +97,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   private void startLocationUpdates() {
-    if (ActivityCompat.checkSelfPermission(view.getContext(),
+    if (ActivityCompat.checkSelfPermission(getContext(),
         Manifest.permission.ACCESS_FINE_LOCATION)
         != PackageManager.PERMISSION_GRANTED) {
       throw new RuntimeException("Location permission not provided");
@@ -189,5 +189,9 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
     return gpsEnabled || networkEnabled;
+  }
+
+  private Context getContext(){
+    return view.getContext();
   }
 }
