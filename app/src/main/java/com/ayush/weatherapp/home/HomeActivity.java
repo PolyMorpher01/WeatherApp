@@ -154,14 +154,6 @@ public class HomeActivity extends BaseActivity
         WeatherImageMapper.getImageResource(currentForecast.getIcon()));
   }
 
-  @NonNull
-  private Spannable getSpannableTextSize(String currentTemp, float proportion, int start, int end) {
-    Spannable spannableCurrentTemp = new SpannableString(currentTemp);
-    spannableCurrentTemp.setSpan(new RelativeSizeSpan(proportion), start, end,
-        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-    return spannableCurrentTemp;
-  }
-
   @Override public void setDailyForeCast(List<DailyForecast.DailyData> dailyForecastList) {
     tabPagerAdapter.setDailyForecastData(dailyForecastList);
 
@@ -261,5 +253,13 @@ public class HomeActivity extends BaseActivity
         (dialogInterface, which) -> this.startActivity(
             new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)));
     dialog.setCancelable(false).show();
+  }
+
+  @NonNull
+  private Spannable getSpannableTextSize(String currentTemp, float proportion, int start, int end) {
+    Spannable spannableCurrentTemp = new SpannableString(currentTemp);
+    spannableCurrentTemp.setSpan(new RelativeSizeSpan(proportion), start, end,
+        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    return spannableCurrentTemp;
   }
 }
