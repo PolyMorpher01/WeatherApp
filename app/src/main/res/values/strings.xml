@@ -12,4 +12,6 @@
   <string name="details_caps">DETAILS</string>
 
   <string name="request_permission_location">This app needs access to your location  to know where you are</string>
+  <string name="gps_network_not_enabled">Please enable GPS network</string>
+  <string name="open_location_settings">Open location settings</string>
 </resources>

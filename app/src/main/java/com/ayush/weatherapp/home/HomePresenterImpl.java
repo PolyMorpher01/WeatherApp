@@ -17,6 +17,7 @@ import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.Forecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
+import com.ayush.weatherapp.utils.LocationUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -60,6 +61,9 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   private void fetchCurrentLocation() {
+
+    LocationUtils.checkLocationServices(view.getContext());
+
     locationRequest = new LocationRequest();
     locationRequest.setInterval(LOCATION_REQ_INTERVAL);
     locationRequest.setFastestInterval(FASTEST_LOCATION_REQ_INTERVAL);
