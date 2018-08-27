@@ -13,10 +13,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.RelativeSizeSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,7 +21,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import com.ayush.weatherapp.R;
+import com.ayush.weatherapp.constants.TemperatureConstant;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
+import com.ayush.weatherapp.customViews.TemperatureTextView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.mvp.BaseActivity;
 import com.ayush.weatherapp.mvp.BaseContract;
@@ -51,7 +49,7 @@ public class HomeActivity extends BaseActivity
   @BindView(R.id.toolbar) Toolbar toolbar;
   @BindView(R.id.tv_location) TextView tvLocation;
   @BindView(R.id.tv_temperature_summary) TextView tvCurrentForecastSummary;
-  @BindView(R.id.tv_temp_current) TextView tvTempCurrent;
+  @BindView(R.id.tv_temp_current) TemperatureTextView tvTempCurrent;
   @BindView(R.id.iv_weather) ImageView ivWeather;
   @BindView(R.id.detail_sun) ForecastDetailCompoundView detailSun;
   @BindView(R.id.detail_wind) ForecastDetailCompoundView detailWind;
@@ -140,16 +138,7 @@ public class HomeActivity extends BaseActivity
 
   @Override public void setCurrentForecast(CurrentForecast currentForecast) {
     tvCurrentForecastSummary.setText(currentForecast.getSummary());
-
-    String currentTemp =
-        getString(R.string.format_temperature_fahrenheit,
-            Math.round(currentForecast.getTemperature()));
-
-    //Decrease only the size of the temperature unit by half
-    Spannable spannableCurrentTemp =
-        getSpannableTextSize(currentTemp, 0.5f, currentTemp.length() - 2, currentTemp.length());
-
-    tvTempCurrent.setText(spannableCurrentTemp);
+    tvTempCurrent.setTemperature(Math.round(currentForecast.getTemperature()), TemperatureConstant.FAHRENHEIT);
     ivWeather.setImageResource(
         WeatherImageMapper.getImageResource(currentForecast.getIcon()));
   }
@@ -253,13 +242,5 @@ public class HomeActivity extends BaseActivity
         (dialogInterface, which) -> this.startActivity(
             new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)));
     dialog.setCancelable(false).show();
-  }
-
-  @NonNull
-  private Spannable getSpannableTextSize(String currentTemp, float proportion, int start, int end) {
-    Spannable spannableCurrentTemp = new SpannableString(currentTemp);
-    spannableCurrentTemp.setSpan(new RelativeSizeSpan(proportion), start, end,
-        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-    return spannableCurrentTemp;
   }
 }
