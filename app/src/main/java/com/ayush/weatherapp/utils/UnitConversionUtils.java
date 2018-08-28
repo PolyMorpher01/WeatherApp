@@ -5,7 +5,7 @@ public final class UnitConversionUtils {
   }
 
   public static double fahrenheitToCelsius(double fahrenheit) {
-    return (fahrenheit - 32) * (5 / 9);
+    return ((fahrenheit - 32) * 5) / 9;
   }
 
   public static double celsiusToFahrenheit(double celsius) {

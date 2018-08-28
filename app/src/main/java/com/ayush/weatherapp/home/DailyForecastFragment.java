@@ -11,11 +11,15 @@ import android.widget.LinearLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.ayush.weatherapp.R;
+import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.customViews.ForecastCompoundView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
+import com.ayush.weatherapp.preferences.PreferenceRepository;
+import com.ayush.weatherapp.preferences.PreferenceRepositoryImpl;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.utils.DateUtils;
 import com.ayush.weatherapp.utils.MathUtils;
+import com.ayush.weatherapp.utils.UnitConversionUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,13 +28,13 @@ public class DailyForecastFragment extends Fragment {
 
   @BindView(R.id.ll_forecast_details) LinearLayout llForecastDetails;
 
+  PreferenceRepository preferenceRepository;
+
   public static DailyForecastFragment getInstance(List<DailyForecast.DailyData> dailyDataList) {
     DailyForecastFragment dailyForecastFragment = new DailyForecastFragment();
     Bundle bundle = new Bundle();
-
     bundle.putParcelableArrayList(EXTRA_DAILY_FORECAST,
         (ArrayList<? extends Parcelable>) dailyDataList);
-
     dailyForecastFragment.setArguments(bundle);
     return dailyForecastFragment;
   }
@@ -41,6 +45,9 @@ public class DailyForecastFragment extends Fragment {
     View view = inflater.inflate(R.layout.forecast_fragment, container, false);
     ButterKnife.bind(this, view);
     setData(getArguments().getParcelableArrayList(EXTRA_DAILY_FORECAST));
+
+    preferenceRepository = PreferenceRepositoryImpl.get();
+
     return view;
   }
 
@@ -56,9 +63,12 @@ public class DailyForecastFragment extends Fragment {
   }
 
   private void setView(DailyForecast.DailyData dailyData) {
-    String averageTemperature = String.valueOf(Math.round(
-        MathUtils.getAverage(dailyData.getTemperatureHigh(),
-            dailyData.getTemperatureLow())));
+    double averageTemperature = Math.round(
+        MathUtils.getAverage(dailyData.getTemperatureHigh(), dailyData.getTemperatureLow()));
+
+    if (preferenceRepository.getTemperatureUnit() == Temperature.Unit.CELSIUS) {
+      averageTemperature = UnitConversionUtils.fahrenheitToCelsius(averageTemperature);
+    }
 
     ForecastCompoundView forecastCompoundView =
         (ForecastCompoundView) getLayoutInflater().inflate(R.layout.item_forecast_compound_view,
@@ -67,7 +77,7 @@ public class DailyForecastFragment extends Fragment {
     forecastCompoundView.setTopText(DateUtils.getDayOfTheWeek(dailyData.getTime()));
     forecastCompoundView.setMidImage(
         WeatherImageMapper.getSmallImageResource(dailyData.getIcon()));
-    forecastCompoundView.setBottomText(averageTemperature);
+    forecastCompoundView.setBottomText(String.valueOf(Math.round(averageTemperature)));
 
     llForecastDetails.addView(forecastCompoundView, llForecastDetails.getChildCount());
   }

@@ -42,6 +42,8 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   private LocationCallback locationCallback;
 
   private HomeContract.View view;
+  //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+  //private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
 
   HomePresenterImpl(BaseContract.View view) {
     this.view = (HomeContract.View) view;
@@ -66,6 +68,12 @@ public class HomePresenterImpl implements HomeContract.Presenter {
           getContext().getResources().getString(R.string.location_services_not_enabled),
           getContext().getResources().getString(R.string.open_location_settings));
     }
+/*
+    prefListener = (sharedPreferences, key) -> {
+      Timber.e("Key changed: "+key);
+    };
+
+    prefs.registerOnSharedPreferenceChangeListener(prefListener);*/
   }
 
   private void fetchCurrentLocation() {

@@ -27,11 +27,13 @@ import com.ayush.weatherapp.customViews.TemperatureTextView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.mvp.BaseActivity;
 import com.ayush.weatherapp.mvp.BaseContract;
+import com.ayush.weatherapp.preferences.PreferenceRepository;
 import com.ayush.weatherapp.preferences.PreferenceRepositoryImpl;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
 import com.ayush.weatherapp.utils.DateUtils;
+import com.ayush.weatherapp.utils.UnitConversionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -60,8 +62,8 @@ public class HomeActivity extends BaseActivity
   @BindView(R.id.view_pager) ViewPager viewPager;
 
   TabPagerAdapter tabPagerAdapter;
-
   HomeContract.Presenter presenter;
+  PreferenceRepository preferenceRepository;
 
   @Override protected int getLayoutId() {
     return R.layout.activity_home;
@@ -88,6 +90,7 @@ public class HomeActivity extends BaseActivity
 
     presenter = new HomePresenterImpl(this);
     tabPagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
+    preferenceRepository = PreferenceRepositoryImpl.get();
   }
 
   @Override protected void onResume() {
@@ -114,12 +117,10 @@ public class HomeActivity extends BaseActivity
     navigationView.setNavigationItemSelectedListener(menuItem -> {
       switch (menuItem.getItemId()) {
         case R.id.nav_celsius:
-          PreferenceRepositoryImpl.get()
-              .saveTemperatureUnit(Temperature.Unit.CELSIUS);
+          preferenceRepository.saveTemperatureUnit(Temperature.Unit.CELSIUS);
           break;
         case R.id.nav_fahrenheit:
-          PreferenceRepositoryImpl.get()
-              .saveTemperatureUnit(Temperature.Unit.FAHRENHEIT);
+          preferenceRepository.saveTemperatureUnit(Temperature.Unit.FAHRENHEIT);
           break;
         default:
           Toast.makeText(HomeActivity.this, menuItem.toString(), Toast.LENGTH_SHORT).show();
@@ -173,12 +174,23 @@ public class HomeActivity extends BaseActivity
     detailSun.setTopText((String.valueOf(DateUtils.getTime(todaysForecast.getSunriseTime()))));
     detailSun.setBottomText((DateUtils.getTime(todaysForecast.getSunsetTime())));
 
-    detailWind.setBottomText(getString(R.string.format_wind_mph, todaysForecast.getWindSpeed()));
+    int formatWind = R.string.format_wind_mph;
+    double windSpeed = todaysForecast.getWindSpeed();
+    double temperatureHigh = todaysForecast.getTemperatureHigh();
+    double temperatureLow = todaysForecast.getTemperatureLow();
 
-    detailTemperature.setTopText("Min " + getString(R.string.format_temperature,
-        Math.round(todaysForecast.getTemperatureHigh())));
-    detailTemperature.setBottomText("Max " + getString(R.string.format_temperature,
-        Math.round(todaysForecast.getTemperatureLow())));
+    if (preferenceRepository.getTemperatureUnit() == Temperature.Unit.CELSIUS) {
+      formatWind = R.string.format_wind_kph;
+      windSpeed = UnitConversionUtils.mphToKmph(windSpeed);
+      temperatureHigh = UnitConversionUtils.fahrenheitToCelsius(temperatureHigh);
+      temperatureLow = UnitConversionUtils.fahrenheitToCelsius(temperatureLow);
+    }
+
+    detailWind.setBottomText(getString(formatWind, windSpeed));
+    detailTemperature.setTopText(
+        "Min " + getString(R.string.format_temperature, Math.round(temperatureHigh)));
+    detailTemperature.setBottomText(
+        "Max " + getString(R.string.format_temperature, Math.round(temperatureLow)));
   }
 
   @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,

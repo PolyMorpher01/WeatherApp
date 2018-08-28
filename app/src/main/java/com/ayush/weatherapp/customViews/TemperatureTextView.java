@@ -11,12 +11,16 @@ import android.text.style.RelativeSizeSpan;
 import android.util.AttributeSet;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
+import com.ayush.weatherapp.preferences.PreferenceRepository;
+import com.ayush.weatherapp.preferences.PreferenceRepositoryImpl;
+import com.ayush.weatherapp.utils.UnitConversionUtils;
 
 public class TemperatureTextView extends AppCompatTextView {
 
   private static final float PROPORTION_HALF = 0.5f;
   private int temperatureType;
   private float proportion;
+  private PreferenceRepository preferenceRepository;
 
   public TemperatureTextView(Context context) {
     this(context, null);
@@ -36,6 +40,8 @@ public class TemperatureTextView extends AppCompatTextView {
         getContext().obtainStyledAttributes(attributeSet, R.styleable.TemperatureTextView);
     setValue(typedArray);
     typedArray.recycle();
+
+    preferenceRepository = PreferenceRepositoryImpl.get();
   }
 
   private void setValue(TypedArray typedArray) {
@@ -61,9 +67,11 @@ public class TemperatureTextView extends AppCompatTextView {
   }
 
   @Override public void setText(CharSequence text, BufferType type) {
-    if (getTemperatureType() == Temperature.Unit.FAHRENHEIT) {
+    if (preferenceRepository.getTemperatureUnit() == Temperature.Unit.FAHRENHEIT) {
       text = getResources().getString(R.string.format_temperature_fahrenheit, text);
     } else {
+      text = String.valueOf(Math.round(
+          UnitConversionUtils.fahrenheitToCelsius(Double.parseDouble(String.valueOf(text)))));
       text = getResources().getString(R.string.format_temperature_celsius, text);
     }
     Spannable spannableText =
