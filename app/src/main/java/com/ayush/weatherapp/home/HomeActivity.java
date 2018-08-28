@@ -21,7 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import com.ayush.weatherapp.R;
-import com.ayush.weatherapp.constants.TemperatureConstant;
+import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
 import com.ayush.weatherapp.customViews.TemperatureTextView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
@@ -115,11 +115,11 @@ public class HomeActivity extends BaseActivity
       switch (menuItem.getItemId()) {
         case R.id.nav_celsius:
           PreferenceRepositoryImpl.get()
-              .saveTemperatureUnit(TemperatureConstant.Temperature.CELSIUS);
+              .saveTemperatureUnit(Temperature.Unit.CELSIUS);
           break;
         case R.id.nav_fahrenheit:
           PreferenceRepositoryImpl.get()
-              .saveTemperatureUnit(TemperatureConstant.Temperature.FAHRENHEIT);
+              .saveTemperatureUnit(Temperature.Unit.FAHRENHEIT);
           break;
         default:
           Toast.makeText(HomeActivity.this, menuItem.toString(), Toast.LENGTH_SHORT).show();
@@ -145,8 +145,6 @@ public class HomeActivity extends BaseActivity
 
   @Override public void setCurrentForecast(CurrentForecast currentForecast) {
     tvCurrentForecastSummary.setText(currentForecast.getSummary());
-
-    tvTempCurrent.setTemperatureType(PreferenceRepositoryImpl.get().getTemperatureUnit());
     tvTempCurrent.setText(String.valueOf(Math.round(currentForecast.getTemperature())));
     ivWeather.setImageResource(WeatherImageMapper.getImageResource(currentForecast.getIcon()));
   }
