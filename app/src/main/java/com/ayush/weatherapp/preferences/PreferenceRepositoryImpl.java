@@ -2,7 +2,7 @@ package com.ayush.weatherapp.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.ayush.weatherapp.constants.TemperatureConstant;
+import com.ayush.weatherapp.constants.Temperature;
 
 public final class PreferenceRepositoryImpl implements PreferenceRepository {
 
@@ -31,6 +31,6 @@ public final class PreferenceRepositoryImpl implements PreferenceRepository {
   }
 
   @Override public int getTemperatureUnit() {
-    return sharedPreferences.getInt(TEMP_UNIT, TemperatureConstant.Temperature.CELSIUS);
+    return sharedPreferences.getInt(TEMP_UNIT, Temperature.Unit.CELSIUS);
   }
 }

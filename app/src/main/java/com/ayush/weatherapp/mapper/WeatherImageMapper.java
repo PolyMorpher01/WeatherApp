@@ -1,7 +1,7 @@
 package com.ayush.weatherapp.mapper;
 
 import com.ayush.weatherapp.R;
-import com.ayush.weatherapp.constants.WeatherImageConstant;
+import com.ayush.weatherapp.constants.WeatherImage;
 
 public final class WeatherImageMapper {
   private WeatherImageMapper() {
@@ -10,13 +10,13 @@ public final class WeatherImageMapper {
   public static int getImageResource(String weather) {
 
     switch (weather) {
-      case WeatherImageConstant.PARTLY_CLOUDY_DAY:
+      case WeatherImage.PARTLY_CLOUDY_DAY:
         return R.drawable.img_cloudy_day;
 
-      case WeatherImageConstant.PARTLY_CLOUDY_NIGHT:
+      case WeatherImage.PARTLY_CLOUDY_NIGHT:
         return R.drawable.img_cloudy_night;
 
-      case WeatherImageConstant.RAINY:
+      case WeatherImage.RAINY:
         return R.drawable.img_rainy;
 
       default:
@@ -26,10 +26,10 @@ public final class WeatherImageMapper {
 
   public static int getSmallImageResource(String weather) {
     switch (weather) {
-      case WeatherImageConstant.PARTLY_CLOUDY_DAY:
+      case WeatherImage.PARTLY_CLOUDY_DAY:
         return R.drawable.img_small_cloudy;
 
-      case WeatherImageConstant.RAINY:
+      case WeatherImage.RAINY:
         return R.drawable.img_small_rainy;
 
       default:
