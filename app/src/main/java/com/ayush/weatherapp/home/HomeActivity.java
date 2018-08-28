@@ -91,11 +91,12 @@ public class HomeActivity extends BaseActivity
     presenter = new HomePresenterImpl(this);
     tabPagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
     preferenceRepository = PreferenceRepositoryImpl.get();
+
+    checkLocationPermission();
   }
 
   @Override protected void onResume() {
     super.onResume();
-    checkLocationPermission();
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
