@@ -191,7 +191,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     return gpsEnabled || networkEnabled;
   }
 
-  private Context getContext(){
+  private Context getContext() {
     return view.getContext();
   }
 }
