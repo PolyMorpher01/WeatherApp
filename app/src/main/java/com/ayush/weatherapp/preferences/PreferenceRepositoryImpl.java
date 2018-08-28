@@ -11,9 +11,17 @@ public final class PreferenceRepositoryImpl implements PreferenceRepository {
 
   private static PreferenceRepositoryImpl preferenceRepository;
   private SharedPreferences sharedPreferences;
+  private PreferenceChangeListener preferenceChangeListener;
+  private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener;
 
   private PreferenceRepositoryImpl(Context context) {
     sharedPreferences = context.getSharedPreferences(APP_PREF_NAME, Context.MODE_PRIVATE);
+    sharedPreferenceChangeListener = (sharedPreferences, key) -> {
+      if (key.equals(TEMP_UNIT)) {
+        preferenceChangeListener.onTemperatureChanged(0, 1);
+      }
+    };
+    sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
   }
 
   public static void init(Context context) {
@@ -32,5 +40,9 @@ public final class PreferenceRepositoryImpl implements PreferenceRepository {
 
   @Override public int getTemperatureUnit() {
     return sharedPreferences.getInt(TEMP_UNIT, Temperature.Unit.CELSIUS);
+  }
+
+  @Override public void onPreferenceChangeListener(PreferenceChangeListener changeListener) {
+    preferenceChangeListener = changeListener;
   }
 }

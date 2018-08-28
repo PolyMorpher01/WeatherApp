@@ -28,7 +28,7 @@ public class DailyForecastFragment extends Fragment {
 
   @BindView(R.id.ll_forecast_details) LinearLayout llForecastDetails;
 
-  PreferenceRepository preferenceRepository;
+  private PreferenceRepository preferenceRepository;
 
   public static DailyForecastFragment getInstance(List<DailyForecast.DailyData> dailyDataList) {
     DailyForecastFragment dailyForecastFragment = new DailyForecastFragment();
@@ -42,12 +42,10 @@ public class DailyForecastFragment extends Fragment {
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       Bundle savedInstanceState) {
+    preferenceRepository = PreferenceRepositoryImpl.get();
     View view = inflater.inflate(R.layout.forecast_fragment, container, false);
     ButterKnife.bind(this, view);
     setData(getArguments().getParcelableArrayList(EXTRA_DAILY_FORECAST));
-
-    preferenceRepository = PreferenceRepositoryImpl.get();
-
     return view;
   }
 

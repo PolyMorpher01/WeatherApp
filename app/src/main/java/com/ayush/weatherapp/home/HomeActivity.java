@@ -61,9 +61,9 @@ public class HomeActivity extends BaseActivity
   @BindView(R.id.tab_layout) TabLayout tabLayout;
   @BindView(R.id.view_pager) ViewPager viewPager;
 
-  TabPagerAdapter tabPagerAdapter;
-  HomeContract.Presenter presenter;
-  PreferenceRepository preferenceRepository;
+  private TabPagerAdapter tabPagerAdapter;
+  private HomeContract.Presenter presenter;
+  private PreferenceRepository preferenceRepository;
 
   @Override protected int getLayoutId() {
     return R.layout.activity_home;
@@ -188,9 +188,9 @@ public class HomeActivity extends BaseActivity
 
     detailWind.setBottomText(getString(formatWind, windSpeed));
     detailTemperature.setTopText(
-        "Min " + getString(R.string.format_temperature, Math.round(temperatureHigh)));
+        "Max " + getString(R.string.format_temperature, Math.round(temperatureHigh)));
     detailTemperature.setBottomText(
-        "Max " + getString(R.string.format_temperature, Math.round(temperatureLow)));
+        "Min " + getString(R.string.format_temperature, Math.round(temperatureLow)));
   }
 
   @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
@@ -242,7 +242,7 @@ public class HomeActivity extends BaseActivity
   }
 
   private void fetchHomeDetails() {
-    presenter.fetchHomeDetails();
+    presenter.initHome();
   }
 
   @Override public void setTabLayout() {

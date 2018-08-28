@@ -35,13 +35,19 @@ public class TemperatureTextView extends AppCompatTextView {
     init(attrs);
   }
 
+  private PreferenceRepository getPreferenceRepository() {
+    if (preferenceRepository == null) {
+      preferenceRepository = PreferenceRepositoryImpl.get();
+    }
+    return preferenceRepository;
+  }
+
   public void init(AttributeSet attributeSet) {
+
     TypedArray typedArray =
         getContext().obtainStyledAttributes(attributeSet, R.styleable.TemperatureTextView);
     setValue(typedArray);
     typedArray.recycle();
-
-    preferenceRepository = PreferenceRepositoryImpl.get();
   }
 
   private void setValue(TypedArray typedArray) {
@@ -67,7 +73,7 @@ public class TemperatureTextView extends AppCompatTextView {
   }
 
   @Override public void setText(CharSequence text, BufferType type) {
-    if (preferenceRepository.getTemperatureUnit() == Temperature.Unit.FAHRENHEIT) {
+    if (getPreferenceRepository().getTemperatureUnit() == Temperature.Unit.FAHRENHEIT) {
       text = getResources().getString(R.string.format_temperature_fahrenheit, text);
     } else {
       text = String.valueOf(Math.round(
