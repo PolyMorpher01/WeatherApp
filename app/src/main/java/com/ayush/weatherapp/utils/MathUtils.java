@@ -10,7 +10,6 @@ public final class MathUtils {
     for (double number : numbers) {
       sum += number;
     }
-
     return sum / numbers.length;
   }
 }
