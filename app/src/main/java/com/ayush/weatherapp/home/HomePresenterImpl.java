@@ -47,6 +47,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   private PreferenceRepository preferenceRepository;
 
   private String localityAddress;
+  private Forecast forecast;
   private CurrentForecast currentForecast;
   private DailyForecast dailyForecast;
   private List<DailyForecast.DailyData> dailyForecastList;
@@ -67,7 +68,15 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   @Override public void detachView() {
   }
 
+  @Override public void onPauseView() {
+    stopLocationUpdates();
+  }
+
   @Override public void initHome() {
+    if (forecast != null) {
+      return;
+    }
+
     view.showProgressDialog("Loading", false);
 
     fusedLocationProviderClient =
@@ -165,8 +174,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     forecastCall.enqueue(new Callback<Forecast>() {
       @Override
       public void onResponse(@NonNull Call<Forecast> call, @NonNull Response<Forecast> response) {
-        Forecast forecast = response.body();
-
+        forecast = response.body();
         currentForecast = forecast.getCurrentForecast();
         dailyForecast = forecast.getDailyForecast();
         dailyForecastList = dailyForecast.getDailyDataList();
