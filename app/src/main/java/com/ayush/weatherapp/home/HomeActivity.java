@@ -86,10 +86,10 @@ public class HomeActivity extends BaseActivity
     if (checked) {
       switch (button.getId()) {
         case R.id.radio_celsius:
-          preferenceRepository.saveTemperatureUnit(Temperature.Unit.CELSIUS);
+          presenter.saveTemperatureUnitPref(Temperature.Unit.CELSIUS);
           break;
         case R.id.radio_fahrenheit:
-          preferenceRepository.saveTemperatureUnit(Temperature.Unit.FAHRENHEIT);
+          presenter.saveTemperatureUnitPref(Temperature.Unit.FAHRENHEIT);
           break;
       }
       drawerLayout.closeDrawers();

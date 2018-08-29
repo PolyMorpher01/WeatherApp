@@ -1,5 +1,6 @@
 package com.ayush.weatherapp.home;
 
+import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.mvp.BaseContract;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
@@ -25,5 +26,7 @@ public interface HomeContract {
     void onPause();
 
     void initHome();
+
+    void saveTemperatureUnitPref(@Temperature.Unit int unit);
   }
 }

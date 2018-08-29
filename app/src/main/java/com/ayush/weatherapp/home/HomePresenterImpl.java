@@ -91,6 +91,10 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     }
   }
 
+  @Override public void saveTemperatureUnitPref(int unit) {
+    preferenceRepository.saveTemperatureUnit(unit);
+  }
+
   private void fetchCurrentLocation() {
 
     locationRequest = new LocationRequest();
@@ -109,7 +113,6 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         Location currentLocation = locationResult.getLocations().get(0);
         String latLng =
             String.valueOf(currentLocation.getLatitude()) + "," + currentLocation.getLongitude();
-        Timber.e(HomePresenterImpl.this.toString());
 
         fetchLocality(latLng);
         fetchWeatherForecast(latLng);
