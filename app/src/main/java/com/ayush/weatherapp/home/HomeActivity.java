@@ -106,7 +106,6 @@ public class HomeActivity extends BaseActivity
     presenter = new HomePresenterImpl(this);
     tabPagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
     preferenceRepository = PreferenceRepositoryImpl.get();
-    setRadioChecked();
   }
 
   @Override protected void onResume() {
@@ -119,7 +118,7 @@ public class HomeActivity extends BaseActivity
     presenter.onPause();
   }
 
-  private void setRadioChecked() {
+  @Override public void setRadioChecked() {
     if (preferenceRepository.getTemperatureUnit() == Temperature.Unit.CELSIUS) {
       radioCelsius.setChecked(true);
     } else {

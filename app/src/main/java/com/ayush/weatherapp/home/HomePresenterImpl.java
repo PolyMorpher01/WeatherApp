@@ -89,6 +89,8 @@ public class HomePresenterImpl implements HomeContract.Presenter {
           getContext().getResources().getString(R.string.location_services_not_enabled),
           getContext().getResources().getString(R.string.open_location_settings));
     }
+
+    view.setRadioChecked();
   }
 
   @Override public void saveTemperatureUnitPref(int unit) {

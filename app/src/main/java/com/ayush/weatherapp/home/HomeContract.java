@@ -20,6 +20,8 @@ public interface HomeContract {
     void setTabLayout();
 
     void showGPSNotEnabledDialog(String title, String message);
+
+    void setRadioChecked();
   }
 
   interface Presenter extends BaseContract.Presenter {
