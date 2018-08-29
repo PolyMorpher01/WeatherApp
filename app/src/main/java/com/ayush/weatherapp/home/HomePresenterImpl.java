@@ -206,11 +206,10 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     view.setHourlyForeCast(hourlyDataList);
     view.setTabLayout();
 
-    setViewBackground();
+    changeHomeBackground();
   }
 
-  private void setViewBackground() {
-
+  private void changeHomeBackground() {
     switch (currentForecast.getIcon()) {
       case WeatherImage.CLEAR_DAY:
         view.setHomeBackground(R.drawable.background_gradient_sunny);
