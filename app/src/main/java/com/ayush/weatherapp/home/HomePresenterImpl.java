@@ -213,21 +213,21 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
     switch (currentForecast.getIcon()) {
       case WeatherImage.CLEAR_DAY:
-        view.setHomeBackground(getContext().getDrawable(R.drawable.background_gradient_sunny));
+        view.setHomeBackground(R.drawable.background_gradient_sunny);
         break;
 
       case WeatherImage.RAINY:
       case WeatherImage.SNOW:
-        view.setHomeBackground(getContext().getDrawable(R.drawable.background_gradient_rainy));
+        view.setHomeBackground(R.drawable.background_gradient_rainy);
         break;
 
       case WeatherImage.CLOUDY:
       case WeatherImage.PARTLY_CLOUDY_DAY:
-        view.setHomeBackground(getContext().getDrawable(R.drawable.background_gradient_cloudy));
+        view.setHomeBackground(R.drawable.background_gradient_cloudy);
         break;
 
       default:
-        view.setHomeBackground(getContext().getDrawable(R.drawable.background_gradient_default));
+        view.setHomeBackground(R.drawable.background_gradient_default);
     }
   }
 

@@ -129,8 +129,8 @@ public class HomeActivity extends BaseActivity
     }
   }
 
-  @Override public void setHomeBackground(Drawable viewBackground) {
-    llContentFrame.setBackground(viewBackground);
+  @Override public void setHomeBackground(int drawableId) {
+    llContentFrame.setBackground(getResources().getDrawable(drawableId));
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
