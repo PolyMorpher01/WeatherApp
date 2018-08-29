@@ -10,6 +10,4 @@
   <item
       android:drawable="@drawable/radio_selected"
       android:state_checked="true"/>
-  <item
-      android:drawable="@android:color/transparent"/>
 </selector>

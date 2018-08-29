@@ -1,5 +1,7 @@
 package com.ayush.weatherapp.home;
 
+import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.mvp.BaseContract;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
@@ -22,6 +24,8 @@ public interface HomeContract {
     void showGPSNotEnabledDialog(String title, String message);
 
     void setRadioChecked();
+
+    void setHomeBackground(@DrawableRes int drawableId);
   }
 
   interface Presenter extends BaseContract.Presenter {
