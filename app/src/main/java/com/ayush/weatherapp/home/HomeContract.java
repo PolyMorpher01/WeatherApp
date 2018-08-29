@@ -22,6 +22,8 @@ public interface HomeContract {
   }
 
   interface Presenter extends BaseContract.Presenter {
-    void fetchHomeDetails();
+    void onPause();
+
+    void initHome();
   }
 }

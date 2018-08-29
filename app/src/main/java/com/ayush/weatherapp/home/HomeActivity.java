@@ -21,16 +21,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import com.ayush.weatherapp.R;
-import com.ayush.weatherapp.constants.TemperatureConstant;
+import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
 import com.ayush.weatherapp.customViews.TemperatureTextView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.mvp.BaseActivity;
 import com.ayush.weatherapp.mvp.BaseContract;
+import com.ayush.weatherapp.preferences.PreferenceRepository;
+import com.ayush.weatherapp.preferences.PreferenceRepositoryImpl;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
 import com.ayush.weatherapp.utils.DateUtils;
+import com.ayush.weatherapp.utils.UnitConversionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -58,9 +61,9 @@ public class HomeActivity extends BaseActivity
   @BindView(R.id.tab_layout) TabLayout tabLayout;
   @BindView(R.id.view_pager) ViewPager viewPager;
 
-  TabPagerAdapter tabPagerAdapter;
-
-  HomeContract.Presenter presenter;
+  private TabPagerAdapter tabPagerAdapter;
+  private HomeContract.Presenter presenter;
+  private PreferenceRepository preferenceRepository;
 
   @Override protected int getLayoutId() {
     return R.layout.activity_home;
@@ -87,11 +90,17 @@ public class HomeActivity extends BaseActivity
 
     presenter = new HomePresenterImpl(this);
     tabPagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
+    preferenceRepository = PreferenceRepositoryImpl.get();
   }
 
   @Override protected void onResume() {
     super.onResume();
     checkLocationPermission();
+  }
+
+  @Override protected void onPause() {
+    super.onPause();
+    presenter.onPause();
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -111,13 +120,17 @@ public class HomeActivity extends BaseActivity
 
   private void setNavigationView() {
     navigationView.setNavigationItemSelectedListener(menuItem -> {
-      //TODO
-      Toast.makeText(HomeActivity.this, menuItem.toString(), Toast.LENGTH_SHORT).show();
-
+      switch (menuItem.getItemId()) {
+        case R.id.nav_celsius:
+          preferenceRepository.saveTemperatureUnit(Temperature.Unit.CELSIUS);
+          break;
+        case R.id.nav_fahrenheit:
+          preferenceRepository.saveTemperatureUnit(Temperature.Unit.FAHRENHEIT);
+          break;
+        default:
+          Toast.makeText(HomeActivity.this, menuItem.toString(), Toast.LENGTH_SHORT).show();
+      }
       drawerLayout.closeDrawers();
-
-      // Add code here to update the UI based on the item selected
-      // For example, swap UI fragments here
       return true;
     });
   }
@@ -138,11 +151,8 @@ public class HomeActivity extends BaseActivity
 
   @Override public void setCurrentForecast(CurrentForecast currentForecast) {
     tvCurrentForecastSummary.setText(currentForecast.getSummary());
-    //tvTempCurrent.setTemperature(Math.round(currentForecast.getTemperature()), TemperatureConstant.FAHRENHEIT);
-    tvTempCurrent.setTemperatureType(TemperatureConstant.Temperature.FAHRENHEIT);
     tvTempCurrent.setText(String.valueOf(Math.round(currentForecast.getTemperature())));
-    ivWeather.setImageResource(
-        WeatherImageMapper.getImageResource(currentForecast.getIcon()));
+    ivWeather.setImageResource(WeatherImageMapper.getImageResource(currentForecast.getIcon()));
   }
 
   @Override public void setDailyForeCast(List<DailyForecast.DailyData> dailyForecastList) {
@@ -150,7 +160,6 @@ public class HomeActivity extends BaseActivity
 
     //get forecast detail of today
     DailyForecast.DailyData forecastDetailToday = dailyForecastList.get(TODAY);
-
     setTodayForecastDetails(forecastDetailToday);
   }
 
@@ -170,13 +179,23 @@ public class HomeActivity extends BaseActivity
     detailSun.setTopText((String.valueOf(DateUtils.getTime(todaysForecast.getSunriseTime()))));
     detailSun.setBottomText((DateUtils.getTime(todaysForecast.getSunsetTime())));
 
-    detailWind.setBottomText(
-        getString(R.string.format_wind_mph, todaysForecast.getWindSpeed()));
+    int formatWind = R.string.format_wind_mph;
+    double windSpeed = todaysForecast.getWindSpeed();
+    double temperatureHigh = todaysForecast.getTemperatureHigh();
+    double temperatureLow = todaysForecast.getTemperatureLow();
 
-    detailTemperature.setTopText("Min " + getString(R.string.format_temperature,
-        Math.round(todaysForecast.getTemperatureHigh())));
-    detailTemperature.setBottomText("Max " + getString(R.string.format_temperature,
-        Math.round(todaysForecast.getTemperatureLow())));
+    if (preferenceRepository.getTemperatureUnit() == Temperature.Unit.CELSIUS) {
+      formatWind = R.string.format_wind_kph;
+      windSpeed = UnitConversionUtils.mphToKmph(windSpeed);
+      temperatureHigh = UnitConversionUtils.fahrenheitToCelsius(temperatureHigh);
+      temperatureLow = UnitConversionUtils.fahrenheitToCelsius(temperatureLow);
+    }
+
+    detailWind.setBottomText(getString(formatWind, windSpeed));
+    detailTemperature.setTopText(
+        "Max " + getString(R.string.format_temperature, Math.round(temperatureHigh)));
+    detailTemperature.setBottomText(
+        "Min " + getString(R.string.format_temperature, Math.round(temperatureLow)));
   }
 
   @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
@@ -228,7 +247,7 @@ public class HomeActivity extends BaseActivity
   }
 
   private void fetchHomeDetails() {
-    presenter.fetchHomeDetails();
+    presenter.initHome();
   }
 
   @Override public void setTabLayout() {

@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.mvp.BaseContract;
+import com.ayush.weatherapp.preferences.PreferenceRepository;
+import com.ayush.weatherapp.preferences.PreferenceRepositoryImpl;
 import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIClient;
 import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIInterface;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.Address;
@@ -42,9 +44,22 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   private LocationCallback locationCallback;
 
   private HomeContract.View view;
+  private PreferenceRepository preferenceRepository;
+
+  private String localityAddress;
+  private Forecast forecast;
+  private CurrentForecast currentForecast;
+  private DailyForecast dailyForecast;
+  private List<DailyForecast.DailyData> dailyForecastList;
+  private HourlyForecast hourlyForecast;
+  private List<HourlyForecast.HourlyData> hourlyDataList;
 
   HomePresenterImpl(BaseContract.View view) {
     this.view = (HomeContract.View) view;
+    preferenceRepository = PreferenceRepositoryImpl.get();
+
+    preferenceRepository.onPreferenceChangeListener(
+        (oldTemperature, newTemperature) -> setForecastView());
   }
 
   @Override public void attachView() {
@@ -53,7 +68,15 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   @Override public void detachView() {
   }
 
-  @Override public void fetchHomeDetails() {
+  @Override public void onPause() {
+    stopLocationUpdates();
+  }
+
+  @Override public void initHome() {
+    if (forecast != null) {
+      return;
+    }
+
     view.showProgressDialog("Loading", false);
 
     fusedLocationProviderClient =
@@ -119,8 +142,6 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         geocodingAPIInterface.getLocationDetails(latLng, GEOCODING_API_KEY);
 
     reverseGeoLocationCall.enqueue(new Callback<ReverseGeoLocation>() {
-      String localityAddress;
-
       @Override
       public void onResponse(@NonNull Call<ReverseGeoLocation> call,
           @NonNull Response<ReverseGeoLocation> response) {
@@ -153,22 +174,13 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     forecastCall.enqueue(new Callback<Forecast>() {
       @Override
       public void onResponse(@NonNull Call<Forecast> call, @NonNull Response<Forecast> response) {
-        Forecast forecast = response.body();
-
-        CurrentForecast currentForecast = forecast.getCurrentForecast();
-
-        view.setCurrentForecast(currentForecast);
-
-        DailyForecast dailyForecast = forecast.getDailyForecast();
-        List<DailyForecast.DailyData> dailyForecastList = dailyForecast.getDailyDataList();
-        view.setDailyForeCast(dailyForecastList);
-
-        HourlyForecast hourlyForecast = forecast.getHourlyForecast();
-        List<HourlyForecast.HourlyData> hourlyDataList = hourlyForecast.getHourlyDataList();
-        view.setHourlyForeCast(hourlyDataList);
-
-        view.setTabLayout();
-
+        forecast = response.body();
+        currentForecast = forecast.getCurrentForecast();
+        dailyForecast = forecast.getDailyForecast();
+        dailyForecastList = dailyForecast.getDailyDataList();
+        hourlyForecast = forecast.getHourlyForecast();
+        hourlyDataList = hourlyForecast.getHourlyDataList();
+        setForecastView();
         view.hideProgressDialog();
       }
 
@@ -177,6 +189,13 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         view.hideProgressDialog();
       }
     });
+  }
+
+  private void setForecastView() {
+    view.setCurrentForecast(currentForecast);
+    view.setDailyForeCast(dailyForecastList);
+    view.setHourlyForeCast(hourlyDataList);
+    view.setTabLayout();
   }
 
   private boolean isLocationServicesEnabled(Context context) {
@@ -191,7 +210,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     return gpsEnabled || networkEnabled;
   }
 
-  private Context getContext(){
+  private Context getContext() {
     return view.getContext();
   }
 }

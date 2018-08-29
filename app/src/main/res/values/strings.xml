@@ -12,6 +12,7 @@
   <string name="format_temperature_fahrenheit"><xliff:g id="temperature">%s°F</xliff:g></string>
   <string name="format_temperature"><xliff:g id="temperature">%d°</xliff:g></string>
   <string name="format_wind_mph"><xliff:g id="speed">%.2f mph</xliff:g></string>
+  <string name="format_wind_kph"><xliff:g id="speed">%.2f kph</xliff:g></string>
 
   <string name="search_title">Search Location</string>
   <string name="not_available">N/A</string>

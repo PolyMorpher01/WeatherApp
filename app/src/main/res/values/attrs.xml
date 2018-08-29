@@ -24,6 +24,7 @@
       <enum name="celsius" value="0"/>
       <enum name="fahrenheit" value="1"/>
     </attr>
+    <attr format="float" name="proportion"/>
   </declare-styleable>
 
 </resources>
