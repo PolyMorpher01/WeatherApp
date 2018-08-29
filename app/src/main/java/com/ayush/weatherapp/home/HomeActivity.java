@@ -3,6 +3,7 @@ package com.ayush.weatherapp.home;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -18,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import butterknife.BindView;
@@ -64,6 +66,7 @@ public class HomeActivity extends BaseActivity
 
   @BindView(R.id.tab_layout) TabLayout tabLayout;
   @BindView(R.id.view_pager) ViewPager viewPager;
+  @BindView(R.id.ll_content_frame) LinearLayout llContentFrame;
 
   private TabPagerAdapter tabPagerAdapter;
   private HomeContract.Presenter presenter;
@@ -124,6 +127,10 @@ public class HomeActivity extends BaseActivity
     } else {
       radioFahrenheit.setChecked(true);
     }
+  }
+
+  @Override public void setHomeBackground(Drawable viewBackground) {
+    llContentFrame.setBackground(viewBackground);
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {

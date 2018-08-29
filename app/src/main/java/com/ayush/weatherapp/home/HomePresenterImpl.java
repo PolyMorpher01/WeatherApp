@@ -8,6 +8,7 @@ import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import com.ayush.weatherapp.R;
+import com.ayush.weatherapp.constants.WeatherImage;
 import com.ayush.weatherapp.mvp.BaseContract;
 import com.ayush.weatherapp.preferences.PreferenceRepository;
 import com.ayush.weatherapp.preferences.PreferenceRepositoryImpl;
@@ -204,6 +205,30 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     view.setDailyForeCast(dailyForecastList);
     view.setHourlyForeCast(hourlyDataList);
     view.setTabLayout();
+
+    setViewBackground();
+  }
+
+  private void setViewBackground() {
+
+    switch (currentForecast.getIcon()) {
+      case WeatherImage.CLEAR_DAY:
+        view.setHomeBackground(getContext().getDrawable(R.drawable.background_gradient_sunny));
+        break;
+
+      case WeatherImage.RAINY:
+      case WeatherImage.SNOW:
+        view.setHomeBackground(getContext().getDrawable(R.drawable.background_gradient_rainy));
+        break;
+
+      case WeatherImage.CLOUDY:
+      case WeatherImage.PARTLY_CLOUDY_DAY:
+        view.setHomeBackground(getContext().getDrawable(R.drawable.background_gradient_cloudy));
+        break;
+
+      default:
+        view.setHomeBackground(getContext().getDrawable(R.drawable.background_gradient_default));
+    }
   }
 
   private boolean isLocationServicesEnabled(Context context) {
