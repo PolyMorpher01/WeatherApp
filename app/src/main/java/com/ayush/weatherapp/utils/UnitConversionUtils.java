@@ -13,10 +13,10 @@ public final class UnitConversionUtils {
   }
 
   public static double mphToKmph(double mph) {
-    return (3.6 * mph);
+    return 3.6 * mph;
   }
 
   public static double kmphToMph(double kmph) {
-    return (0.277778 * kmph);
+    return 0.277778 * kmph;
   }
 }

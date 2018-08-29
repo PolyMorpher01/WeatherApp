@@ -11,7 +11,7 @@ public class Temperature {
   @IntDef({CELSIUS, FAHRENHEIT})
   @Retention(RetentionPolicy.SOURCE)
   public @interface Unit {
-    int CELSIUS = com.ayush.weatherapp.constants.Temperature.CELSIUS;
-    int FAHRENHEIT = com.ayush.weatherapp.constants.Temperature.FAHRENHEIT;
+    int CELSIUS = Temperature.CELSIUS;
+    int FAHRENHEIT = Temperature.FAHRENHEIT;
   }
 }

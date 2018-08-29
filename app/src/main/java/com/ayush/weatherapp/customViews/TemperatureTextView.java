@@ -56,20 +56,14 @@ public class TemperatureTextView extends AppCompatTextView {
     setProportion(typedArray.getFloat(R.styleable.TemperatureTextView_proportion, PROPORTION_HALF));
   }
 
-  private int getTemperatureType() {
-    return temperatureType;
-  }
-
   public void setTemperatureType(@Temperature.Unit int temperatureType) {
     this.temperatureType = temperatureType;
-  }
-
-  public float getProportion() {
-    return proportion;
+    requestLayout();
   }
 
   public void setProportion(float proportion) {
     this.proportion = proportion;
+    requestLayout();
   }
 
   @Override public void setText(CharSequence text, BufferType type) {
@@ -89,7 +83,7 @@ public class TemperatureTextView extends AppCompatTextView {
   @NonNull
   private Spannable getSpannableTextSize(String currentTemp, int start, int end) {
     Spannable spannableCurrentTemp = new SpannableString(currentTemp);
-    spannableCurrentTemp.setSpan(new RelativeSizeSpan(getProportion()), start, end,
+    spannableCurrentTemp.setSpan(new RelativeSizeSpan(proportion), start, end,
         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     return spannableCurrentTemp;
   }

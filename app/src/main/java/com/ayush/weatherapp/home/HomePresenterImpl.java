@@ -68,7 +68,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   @Override public void detachView() {
   }
 
-  @Override public void onPauseView() {
+  @Override public void onPause() {
     stopLocationUpdates();
   }
 

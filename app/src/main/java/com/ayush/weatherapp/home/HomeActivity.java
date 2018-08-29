@@ -100,7 +100,7 @@ public class HomeActivity extends BaseActivity
 
   @Override protected void onPause() {
     super.onPause();
-    presenter.onPauseView();
+    presenter.onPause();
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {

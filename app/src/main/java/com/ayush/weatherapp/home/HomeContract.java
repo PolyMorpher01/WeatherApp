@@ -22,7 +22,7 @@ public interface HomeContract {
   }
 
   interface Presenter extends BaseContract.Presenter {
-    void onPauseView();
+    void onPause();
 
     void initHome();
   }

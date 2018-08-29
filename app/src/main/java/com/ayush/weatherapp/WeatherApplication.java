@@ -14,6 +14,6 @@ public class WeatherApplication extends Application {
       Timber.plant(new DebugTree());
     }
 
-    PreferenceRepositoryImpl.init(getApplicationContext());
+    PreferenceRepositoryImpl.init(this);
   }
 }
