@@ -109,6 +109,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         Location currentLocation = locationResult.getLocations().get(0);
         String latLng =
             String.valueOf(currentLocation.getLatitude()) + "," + currentLocation.getLongitude();
+        Timber.e(HomePresenterImpl.this.toString());
 
         fetchLocality(latLng);
         fetchWeatherForecast(latLng);
@@ -131,7 +132,9 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   private void stopLocationUpdates() {
-    fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+    if (locationCallback != null) {
+      fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+    }
   }
 
   private void fetchLocality(String latLng) {
