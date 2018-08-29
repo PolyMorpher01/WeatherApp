@@ -16,10 +16,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 import butterknife.BindView;
+import butterknife.OnCheckedChanged;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
@@ -57,6 +59,8 @@ public class HomeActivity extends BaseActivity
   @BindView(R.id.detail_sun) ForecastDetailCompoundView detailSun;
   @BindView(R.id.detail_wind) ForecastDetailCompoundView detailWind;
   @BindView(R.id.detail_temperature) ForecastDetailCompoundView detailTemperature;
+  @BindView(R.id.radio_celsius) RadioButton radioCelsius;
+  @BindView(R.id.radio_fahrenheit) RadioButton radioFahrenheit;
 
   @BindView(R.id.tab_layout) TabLayout tabLayout;
   @BindView(R.id.view_pager) ViewPager viewPager;
@@ -77,17 +81,28 @@ public class HomeActivity extends BaseActivity
     return presenter;
   }
 
+  @OnCheckedChanged({ R.id.radio_celsius, R.id.radio_fahrenheit }) void onChecked(
+      CompoundButton button, boolean checked) {
+    if (checked) {
+      switch (button.getId()) {
+        case R.id.radio_celsius:
+          presenter.saveTemperatureUnitPref(Temperature.Unit.CELSIUS);
+          break;
+        case R.id.radio_fahrenheit:
+          presenter.saveTemperatureUnitPref(Temperature.Unit.FAHRENHEIT);
+          break;
+      }
+      drawerLayout.closeDrawers();
+    }
+  }
+
   @Override protected void onCreate(Bundle savedInstanceState) {
     //override theme defined in the xml for splash screen effect
     setTheme(R.style.AppTheme);
-
     super.onCreate(savedInstanceState);
 
     initToolbar(toolbar);
     showTitleBar(false);
-
-    setNavigationView();
-
     presenter = new HomePresenterImpl(this);
     tabPagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
     preferenceRepository = PreferenceRepositoryImpl.get();
@@ -103,6 +118,14 @@ public class HomeActivity extends BaseActivity
     presenter.onPause();
   }
 
+  @Override public void setRadioChecked() {
+    if (preferenceRepository.getTemperatureUnit() == Temperature.Unit.CELSIUS) {
+      radioCelsius.setChecked(true);
+    } else {
+      radioFahrenheit.setChecked(true);
+    }
+  }
+
   @Override public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.menu_main, menu);
@@ -116,23 +139,6 @@ public class HomeActivity extends BaseActivity
         return true;
     }
     return super.onOptionsItemSelected(item);
-  }
-
-  private void setNavigationView() {
-    navigationView.setNavigationItemSelectedListener(menuItem -> {
-      switch (menuItem.getItemId()) {
-        case R.id.nav_celsius:
-          preferenceRepository.saveTemperatureUnit(Temperature.Unit.CELSIUS);
-          break;
-        case R.id.nav_fahrenheit:
-          preferenceRepository.saveTemperatureUnit(Temperature.Unit.FAHRENHEIT);
-          break;
-        default:
-          Toast.makeText(HomeActivity.this, menuItem.toString(), Toast.LENGTH_SHORT).show();
-      }
-      drawerLayout.closeDrawers();
-      return true;
-    });
   }
 
   @Override public Context getContext() {

@@ -89,6 +89,12 @@ public class HomePresenterImpl implements HomeContract.Presenter {
           getContext().getResources().getString(R.string.location_services_not_enabled),
           getContext().getResources().getString(R.string.open_location_settings));
     }
+
+    view.setRadioChecked();
+  }
+
+  @Override public void saveTemperatureUnitPref(int unit) {
+    preferenceRepository.saveTemperatureUnit(unit);
   }
 
   private void fetchCurrentLocation() {
@@ -131,7 +137,9 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   private void stopLocationUpdates() {
-    fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+    if (locationCallback != null) {
+      fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+    }
   }
 
   private void fetchLocality(String latLng) {
