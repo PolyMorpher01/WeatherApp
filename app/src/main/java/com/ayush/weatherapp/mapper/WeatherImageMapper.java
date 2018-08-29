@@ -27,13 +27,13 @@ public final class WeatherImageMapper {
   public static int getSmallImageResource(String weather) {
     switch (weather) {
       case WeatherImage.PARTLY_CLOUDY_DAY:
-        return R.drawable.img_small_cloudy;
+        return R.drawable.img_small_cloudy_dark;
 
       case WeatherImage.RAINY:
-        return R.drawable.img_small_rainy;
+        return R.drawable.img_small_rainy_dark;
 
       default:
-        return R.drawable.img_small_partly_sunny;
+        return R.drawable.img_small_partly_sunny_dark;
     }
   }
 }
