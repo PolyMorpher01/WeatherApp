@@ -43,6 +43,7 @@ dependencies {
   implementation 'com.google.firebase:firebase-crash:11.8.0'
   //old version for compatibility with firebase, new version 15.0.1
   implementation 'com.google.android.gms:play-services-location:11.8.0'
+  implementation 'com.google.android.gms:play-services-places:11.8.0'
 
   implementation 'com.crashlytics.sdk.android:crashlytics:2.9.3'
 
