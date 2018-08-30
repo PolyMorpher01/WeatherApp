@@ -141,12 +141,8 @@ public class HomeActivity extends BaseActivity
   @Override public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.search_menu, menu);
-
-    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-
     searchMenuItem = menu.findItem(R.id.search);
     searchView = (SearchView) searchMenuItem.getActionView();
-    //searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
     searchView.setOnQueryTextListener(this);
 
     return true;
