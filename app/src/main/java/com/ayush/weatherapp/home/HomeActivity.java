@@ -12,7 +12,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import com.ayush.weatherapp.R;
@@ -38,6 +38,9 @@ import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
 import com.ayush.weatherapp.utils.DateUtils;
 import com.ayush.weatherapp.utils.UnitConversionUtils;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import java.util.ArrayList;
 import java.util.List;
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -46,12 +49,11 @@ import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 public class HomeActivity extends BaseActivity
-    implements HomeContract.View, EasyPermissions.PermissionCallbacks,
-    SearchView.OnQueryTextListener {
+    implements HomeContract.View, EasyPermissions.PermissionCallbacks {
 
   private static final int RC_LOCATION_PERM = 123;
   private static final int TODAY = 0;
-
+  private final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
   @BindView(R.id.layout_drawer) DrawerLayout drawerLayout;
   @BindView(R.id.nav_view) NavigationView navigationView;
   @BindView(R.id.toolbar) Toolbar toolbar;
@@ -64,17 +66,12 @@ public class HomeActivity extends BaseActivity
   @BindView(R.id.detail_temperature) ForecastDetailCompoundView detailTemperature;
   @BindView(R.id.radio_celsius) RadioButton radioCelsius;
   @BindView(R.id.radio_fahrenheit) RadioButton radioFahrenheit;
-
   @BindView(R.id.tab_layout) TabLayout tabLayout;
   @BindView(R.id.view_pager) ViewPager viewPager;
   @BindView(R.id.ll_content_frame) LinearLayout llContentFrame;
-
   private TabPagerAdapter tabPagerAdapter;
   private HomeContract.Presenter presenter;
   private PreferenceRepository preferenceRepository;
-
-  private MenuItem searchMenuItem;
-  private SearchView searchView;
 
   @Override protected int getLayoutId() {
     return R.layout.activity_home;
@@ -140,10 +137,6 @@ public class HomeActivity extends BaseActivity
   @Override public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.search_menu, menu);
-    searchMenuItem = menu.findItem(R.id.search);
-    searchView = (SearchView) searchMenuItem.getActionView();
-    searchView.setOnQueryTextListener(this);
-
     return true;
   }
 
@@ -151,6 +144,10 @@ public class HomeActivity extends BaseActivity
     switch (item.getItemId()) {
       case android.R.id.home:
         drawerLayout.openDrawer(GravityCompat.START);
+        return true;
+
+      case R.id.search:
+        startPlaceAutoCompleteActivity();
         return true;
     }
     return super.onOptionsItemSelected(item);
@@ -265,6 +262,18 @@ public class HomeActivity extends BaseActivity
       // Do something after user returned from app settings screen
       checkLocationPermission();
     }
+
+    //after returning from places autocomplete activity
+    if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+      if (resultCode == RESULT_OK) {
+        Place place = PlaceAutocomplete.getPlace(this, data);
+        presenter.searchLocation((String) place.getAddress());
+      } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+        Status status = PlaceAutocomplete.getStatus(this, data);
+        Toast.makeText(this, status.getStatusMessage(), Toast.LENGTH_SHORT).show();
+        Timber.e(status.getStatusMessage());
+      }
+    }
   }
 
   private void fetchHomeDetails() {
@@ -286,14 +295,13 @@ public class HomeActivity extends BaseActivity
     dialog.setCancelable(false).show();
   }
 
-  @Override public boolean onQueryTextSubmit(String query) {
-    presenter.searchLocation(query);
-    searchMenuItem.collapseActionView();
-    //return true to indicate that it has handled the submit request
-    return true;
-  }
-
-  @Override public boolean onQueryTextChange(String newText) {
-    return false;
+  private void startPlaceAutoCompleteActivity() {
+    try {
+      Intent intent =
+          new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN).build(this);
+      startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+    } catch (Exception e) {
+      Timber.e(e);
+    }
   }
 }
