@@ -23,7 +23,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import com.ayush.weatherapp.R;
@@ -293,7 +292,7 @@ public class HomeActivity extends BaseActivity
   }
 
   @Override public boolean onQueryTextSubmit(String query) {
-    Toast.makeText(this, query, Toast.LENGTH_SHORT).show();
+    presenter.fetchNewLocation(query);
     return false;
   }
 

@@ -6,6 +6,7 @@ import java.util.List;
 public class Address {
   @SerializedName("address_components") private List<AddressComponents> addressComponents;
   @SerializedName("formatted_address") private String formattedAddress;
+  @SerializedName("geometry") private Geometry geometry;
 
   public List<AddressComponents> getAddressComponents() {
     return addressComponents;
@@ -13,6 +14,10 @@ public class Address {
 
   public String getFormattedAddress() {
     return formattedAddress;
+  }
+
+  public Geometry getGeometry() {
+    return geometry;
   }
 }
 
