@@ -18,7 +18,7 @@ public final class PreferenceRepositoryImpl implements PreferenceRepository {
     sharedPreferences = context.getSharedPreferences(APP_PREF_NAME, Context.MODE_PRIVATE);
     sharedPreferenceChangeListener = (sharedPreferences, key) -> {
       if (key.equals(TEMP_UNIT)) {
-        preferenceChangeListener.onTemperatureChanged(0, 1);
+        preferenceChangeListener.onTemperatureChanged(0);
       }
     };
     sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);

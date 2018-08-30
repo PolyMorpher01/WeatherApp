@@ -65,8 +65,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     geocodingAPIInterface = GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
 
     preferenceRepository = PreferenceRepositoryImpl.get();
-    preferenceRepository.onPreferenceChangeListener(
-        (oldTemperature, newTemperature) -> setForecastView());
+    preferenceRepository.onPreferenceChangeListener(newTemperature -> setForecastView());
   }
 
   @Override public void attachView() {
