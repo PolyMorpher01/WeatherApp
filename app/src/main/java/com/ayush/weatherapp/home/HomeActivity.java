@@ -303,6 +303,7 @@ public class HomeActivity extends BaseActivity
           new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN).build(this);
       startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
     } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
+      Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
       Timber.e(e);
     }
   }
