@@ -288,7 +288,9 @@ public class HomeActivity extends BaseActivity
 
   @Override public boolean onQueryTextSubmit(String query) {
     presenter.searchLocation(query);
-    return false;
+
+    //true to indicate that it has handled the submit request
+    return true;
   }
 
   @Override public boolean onQueryTextChange(String newText) {
