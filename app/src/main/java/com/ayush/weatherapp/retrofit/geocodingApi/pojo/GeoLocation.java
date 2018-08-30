@@ -3,7 +3,7 @@ package com.ayush.weatherapp.retrofit.geocodingApi.pojo;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
-public class ReverseGeoLocation {
+public class GeoLocation {
   @SerializedName("results") private List<Address> addresses;
   @SerializedName("status") private String status;
 

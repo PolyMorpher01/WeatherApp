@@ -12,6 +12,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,7 +46,8 @@ import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 public class HomeActivity extends BaseActivity
-    implements HomeContract.View, EasyPermissions.PermissionCallbacks {
+    implements HomeContract.View, EasyPermissions.PermissionCallbacks,
+    SearchView.OnQueryTextListener {
 
   private static final int RC_LOCATION_PERM = 123;
   private static final int TODAY = 0;
@@ -70,6 +72,9 @@ public class HomeActivity extends BaseActivity
   private TabPagerAdapter tabPagerAdapter;
   private HomeContract.Presenter presenter;
   private PreferenceRepository preferenceRepository;
+
+  private MenuItem searchMenuItem;
+  private SearchView searchView;
 
   @Override protected int getLayoutId() {
     return R.layout.activity_home;
@@ -134,7 +139,11 @@ public class HomeActivity extends BaseActivity
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.menu_main, menu);
+    inflater.inflate(R.menu.search_menu, menu);
+    searchMenuItem = menu.findItem(R.id.search);
+    searchView = (SearchView) searchMenuItem.getActionView();
+    searchView.setOnQueryTextListener(this);
+
     return true;
   }
 
@@ -275,5 +284,16 @@ public class HomeActivity extends BaseActivity
         (dialogInterface, which) -> this.startActivity(
             new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)));
     dialog.setCancelable(false).show();
+  }
+
+  @Override public boolean onQueryTextSubmit(String query) {
+    presenter.searchLocation(query);
+    searchMenuItem.collapseActionView();
+    //return true to indicate that it has handled the submit request
+    return true;
+  }
+
+  @Override public boolean onQueryTextChange(String newText) {
+    return false;
   }
 }

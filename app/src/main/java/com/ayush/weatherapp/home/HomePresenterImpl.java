@@ -7,6 +7,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.widget.Toast;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.WeatherImage;
 import com.ayush.weatherapp.mvp.BaseContract;
@@ -16,7 +17,9 @@ import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIClient;
 import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIInterface;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.Address;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponents;
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.ReverseGeoLocation;
+import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocation;
+import com.ayush.weatherapp.retrofit.geocodingApi.pojo.Geometry;
+import com.ayush.weatherapp.retrofit.geocodingApi.pojo.LocationCoordinates;
 import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIClient;
 import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIInterface;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
@@ -35,10 +38,9 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 public class HomePresenterImpl implements HomeContract.Presenter {
-  private final static String GEOCODING_API_KEY = "AIzaSyBKlS7jO0NvkX580X-ifkdfe12Mwzxhgc4";
   private final static int LOCATION_REQ_INTERVAL = 10000;
   private final static int FASTEST_LOCATION_REQ_INTERVAL = 5000;
-  private final static int LOCALITY_INDEX = 1;
+  private final static int LOCALITY_INDEX = 0;
 
   private FusedLocationProviderClient fusedLocationProviderClient;
   private LocationRequest locationRequest;
@@ -46,6 +48,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
   private HomeContract.View view;
   private PreferenceRepository preferenceRepository;
+  private GeocodingAPIInterface geocodingAPIInterface;
 
   private String localityAddress;
   private Forecast forecast;
@@ -57,10 +60,11 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
   HomePresenterImpl(BaseContract.View view) {
     this.view = (HomeContract.View) view;
-    preferenceRepository = PreferenceRepositoryImpl.get();
 
-    preferenceRepository.onPreferenceChangeListener(
-        (oldTemperature, newTemperature) -> setForecastView());
+    geocodingAPIInterface = GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
+
+    preferenceRepository = PreferenceRepositoryImpl.get();
+    preferenceRepository.onPreferenceChangeListener(newTemperature -> setForecastView());
   }
 
   @Override public void attachView() {
@@ -144,19 +148,17 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   private void fetchLocality(String latLng) {
-    GeocodingAPIInterface geocodingAPIInterface =
-        GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
 
-    Call<ReverseGeoLocation> reverseGeoLocationCall =
-        geocodingAPIInterface.getLocationDetails(latLng, GEOCODING_API_KEY);
+    Call<GeoLocation> geoLocationCall =
+        geocodingAPIInterface.getLocationDetails(latLng);
 
-    reverseGeoLocationCall.enqueue(new Callback<ReverseGeoLocation>() {
+    geoLocationCall.enqueue(new Callback<GeoLocation>() {
       @Override
-      public void onResponse(@NonNull Call<ReverseGeoLocation> call,
-          @NonNull Response<ReverseGeoLocation> response) {
-        ReverseGeoLocation reverseGeoLocation = response.body();
+      public void onResponse(@NonNull Call<GeoLocation> call,
+          @NonNull Response<GeoLocation> response) {
+        GeoLocation geoLocation = response.body();
 
-        List<Address> addressList = reverseGeoLocation.getAddresses();
+        List<Address> addressList = geoLocation.getAddresses();
 
         if (addressList != null && !addressList.isEmpty()) {
           List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
@@ -168,7 +170,39 @@ public class HomePresenterImpl implements HomeContract.Presenter {
       }
 
       @Override
-      public void onFailure(@NonNull Call<ReverseGeoLocation> call, @NonNull Throwable t) {
+      public void onFailure(@NonNull Call<GeoLocation> call, @NonNull Throwable t) {
+        Timber.e(t);
+      }
+    });
+  }
+
+  @Override public void searchLocation(String location) {
+    Call<GeoLocation> geoLocationCall = geocodingAPIInterface.getLatLng(location);
+
+    geoLocationCall.enqueue(new Callback<GeoLocation>() {
+      @Override public void onResponse(Call<GeoLocation> call, Response<GeoLocation> response) {
+        GeoLocation geoLocation = response.body();
+
+        List<Address> addressList = geoLocation.getAddresses();
+
+        if (addressList != null && !addressList.isEmpty()) {
+          Geometry geometry = addressList.get(0).getGeometry();
+          LocationCoordinates locationCoordinates = geometry.getLocationCoordinates();
+          double lat = locationCoordinates.getLatitude();
+          double lng = locationCoordinates.getLongitude();
+
+          String latLng = String.valueOf(lat) + "," + lng;
+          fetchWeatherForecast(latLng);
+
+          List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
+          localityAddress = addressComponentsList.get(LOCALITY_INDEX).getLongName();
+          view.setLocality(localityAddress);
+        } else {
+          Toast.makeText(getContext(), "Location invalid", Toast.LENGTH_SHORT).show();
+        }
+      }
+
+      @Override public void onFailure(Call<GeoLocation> call, Throwable t) {
         Timber.e(t);
       }
     });
