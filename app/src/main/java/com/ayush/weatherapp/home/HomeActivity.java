@@ -38,6 +38,8 @@ import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
 import com.ayush.weatherapp.utils.DateUtils;
 import com.ayush.weatherapp.utils.UnitConversionUtils;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
@@ -53,7 +55,7 @@ public class HomeActivity extends BaseActivity
 
   private static final int RC_LOCATION_PERM = 123;
   private static final int TODAY = 0;
-  private final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+  private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
   @BindView(R.id.layout_drawer) DrawerLayout drawerLayout;
   @BindView(R.id.nav_view) NavigationView navigationView;
   @BindView(R.id.toolbar) Toolbar toolbar;
@@ -300,7 +302,7 @@ public class HomeActivity extends BaseActivity
       Intent intent =
           new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN).build(this);
       startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
-    } catch (Exception e) {
+    } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
       Timber.e(e);
     }
   }
