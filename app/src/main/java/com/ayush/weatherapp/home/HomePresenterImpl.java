@@ -136,7 +136,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     if (ActivityCompat.checkSelfPermission(getContext(),
         Manifest.permission.ACCESS_FINE_LOCATION)
         != PackageManager.PERMISSION_GRANTED) {
-      throw new RuntimeException("LocationCoordinates permission not provided");
+      throw new RuntimeException("Location permission not provided");
     }
     fusedLocationProviderClient.requestLocationUpdates(locationRequest,
         locationCallback,
@@ -178,7 +178,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     });
   }
 
-  @Override public void fetchNewLocation(String location) {
+  @Override public void searchLocation(String location) {
     Call<GeoLocation> geoLocationCall = geocodingAPIInterface.getLatLng(location);
 
     geoLocationCall.enqueue(new Callback<GeoLocation>() {

@@ -1,7 +1,6 @@
 package com.ayush.weatherapp.home;
 
 import android.Manifest;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -288,7 +287,7 @@ public class HomeActivity extends BaseActivity
   }
 
   @Override public boolean onQueryTextSubmit(String query) {
-    presenter.fetchNewLocation(query);
+    presenter.searchLocation(query);
     return false;
   }
 
