@@ -288,8 +288,8 @@ public class HomeActivity extends BaseActivity
 
   @Override public boolean onQueryTextSubmit(String query) {
     presenter.searchLocation(query);
-
-    //true to indicate that it has handled the submit request
+    searchMenuItem.collapseActionView();
+    //return true to indicate that it has handled the submit request
     return true;
   }
 
