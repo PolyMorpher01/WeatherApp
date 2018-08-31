@@ -277,9 +277,7 @@ public class HomeActivity extends BaseActivity
       if (resultCode == RESULT_OK) {
         Place place = PlaceAutocomplete.getPlace(this, data);
         LatLng latLng = place.getLatLng();
-        double lat = latLng.latitude;
-        double lng = latLng.longitude;
-        presenter.searchLocation(lat, lng);
+        presenter.searchLocation(latLng.latitude, latLng.longitude);
       } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
         Status status = PlaceAutocomplete.getStatus(this, data);
         Toast.makeText(this, status.getStatusMessage(), Toast.LENGTH_SHORT).show();
