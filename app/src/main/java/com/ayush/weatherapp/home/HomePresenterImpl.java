@@ -208,7 +208,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   private String getAddressPrimary(List<AddressComponents> addressComponentsList) {
     for (AddressComponents addressComponent : addressComponentsList) {
       if (addressComponent.getTypes().contains(ADDRESS_STREET)) {
-        return addressComponent.getShortName();
+        return addressComponent.getLongName();
       }
     }
     return "";

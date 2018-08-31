@@ -274,15 +274,15 @@ public class HomeActivity extends BaseActivity
 
     //after returning from places autocomplete activity
     if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
-      if (resultCode == RESULT_OK) {
-        Place place = PlaceAutocomplete.getPlace(this, data);
-        LatLng latLng = place.getLatLng();
-        presenter.searchLocation(latLng.latitude, latLng.longitude);
-      } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+      if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
         Status status = PlaceAutocomplete.getStatus(this, data);
         Toast.makeText(this, status.getStatusMessage(), Toast.LENGTH_SHORT).show();
         Timber.e(status.getStatusMessage());
+        return;
       }
+      Place place = PlaceAutocomplete.getPlace(this, data);
+      LatLng latLng = place.getLatLng();
+      presenter.searchLocation(latLng.latitude, latLng.longitude);
     }
   }
 
