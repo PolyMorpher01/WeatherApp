@@ -218,9 +218,11 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     for (AddressComponents addressComponent : addressComponentsList) {
       if (addressComponent.getTypes().contains(ADDRESS_CITY)) {
         return addressComponent.getLongName();
-      } else if (addressComponent.getTypes().contains(ADDRESS_ADMINISTRATIVE_AREA)) {
+      }
+      if (addressComponent.getTypes().contains(ADDRESS_ADMINISTRATIVE_AREA)) {
         return addressComponent.getLongName();
-      } else if (addressComponent.getTypes().contains(ADDRESS_COUNTRY)) {
+      }
+      if (addressComponent.getTypes().contains(ADDRESS_COUNTRY)) {
         return addressComponent.getLongName();
       }
     }
