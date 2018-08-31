@@ -104,7 +104,7 @@ public class HomeActivity extends BaseActivity
     }
   }
 
-  @OnClick(R.id.tv_current_location) void fetchByCurrentLocation() {
+  @OnClick(R.id.tv_current_location) void onTvCurrentLocationClicked() {
     presenter.fetchCurrentLocation();
     drawerLayout.closeDrawers();
   }

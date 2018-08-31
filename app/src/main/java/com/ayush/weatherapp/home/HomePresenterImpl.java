@@ -35,10 +35,10 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 public class HomePresenterImpl implements HomeContract.Presenter {
-  private final static int LOCATION_REQ_INTERVAL = 10000;
-  private final static int FASTEST_LOCATION_REQ_INTERVAL = 5000;
-  private final static String ADDRESS_ROUTE = "route";
-  private final static String ADDRESS_LOCALITY = "locality";
+  private static final int LOCATION_REQ_INTERVAL = 10000;
+  private static final int FASTEST_LOCATION_REQ_INTERVAL = 5000;
+  private static final String ADDRESS_ROUTE = "route";
+  private static final String ADDRESS_LOCALITY = "locality";
 
   private FusedLocationProviderClient fusedLocationProviderClient;
   private LocationRequest locationRequest;
