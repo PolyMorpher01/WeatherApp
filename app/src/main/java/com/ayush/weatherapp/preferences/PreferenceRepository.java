@@ -9,7 +9,5 @@ public interface PreferenceRepository {
 
   String getCurrentLocationCoordinates();
 
-  void removeCurrentLocationCoordinates();
-
   void onPreferenceChangeListener(PreferenceChangeListener changeListener);
 }

@@ -72,7 +72,6 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   @Override public void detachView() {
-    preferenceRepository.removeCurrentLocationCoordinates();
   }
 
   @Override public void onPause() {
@@ -88,7 +87,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   @Override public void onSwipeRefresh() {
-    fetchAddress(preferenceRepository.getCurrentLocationCoordinates());
+    fetchByGivenLocation(preferenceRepository.getCurrentLocationCoordinates());
   }
 
   @Override public void onCurrentLocationClicked() {
@@ -101,30 +100,33 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
   private void fetchByCurrentLocation() {
     if (isLocationServicesEnabled()) {
-      locationRequest = new LocationRequest();
-      locationRequest.setInterval(LOCATION_REQ_INTERVAL);
-      locationRequest.setFastestInterval(FASTEST_LOCATION_REQ_INTERVAL);
-      locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-      locationCallback = new LocationCallback() {
-        @Override public void onLocationResult(LocationResult locationResult) {
-          if (locationResult == null) {
-            Timber.e("location result null");
-            return;
-          }
-
-          //get only first location
-          Location currentLocation = locationResult.getLocations().get(0);
-          String latLng = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
-
-          fetchAddress(latLng);
-          fetchWeatherForecast(latLng);
-
-          stopLocationUpdates();
-        }
-      };
+      initLocationRequest();
       startLocationUpdates();
     }
+  }
+
+  private void initLocationRequest() {
+    locationRequest = new LocationRequest();
+    locationRequest.setInterval(LOCATION_REQ_INTERVAL);
+    locationRequest.setFastestInterval(FASTEST_LOCATION_REQ_INTERVAL);
+    locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+    locationCallback = new LocationCallback() {
+      @Override public void onLocationResult(LocationResult locationResult) {
+        if (locationResult == null) {
+          Timber.e("location result null");
+          return;
+        }
+        //get only first location
+        Location currentLocation = locationResult.getLocations().get(0);
+        String latLng = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
+
+        fetchAddress(latLng);
+        fetchWeatherForecast(latLng);
+
+        stopLocationUpdates();
+      }
+    };
   }
 
   private void startLocationUpdates() {
@@ -227,8 +229,8 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   private void fetchWeatherForecast(String latLng) {
-
     view.showSwipeRefresh();
+
     WeatherAPIInterface weatherApiInterface =
         WeatherAPIClient.getClient().create(WeatherAPIInterface.class);
     Call<Forecast> forecastCall = weatherApiInterface.getForecast(latLng);

@@ -53,12 +53,6 @@ public final class PreferenceRepositoryImpl implements PreferenceRepository {
     return sharedPreferences.getString(CURRENT_COORDINATES, null);
   }
 
-  @Override public void removeCurrentLocationCoordinates() {
-    SharedPreferences.Editor editor = sharedPreferences.edit();
-    editor.remove(CURRENT_COORDINATES);
-    editor.apply();
-  }
-
   @Override public void onPreferenceChangeListener(PreferenceChangeListener changeListener) {
     preferenceChangeListener = changeListener;
   }
