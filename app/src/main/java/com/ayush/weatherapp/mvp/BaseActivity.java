@@ -1,6 +1,5 @@
 package com.ayush.weatherapp.mvp;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -11,14 +10,11 @@ import com.ayush.weatherapp.R;
 
 public abstract class BaseActivity extends AppCompatActivity {
   private ActionBar actionBar;
-  private ProgressDialog progressDialog;
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(getLayoutId());
     ButterKnife.bind(this);
-
-    progressDialog = new ProgressDialog(this);
 
     setupPresenter();
     getPresenter().attachView();
@@ -45,9 +41,5 @@ public abstract class BaseActivity extends AppCompatActivity {
 
   public void showTitleBar(boolean showTitle) {
     actionBar.setDisplayShowTitleEnabled(showTitle);
-  }
-
-  public ProgressDialog getProgressDialog() {
-    return progressDialog;
   }
 }

@@ -32,6 +32,8 @@ public interface HomeContract {
 
     void initHome();
 
+    void onSwipeRefresh();
+
     void onCurrentLocationClicked();
 
     void saveTemperatureUnitPref(@Temperature int unit);

@@ -11,6 +11,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -73,6 +74,7 @@ public class HomeActivity extends BaseActivity
   @BindView(R.id.tab_layout) TabLayout tabLayout;
   @BindView(R.id.view_pager) ViewPager viewPager;
   @BindView(R.id.ll_content_frame) LinearLayout llContentFrame;
+  @BindView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
   private TabPagerAdapter tabPagerAdapter;
   private HomeContract.Presenter presenter;
   private PreferenceRepository preferenceRepository;
@@ -117,6 +119,8 @@ public class HomeActivity extends BaseActivity
     presenter = new HomePresenterImpl(this);
     tabPagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
     preferenceRepository = PreferenceRepositoryImpl.get();
+
+    swipeRefreshLayout.setOnRefreshListener(() -> presenter.onSwipeRefresh());
   }
 
   @Override protected void onResume() {
@@ -164,14 +168,12 @@ public class HomeActivity extends BaseActivity
     return this;
   }
 
-  @Override public void showProgressDialog(String message, boolean cancelable) {
-    getProgressDialog().setMessage(message);
-    getProgressDialog().setCancelable(cancelable);
-    getProgressDialog().show();
+  @Override public void showSwipeRefresh() {
+    swipeRefreshLayout.setRefreshing(true);
   }
 
-  @Override public void hideProgressDialog() {
-    getProgressDialog().dismiss();
+  @Override public void dismissSwipeRefresh() {
+    swipeRefreshLayout.setRefreshing(false);
   }
 
   @Override public void setCurrentForecast(CurrentForecast currentForecast) {

@@ -61,7 +61,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
   HomePresenterImpl(BaseContract.View view) {
     this.view = (HomeContract.View) view;
-
+    fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
     geocodingAPIInterface = GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
 
     preferenceRepository = PreferenceRepositoryImpl.get();
@@ -82,32 +82,34 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     if (forecast != null) {
       return;
     }
+    
+    fetchData();
+    view.setRadioChecked();
+  }
 
-    view.showProgressDialog("Loading", false);
+  @Override public void onSwipeRefresh() {
+    fetchData();
+  }
 
-    fusedLocationProviderClient =
-        LocationServices.getFusedLocationProviderClient(getContext());
-
+  private void fetchData() {
     if (isLocationServicesEnabled(getContext())) {
-      fetchCurrentLocation();
+      fetchByCurrentLocation();
     } else {
       view.showGPSNotEnabledDialog(
           getContext().getResources().getString(R.string.location_services_not_enabled),
           getContext().getResources().getString(R.string.open_location_settings));
     }
-
-    view.setRadioChecked();
   }
 
   @Override public void onCurrentLocationClicked() {
-    fetchCurrentLocation();
+    fetchByCurrentLocation();
   }
 
   @Override public void saveTemperatureUnitPref(@Temperature int unit) {
     preferenceRepository.saveTemperatureUnit(unit);
   }
 
-  private void fetchCurrentLocation() {
+  private void fetchByCurrentLocation() {
 
     locationRequest = new LocationRequest();
     locationRequest.setInterval(LOCATION_REQ_INTERVAL);
@@ -231,6 +233,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
   private void fetchWeatherForecast(String latLng) {
 
+    view.showSwipeRefresh();
     WeatherAPIInterface weatherApiInterface =
         WeatherAPIClient.getClient().create(WeatherAPIInterface.class);
     Call<Forecast> forecastCall = weatherApiInterface.getForecast(latLng);
@@ -245,12 +248,12 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         hourlyForecast = forecast.getHourlyForecast();
         hourlyDataList = hourlyForecast.getHourlyDataList();
         setForecastView();
-        view.hideProgressDialog();
+        view.dismissSwipeRefresh();
       }
 
       @Override public void onFailure(@NonNull Call<Forecast> call, @NonNull Throwable t) {
         Timber.e(t);
-        view.hideProgressDialog();
+        view.dismissSwipeRefresh();
       }
     });
   }

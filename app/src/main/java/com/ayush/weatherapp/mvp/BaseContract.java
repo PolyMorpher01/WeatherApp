@@ -6,9 +6,9 @@ public interface BaseContract {
   interface View {
     Context getContext();
 
-    void showProgressDialog(String message, boolean cancelable);
+    void showSwipeRefresh();
 
-    void hideProgressDialog();
+    void dismissSwipeRefresh();
   }
 
   interface Presenter {
