@@ -38,6 +38,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   private final static int LOCATION_REQ_INTERVAL = 10000;
   private final static int FASTEST_LOCATION_REQ_INTERVAL = 5000;
   private final static String ADDRESS_ROUTE = "route";
+  private final static String ADDRESS_LOCALITY = "locality";
 
   private FusedLocationProviderClient fusedLocationProviderClient;
   private LocationRequest locationRequest;
@@ -161,10 +162,16 @@ public class HomePresenterImpl implements HomeContract.Presenter {
           for (AddressComponents addressComponent : addressComponentsList) {
             if (addressComponent.getTypes().contains(ADDRESS_ROUTE)) {
               view.setLocality(addressComponent.getShortName());
+              break;
+            } else if (addressComponent.getTypes().contains(ADDRESS_LOCALITY)) {
+              view.setLocality(addressComponent.getShortName());
+              break;
+            } else {
+              view.setLocality(getContext().getResources().getString(R.string.not_available));
             }
           }
         } else {
-          view.setLocality("N/A");
+          view.setLocality(getContext().getResources().getString(R.string.not_available));
         }
       }
 
