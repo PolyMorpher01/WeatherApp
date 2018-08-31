@@ -23,4 +23,5 @@
   <string name="open_location_settings">Open location settings</string>
 
   <string name="google_places_api_key">AIzaSyDCRsLiCmzX3f4oL5iLJMrhLfe9iOE5o60</string>
+  <string name="current_location">Current Location</string>
 </resources>

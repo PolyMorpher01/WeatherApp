@@ -33,6 +33,8 @@ public interface HomeContract {
 
     void initHome();
 
+    void fetchCurrentLocation();
+
     void saveTemperatureUnitPref(@Temperature.Unit int unit);
 
     void searchLocation(double lat, double lng);

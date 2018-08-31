@@ -99,7 +99,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     preferenceRepository.saveTemperatureUnit(unit);
   }
 
-  private void fetchCurrentLocation() {
+  @Override public void fetchCurrentLocation() {
 
     locationRequest = new LocationRequest();
     locationRequest.setInterval(LOCATION_REQ_INTERVAL);

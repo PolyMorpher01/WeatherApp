@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
@@ -101,6 +102,11 @@ public class HomeActivity extends BaseActivity
       }
       drawerLayout.closeDrawers();
     }
+  }
+
+  @OnClick(R.id.tv_current_location) void fetchByCurrentLocation() {
+    presenter.fetchCurrentLocation();
+    drawerLayout.closeDrawers();
   }
 
   @Override protected void onCreate(Bundle savedInstanceState) {
