@@ -280,6 +280,9 @@ public class HomeActivity extends BaseActivity
         Timber.e(status.getStatusMessage());
         return;
       }
+      if (resultCode == RESULT_CANCELED) {
+        return;
+      }
       Place place = PlaceAutocomplete.getPlace(this, data);
       LatLng latLng = place.getLatLng();
       presenter.searchLocation(latLng.latitude, latLng.longitude);
