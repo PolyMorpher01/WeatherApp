@@ -7,6 +7,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.text.TextUtils;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.WeatherImage;
 import com.ayush.weatherapp.mvp.BaseContract;
@@ -37,8 +38,8 @@ import timber.log.Timber;
 public class HomePresenterImpl implements HomeContract.Presenter {
   private static final int LOCATION_REQ_INTERVAL = 10000;
   private static final int FASTEST_LOCATION_REQ_INTERVAL = 5000;
-  private static final String ADDRESS_ROUTE = "route";
-  private static final String ADDRESS_LOCALITY = "locality";
+  private static final String ADDRESS_STREET = "route";
+  private static final String ADDRESS_CITY = "locality";
   private static final String ADDRESS_COUNTRY = "country";
   private static final String ADDRESS_ADMINISTRATIVE_AREA = "administrative_area_level_1";
 
@@ -121,8 +122,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
         //get only first location
         Location currentLocation = locationResult.getLocations().get(0);
-        String latLng =
-            String.valueOf(currentLocation.getLatitude()) + "," + currentLocation.getLongitude();
+        String latLng = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
 
         fetchAddress(latLng);
         fetchWeatherForecast(latLng);
@@ -164,8 +164,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
         if (addressList != null && !addressList.isEmpty()) {
           List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
-          view.setAddress(
-              getAddressPrimary(addressComponentsList) + getAddressSecondary(addressComponentsList));
+          view.setAddress(getAddress(addressComponentsList));
         } else {
           view.setAddress(getContext().getResources().getString(R.string.not_available));
         }
@@ -184,9 +183,30 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     fetchAddress(latlng);
   }
 
+  private String getAddress(List<AddressComponents> addressComponentsList) {
+    String primaryAddress = getAddressPrimary(addressComponentsList);
+    String secondaryAddress = getAddressSecondary(addressComponentsList);
+    String address = "";
+
+    if (!TextUtils.isEmpty(primaryAddress)) {
+      address = primaryAddress;
+      if (!TextUtils.isEmpty(secondaryAddress)) {
+        address += ", " + secondaryAddress;
+      }
+      return address;
+    }
+
+    //case when primary address is empty
+    if (!TextUtils.isEmpty(secondaryAddress)) {
+      address = secondaryAddress;
+      return address;
+    }
+    return address;
+  }
+
   private String getAddressPrimary(List<AddressComponents> addressComponentsList) {
     for (AddressComponents addressComponent : addressComponentsList) {
-      if (addressComponent.getTypes().contains(ADDRESS_ROUTE)) {
+      if (addressComponent.getTypes().contains(ADDRESS_STREET)) {
         return addressComponent.getShortName();
       }
     }
@@ -195,12 +215,12 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
   private String getAddressSecondary(List<AddressComponents> addressComponentsList) {
     for (AddressComponents addressComponent : addressComponentsList) {
-      if (addressComponent.getTypes().contains(ADDRESS_LOCALITY)) {
-        return ", " + addressComponent.getLongName();
+      if (addressComponent.getTypes().contains(ADDRESS_CITY)) {
+        return addressComponent.getLongName();
       } else if (addressComponent.getTypes().contains(ADDRESS_ADMINISTRATIVE_AREA)) {
-        return ", " + addressComponent.getLongName();
+        return addressComponent.getLongName();
       } else if (addressComponent.getTypes().contains(ADDRESS_COUNTRY)) {
-        return ", " + addressComponent.getLongName();
+        return addressComponent.getLongName();
       }
     }
     return "";
