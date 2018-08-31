@@ -12,6 +12,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
+import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.customViews.ForecastCompoundView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.preferences.PreferenceRepository;
@@ -64,7 +65,7 @@ public class DailyForecastFragment extends Fragment {
     double averageTemperature = Math.round(
         MathUtils.getAverage(dailyData.getTemperatureHigh(), dailyData.getTemperatureLow()));
 
-    if (preferenceRepository.getTemperatureUnit() == Temperature.Unit.CELSIUS) {
+    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
       averageTemperature = UnitConversionUtils.fahrenheitToCelsius(averageTemperature);
     }
 

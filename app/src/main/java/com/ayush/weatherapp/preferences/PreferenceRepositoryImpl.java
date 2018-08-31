@@ -3,6 +3,7 @@ package com.ayush.weatherapp.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 import com.ayush.weatherapp.constants.Temperature;
+import com.ayush.weatherapp.constants.TemperatureUnit;
 
 public final class PreferenceRepositoryImpl implements PreferenceRepository {
 
@@ -39,7 +40,7 @@ public final class PreferenceRepositoryImpl implements PreferenceRepository {
   }
 
   @Override public int getTemperatureUnit() {
-    return sharedPreferences.getInt(TEMP_UNIT, Temperature.Unit.CELSIUS);
+    return sharedPreferences.getInt(TEMP_UNIT, TemperatureUnit.CELSIUS);
   }
 
   @Override public void onPreferenceChangeListener(PreferenceChangeListener changeListener) {

@@ -1,6 +1,5 @@
 package com.ayush.weatherapp.home;
 
-import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.mvp.BaseContract;
@@ -35,7 +34,7 @@ public interface HomeContract {
 
     void onCurrentLocationClicked();
 
-    void saveTemperatureUnitPref(@Temperature.Unit int unit);
+    void saveTemperatureUnitPref(@Temperature int unit);
 
     void searchLocation(double lat, double lng);
   }

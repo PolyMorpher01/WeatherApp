@@ -26,7 +26,7 @@ import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import com.ayush.weatherapp.R;
-import com.ayush.weatherapp.constants.Temperature;
+import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
 import com.ayush.weatherapp.customViews.TemperatureTextView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
@@ -94,10 +94,10 @@ public class HomeActivity extends BaseActivity
     if (checked) {
       switch (button.getId()) {
         case R.id.radio_celsius:
-          presenter.saveTemperatureUnitPref(Temperature.Unit.CELSIUS);
+          presenter.saveTemperatureUnitPref(TemperatureUnit.CELSIUS);
           break;
         case R.id.radio_fahrenheit:
-          presenter.saveTemperatureUnitPref(Temperature.Unit.FAHRENHEIT);
+          presenter.saveTemperatureUnitPref(TemperatureUnit.FAHRENHEIT);
           break;
       }
       drawerLayout.closeDrawers();
@@ -132,7 +132,7 @@ public class HomeActivity extends BaseActivity
   }
 
   @Override public void setRadioChecked() {
-    if (preferenceRepository.getTemperatureUnit() == Temperature.Unit.CELSIUS) {
+    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
       radioCelsius.setChecked(true);
     } else {
       radioFahrenheit.setChecked(true);
@@ -211,7 +211,7 @@ public class HomeActivity extends BaseActivity
     double temperatureHigh = todaysForecast.getTemperatureHigh();
     double temperatureLow = todaysForecast.getTemperatureLow();
 
-    if (preferenceRepository.getTemperatureUnit() == Temperature.Unit.CELSIUS) {
+    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
       formatWind = R.string.format_wind_kph;
       windSpeed = UnitConversionUtils.mphToKmph(windSpeed);
       temperatureHigh = UnitConversionUtils.fahrenheitToCelsius(temperatureHigh);

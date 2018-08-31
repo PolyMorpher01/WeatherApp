@@ -4,14 +4,10 @@ import android.support.annotation.IntDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-public class Temperature {
-  private static final int CELSIUS = 0;
-  private static final int FAHRENHEIT = 1;
+import static com.ayush.weatherapp.constants.TemperatureUnit.CELSIUS;
+import static com.ayush.weatherapp.constants.TemperatureUnit.FAHRENHEIT;
 
-  @IntDef({CELSIUS, FAHRENHEIT})
-  @Retention(RetentionPolicy.SOURCE)
-  public @interface Unit {
-    int CELSIUS = Temperature.CELSIUS;
-    int FAHRENHEIT = Temperature.FAHRENHEIT;
-  }
-}
+@IntDef({ CELSIUS, FAHRENHEIT })
+@Retention(RetentionPolicy.SOURCE)
+public @interface Temperature {}
+

@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import com.ayush.weatherapp.R;
+import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.WeatherImage;
 import com.ayush.weatherapp.mvp.BaseContract;
 import com.ayush.weatherapp.preferences.PreferenceRepository;
@@ -102,7 +103,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     fetchCurrentLocation();
   }
 
-  @Override public void saveTemperatureUnitPref(int unit) {
+  @Override public void saveTemperatureUnitPref(@Temperature int unit) {
     preferenceRepository.saveTemperatureUnit(unit);
   }
 
