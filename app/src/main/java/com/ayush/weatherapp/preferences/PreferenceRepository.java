@@ -5,5 +5,11 @@ public interface PreferenceRepository {
 
   int getTemperatureUnit();
 
+  void saveCurrentLocationCoordinates(String latlng);
+
+  String getCurrentLocationCoordinates();
+
+  void removeCurrentLocationCoordinates();
+
   void onPreferenceChangeListener(PreferenceChangeListener changeListener);
 }

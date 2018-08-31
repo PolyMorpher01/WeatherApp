@@ -72,6 +72,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   @Override public void detachView() {
+    preferenceRepository.removeCurrentLocationCoordinates();
   }
 
   @Override public void onPause() {
@@ -82,23 +83,12 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     if (forecast != null) {
       return;
     }
-    
-    fetchData();
+    fetchByCurrentLocation();
     view.setRadioChecked();
   }
 
   @Override public void onSwipeRefresh() {
-    fetchData();
-  }
-
-  private void fetchData() {
-    if (isLocationServicesEnabled(getContext())) {
-      fetchByCurrentLocation();
-    } else {
-      view.showGPSNotEnabledDialog(
-          getContext().getResources().getString(R.string.location_services_not_enabled),
-          getContext().getResources().getString(R.string.open_location_settings));
-    }
+    fetchAddress(preferenceRepository.getCurrentLocationCoordinates());
   }
 
   @Override public void onCurrentLocationClicked() {
@@ -110,30 +100,31 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   private void fetchByCurrentLocation() {
+    if (isLocationServicesEnabled()) {
+      locationRequest = new LocationRequest();
+      locationRequest.setInterval(LOCATION_REQ_INTERVAL);
+      locationRequest.setFastestInterval(FASTEST_LOCATION_REQ_INTERVAL);
+      locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-    locationRequest = new LocationRequest();
-    locationRequest.setInterval(LOCATION_REQ_INTERVAL);
-    locationRequest.setFastestInterval(FASTEST_LOCATION_REQ_INTERVAL);
-    locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+      locationCallback = new LocationCallback() {
+        @Override public void onLocationResult(LocationResult locationResult) {
+          if (locationResult == null) {
+            Timber.e("location result null");
+            return;
+          }
 
-    locationCallback = new LocationCallback() {
-      @Override public void onLocationResult(LocationResult locationResult) {
-        if (locationResult == null) {
-          Timber.e("location result null");
-          return;
+          //get only first location
+          Location currentLocation = locationResult.getLocations().get(0);
+          String latLng = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
+
+          fetchAddress(latLng);
+          fetchWeatherForecast(latLng);
+
+          stopLocationUpdates();
         }
-
-        //get only first location
-        Location currentLocation = locationResult.getLocations().get(0);
-        String latLng = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
-
-        fetchAddress(latLng);
-        fetchWeatherForecast(latLng);
-
-        stopLocationUpdates();
-      }
-    };
-    startLocationUpdates();
+      };
+      startLocationUpdates();
+    }
   }
 
   private void startLocationUpdates() {
@@ -142,9 +133,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         != PackageManager.PERMISSION_GRANTED) {
       throw new RuntimeException("Location permission not provided");
     }
-    fusedLocationProviderClient.requestLocationUpdates(locationRequest,
-        locationCallback,
-        null /* Looper */);
+    fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
   }
 
   private void stopLocationUpdates() {
@@ -182,8 +171,14 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
   @Override public void searchLocation(double lat, double lng) {
     String latlng = lat + "," + lng;
-    fetchWeatherForecast(latlng);
-    fetchAddress(latlng);
+    fetchByGivenLocation(latlng);
+  }
+
+  private void fetchByGivenLocation(String latlng) {
+    if (isLocationServicesEnabled()) {
+      fetchWeatherForecast(latlng);
+      fetchAddress(latlng);
+    }
   }
 
   private String getAddress(List<AddressComponents> addressComponentsList) {
@@ -249,6 +244,9 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         hourlyDataList = hourlyForecast.getHourlyDataList();
         setForecastView();
         view.dismissSwipeRefresh();
+
+        //save to provide coordinates during refresh
+        preferenceRepository.saveCurrentLocationCoordinates(latLng);
       }
 
       @Override public void onFailure(@NonNull Call<Forecast> call, @NonNull Throwable t) {
@@ -288,16 +286,22 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     }
   }
 
-  private boolean isLocationServicesEnabled(Context context) {
+  private boolean isLocationServicesEnabled() {
     LocationManager locationManager =
-        (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
     boolean gpsEnabled;
     boolean networkEnabled;
 
     gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-    return gpsEnabled || networkEnabled;
+    if (!gpsEnabled && !networkEnabled) {
+      view.showGPSNotEnabledDialog(
+          getContext().getResources().getString(R.string.location_services_not_enabled),
+          getContext().getResources().getString(R.string.open_location_settings));
+      return false;
+    }
+    return true;
   }
 
   private Context getContext() {
