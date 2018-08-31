@@ -39,6 +39,8 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   private static final int FASTEST_LOCATION_REQ_INTERVAL = 5000;
   private static final String ADDRESS_ROUTE = "route";
   private static final String ADDRESS_LOCALITY = "locality";
+  private static final String ADDRESS_COUNTRY = "country";
+  private static final String ADDRESS_ADMINISTRATIVE_AREA = "administrative_area_level_1";
 
   private FusedLocationProviderClient fusedLocationProviderClient;
   private LocationRequest locationRequest;
@@ -95,11 +97,15 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     view.setRadioChecked();
   }
 
+  @Override public void onCurrentLocationClicked() {
+    fetchCurrentLocation();
+  }
+
   @Override public void saveTemperatureUnitPref(int unit) {
     preferenceRepository.saveTemperatureUnit(unit);
   }
 
-  @Override public void fetchCurrentLocation() {
+  private void fetchCurrentLocation() {
 
     locationRequest = new LocationRequest();
     locationRequest.setInterval(LOCATION_REQ_INTERVAL);
@@ -154,24 +160,14 @@ public class HomePresenterImpl implements HomeContract.Presenter {
       public void onResponse(@NonNull Call<GeoLocation> call,
           @NonNull Response<GeoLocation> response) {
         GeoLocation geoLocation = response.body();
-
         List<Address> addressList = geoLocation.getAddresses();
 
         if (addressList != null && !addressList.isEmpty()) {
           List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
-          for (AddressComponents addressComponent : addressComponentsList) {
-            if (addressComponent.getTypes().contains(ADDRESS_ROUTE)) {
-              view.setLocality(addressComponent.getShortName());
-              break;
-            } else if (addressComponent.getTypes().contains(ADDRESS_LOCALITY)) {
-              view.setLocality(addressComponent.getShortName());
-              break;
-            } else {
-              view.setLocality(getContext().getResources().getString(R.string.not_available));
-            }
-          }
+          view.setAddress(
+              getAddressPrimary(addressComponentsList) + getAddressSecondary(addressComponentsList));
         } else {
-          view.setLocality(getContext().getResources().getString(R.string.not_available));
+          view.setAddress(getContext().getResources().getString(R.string.not_available));
         }
       }
 
@@ -186,6 +182,28 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     String latlng = lat + "," + lng;
     fetchWeatherForecast(latlng);
     fetchAddress(latlng);
+  }
+
+  private String getAddressPrimary(List<AddressComponents> addressComponentsList) {
+    for (AddressComponents addressComponent : addressComponentsList) {
+      if (addressComponent.getTypes().contains(ADDRESS_ROUTE)) {
+        return addressComponent.getShortName();
+      }
+    }
+    return "";
+  }
+
+  private String getAddressSecondary(List<AddressComponents> addressComponentsList) {
+    for (AddressComponents addressComponent : addressComponentsList) {
+      if (addressComponent.getTypes().contains(ADDRESS_LOCALITY)) {
+        return ", " + addressComponent.getLongName();
+      } else if (addressComponent.getTypes().contains(ADDRESS_ADMINISTRATIVE_AREA)) {
+        return ", " + addressComponent.getLongName();
+      } else if (addressComponent.getTypes().contains(ADDRESS_COUNTRY)) {
+        return ", " + addressComponent.getLongName();
+      }
+    }
+    return "";
   }
 
   private void fetchWeatherForecast(String latLng) {

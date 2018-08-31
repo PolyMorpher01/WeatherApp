@@ -104,8 +104,8 @@ public class HomeActivity extends BaseActivity
     }
   }
 
-  @OnClick(R.id.tv_current_location) void onTvCurrentLocationClicked() {
-    presenter.fetchCurrentLocation();
+  @OnClick(R.id.tv_current_location) void onCurrentLocationClicked() {
+    presenter.onCurrentLocationClicked();
     drawerLayout.closeDrawers();
   }
 
@@ -197,8 +197,8 @@ public class HomeActivity extends BaseActivity
         new ArrayList<>(hourlyForeCastList.subList(0, MAX_NUMBER_OF_DATA)));
   }
 
-  @Override public void setLocality(String locality) {
-    tvLocation.setText(locality);
+  @Override public void setAddress(String address) {
+    tvLocation.setText(address);
   }
 
   private void setTodayForecastDetails(DailyForecast.DailyData todaysForecast) {

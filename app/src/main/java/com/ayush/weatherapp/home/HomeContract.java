@@ -17,7 +17,7 @@ public interface HomeContract {
 
     void setHourlyForeCast(List<HourlyForecast.HourlyData> hourlyForeCastList);
 
-    void setLocality(String locality);
+    void setAddress(String address);
 
     void setTabLayout();
 
@@ -33,7 +33,7 @@ public interface HomeContract {
 
     void initHome();
 
-    void fetchCurrentLocation();
+    void onCurrentLocationClicked();
 
     void saveTemperatureUnitPref(@Temperature.Unit int unit);
 
