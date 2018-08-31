@@ -13,7 +13,6 @@
       android:orientation="vertical"
       >
 
-
     <!--Current Forecast group-->
 
     <TextView
@@ -22,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/x1"
         android:text="location"
-        android:textSize="@dimen/h4"
+        android:textSize="@dimen/h5"
         />
     <TextView
         android:id="@+id/tv_temperature_summary"
@@ -37,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="22"
-        android:textSize="@dimen/h1"
+        android:textSize="@dimen/h2"
         />
 
     <ImageView
@@ -79,7 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/details_caps"
-        android:textSize="@dimen/h5"
+        android:textSize="@dimen/h6"
         android:textStyle="bold"
         />
 
@@ -87,6 +86,7 @@
         android:id="@+id/grp_forecast_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/x2"
         android:layout_marginTop="@dimen/x3"
         android:orientation="horizontal"
         android:weightSum="3"

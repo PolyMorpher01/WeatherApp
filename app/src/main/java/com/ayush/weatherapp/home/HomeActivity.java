@@ -43,6 +43,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 import java.util.List;
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -269,7 +270,10 @@ public class HomeActivity extends BaseActivity
     if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
       if (resultCode == RESULT_OK) {
         Place place = PlaceAutocomplete.getPlace(this, data);
-        presenter.searchLocation((String) place.getAddress());
+        LatLng latLng = place.getLatLng();
+        double lat = latLng.latitude;
+        double lng = latLng.longitude;
+        presenter.searchLocation(lat, lng);
       } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
         Status status = PlaceAutocomplete.getStatus(this, data);
         Toast.makeText(this, status.getStatusMessage(), Toast.LENGTH_SHORT).show();

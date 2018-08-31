@@ -35,6 +35,6 @@ public interface HomeContract {
 
     void saveTemperatureUnitPref(@Temperature.Unit int unit);
 
-    void searchLocation(String location);
+    void searchLocation(double lat, double lng);
   }
 }
