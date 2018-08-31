@@ -110,8 +110,6 @@ public class HomeActivity extends BaseActivity
   }
 
   @Override protected void onCreate(Bundle savedInstanceState) {
-    //override theme defined in the xml for splash screen effect
-    setTheme(R.style.AppTheme);
     super.onCreate(savedInstanceState);
 
     initToolbar(toolbar);
