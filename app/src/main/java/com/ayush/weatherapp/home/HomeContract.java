@@ -1,6 +1,5 @@
 package com.ayush.weatherapp.home;
 
-import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.mvp.BaseContract;
@@ -17,7 +16,7 @@ public interface HomeContract {
 
     void setHourlyForeCast(List<HourlyForecast.HourlyData> hourlyForeCastList);
 
-    void setLocality(String locality);
+    void setAddress(String address);
 
     void setTabLayout();
 
@@ -33,8 +32,10 @@ public interface HomeContract {
 
     void initHome();
 
-    void saveTemperatureUnitPref(@Temperature.Unit int unit);
+    void onCurrentLocationClicked();
 
-    void searchLocation(String location);
+    void saveTemperatureUnitPref(@Temperature int unit);
+
+    void searchLocation(double lat, double lng);
   }
 }

@@ -7,8 +7,9 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.widget.Toast;
+import android.text.TextUtils;
 import com.ayush.weatherapp.R;
+import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.WeatherImage;
 import com.ayush.weatherapp.mvp.BaseContract;
 import com.ayush.weatherapp.preferences.PreferenceRepository;
@@ -18,8 +19,6 @@ import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIInterface;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.Address;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponents;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocation;
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.Geometry;
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.LocationCoordinates;
 import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIClient;
 import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIInterface;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
@@ -38,9 +37,12 @@ import retrofit2.Response;
 import timber.log.Timber;
 
 public class HomePresenterImpl implements HomeContract.Presenter {
-  private final static int LOCATION_REQ_INTERVAL = 10000;
-  private final static int FASTEST_LOCATION_REQ_INTERVAL = 5000;
-  private final static int LOCALITY_INDEX = 0;
+  private static final int LOCATION_REQ_INTERVAL = 10000;
+  private static final int FASTEST_LOCATION_REQ_INTERVAL = 5000;
+  private static final String ADDRESS_STREET = "route";
+  private static final String ADDRESS_CITY = "locality";
+  private static final String ADDRESS_COUNTRY = "country";
+  private static final String ADDRESS_ADMINISTRATIVE_AREA = "administrative_area_level_1";
 
   private FusedLocationProviderClient fusedLocationProviderClient;
   private LocationRequest locationRequest;
@@ -50,7 +52,6 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   private PreferenceRepository preferenceRepository;
   private GeocodingAPIInterface geocodingAPIInterface;
 
-  private String localityAddress;
   private Forecast forecast;
   private CurrentForecast currentForecast;
   private DailyForecast dailyForecast;
@@ -98,7 +99,11 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     view.setRadioChecked();
   }
 
-  @Override public void saveTemperatureUnitPref(int unit) {
+  @Override public void onCurrentLocationClicked() {
+    fetchCurrentLocation();
+  }
+
+  @Override public void saveTemperatureUnitPref(@Temperature int unit) {
     preferenceRepository.saveTemperatureUnit(unit);
   }
 
@@ -118,10 +123,9 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
         //get only first location
         Location currentLocation = locationResult.getLocations().get(0);
-        String latLng =
-            String.valueOf(currentLocation.getLatitude()) + "," + currentLocation.getLongitude();
+        String latLng = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
 
-        fetchLocality(latLng);
+        fetchAddress(latLng);
         fetchWeatherForecast(latLng);
 
         stopLocationUpdates();
@@ -147,7 +151,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     }
   }
 
-  private void fetchLocality(String latLng) {
+  private void fetchAddress(String latLng) {
 
     Call<GeoLocation> geoLocationCall =
         geocodingAPIInterface.getLocationDetails(latLng);
@@ -157,15 +161,13 @@ public class HomePresenterImpl implements HomeContract.Presenter {
       public void onResponse(@NonNull Call<GeoLocation> call,
           @NonNull Response<GeoLocation> response) {
         GeoLocation geoLocation = response.body();
-
         List<Address> addressList = geoLocation.getAddresses();
 
         if (addressList != null && !addressList.isEmpty()) {
           List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
-          localityAddress = addressComponentsList.get(LOCALITY_INDEX).getLongName();
-          view.setLocality(localityAddress);
+          view.setAddress(getAddress(addressComponentsList));
         } else {
-          view.setLocality("N/A");
+          view.setAddress(getContext().getResources().getString(R.string.not_available));
         }
       }
 
@@ -176,36 +178,55 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     });
   }
 
-  @Override public void searchLocation(String location) {
-    Call<GeoLocation> geoLocationCall = geocodingAPIInterface.getLatLng(location);
+  @Override public void searchLocation(double lat, double lng) {
+    String latlng = lat + "," + lng;
+    fetchWeatherForecast(latlng);
+    fetchAddress(latlng);
+  }
 
-    geoLocationCall.enqueue(new Callback<GeoLocation>() {
-      @Override public void onResponse(Call<GeoLocation> call, Response<GeoLocation> response) {
-        GeoLocation geoLocation = response.body();
+  private String getAddress(List<AddressComponents> addressComponentsList) {
+    String primaryAddress = getAddressPrimary(addressComponentsList);
+    String secondaryAddress = getAddressSecondary(addressComponentsList);
+    String address = "";
 
-        List<Address> addressList = geoLocation.getAddresses();
-
-        if (addressList != null && !addressList.isEmpty()) {
-          Geometry geometry = addressList.get(0).getGeometry();
-          LocationCoordinates locationCoordinates = geometry.getLocationCoordinates();
-          double lat = locationCoordinates.getLatitude();
-          double lng = locationCoordinates.getLongitude();
-
-          String latLng = String.valueOf(lat) + "," + lng;
-          fetchWeatherForecast(latLng);
-
-          List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
-          localityAddress = addressComponentsList.get(LOCALITY_INDEX).getLongName();
-          view.setLocality(localityAddress);
-        } else {
-          Toast.makeText(getContext(), "Location invalid", Toast.LENGTH_SHORT).show();
-        }
+    if (!TextUtils.isEmpty(primaryAddress)) {
+      address = primaryAddress;
+      if (!TextUtils.isEmpty(secondaryAddress)) {
+        address += ", " + secondaryAddress;
       }
+      return address;
+    }
 
-      @Override public void onFailure(Call<GeoLocation> call, Throwable t) {
-        Timber.e(t);
+    //case when primary address is empty
+    if (!TextUtils.isEmpty(secondaryAddress)) {
+      address = secondaryAddress;
+      return address;
+    }
+    return address;
+  }
+
+  private String getAddressPrimary(List<AddressComponents> addressComponentsList) {
+    for (AddressComponents addressComponent : addressComponentsList) {
+      if (addressComponent.getTypes().contains(ADDRESS_STREET)) {
+        return addressComponent.getLongName();
       }
-    });
+    }
+    return "";
+  }
+
+  private String getAddressSecondary(List<AddressComponents> addressComponentsList) {
+    for (AddressComponents addressComponent : addressComponentsList) {
+      if (addressComponent.getTypes().contains(ADDRESS_CITY)) {
+        return addressComponent.getLongName();
+      }
+      if (addressComponent.getTypes().contains(ADDRESS_ADMINISTRATIVE_AREA)) {
+        return addressComponent.getLongName();
+      }
+      if (addressComponent.getTypes().contains(ADDRESS_COUNTRY)) {
+        return addressComponent.getLongName();
+      }
+    }
+    return "";
   }
 
   private void fetchWeatherForecast(String latLng) {

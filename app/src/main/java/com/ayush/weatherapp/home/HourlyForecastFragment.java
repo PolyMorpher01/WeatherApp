@@ -11,6 +11,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
+import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.customViews.ForecastCompoundView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.preferences.PreferenceRepository;
@@ -64,7 +65,7 @@ public class HourlyForecastFragment extends Fragment {
 
     double hourlyTemperature = hourlyData.getTemperature();
 
-    if (preferenceRepository.getTemperatureUnit() == Temperature.Unit.CELSIUS) {
+    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
       hourlyTemperature = UnitConversionUtils.fahrenheitToCelsius(hourlyTemperature);
     }
 

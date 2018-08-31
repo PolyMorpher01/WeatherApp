@@ -14,19 +14,21 @@
       >
     <RadioButton
         android:id="@+id/radio_celsius"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/x4"
+        android:layout_height="@dimen/x4"
         android:layout_marginEnd="@dimen/x2"
         android:background="@drawable/radio_background"
         android:button="@android:color/transparent"
+        android:gravity="center"
         android:text="@string/celsius"
         />
     <RadioButton
         android:id="@+id/radio_fahrenheit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/x4"
+        android:layout_height="@dimen/x4"
         android:background="@drawable/radio_background"
         android:button="@android:color/transparent"
+        android:gravity="center"
         android:text="@string/fahrenheit"
         />
   </RadioGroup>
@@ -37,4 +39,14 @@
       android:layout_height="1dp"
       android:layout_marginBottom="@dimen/x2"
       />
+
+  <TextView
+      android:id="@+id/tv_current_location"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="?attr/selectableItemBackground"
+      android:padding="@dimen/x3"
+      android:text="@string/current_location"
+      />
+
 </LinearLayout>

@@ -24,8 +24,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
 import com.ayush.weatherapp.R;
-import com.ayush.weatherapp.constants.Temperature;
+import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
 import com.ayush.weatherapp.customViews.TemperatureTextView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
@@ -43,6 +44,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 import java.util.List;
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -92,14 +94,19 @@ public class HomeActivity extends BaseActivity
     if (checked) {
       switch (button.getId()) {
         case R.id.radio_celsius:
-          presenter.saveTemperatureUnitPref(Temperature.Unit.CELSIUS);
+          presenter.saveTemperatureUnitPref(TemperatureUnit.CELSIUS);
           break;
         case R.id.radio_fahrenheit:
-          presenter.saveTemperatureUnitPref(Temperature.Unit.FAHRENHEIT);
+          presenter.saveTemperatureUnitPref(TemperatureUnit.FAHRENHEIT);
           break;
       }
       drawerLayout.closeDrawers();
     }
+  }
+
+  @OnClick(R.id.tv_current_location) void onCurrentLocationClicked() {
+    presenter.onCurrentLocationClicked();
+    drawerLayout.closeDrawers();
   }
 
   @Override protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +132,7 @@ public class HomeActivity extends BaseActivity
   }
 
   @Override public void setRadioChecked() {
-    if (preferenceRepository.getTemperatureUnit() == Temperature.Unit.CELSIUS) {
+    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
       radioCelsius.setChecked(true);
     } else {
       radioFahrenheit.setChecked(true);
@@ -190,8 +197,8 @@ public class HomeActivity extends BaseActivity
         new ArrayList<>(hourlyForeCastList.subList(0, MAX_NUMBER_OF_DATA)));
   }
 
-  @Override public void setLocality(String locality) {
-    tvLocation.setText(locality);
+  @Override public void setAddress(String address) {
+    tvLocation.setText(address);
   }
 
   private void setTodayForecastDetails(DailyForecast.DailyData todaysForecast) {
@@ -204,7 +211,7 @@ public class HomeActivity extends BaseActivity
     double temperatureHigh = todaysForecast.getTemperatureHigh();
     double temperatureLow = todaysForecast.getTemperatureLow();
 
-    if (preferenceRepository.getTemperatureUnit() == Temperature.Unit.CELSIUS) {
+    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
       formatWind = R.string.format_wind_kph;
       windSpeed = UnitConversionUtils.mphToKmph(windSpeed);
       temperatureHigh = UnitConversionUtils.fahrenheitToCelsius(temperatureHigh);
@@ -267,14 +274,15 @@ public class HomeActivity extends BaseActivity
 
     //after returning from places autocomplete activity
     if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
-      if (resultCode == RESULT_OK) {
-        Place place = PlaceAutocomplete.getPlace(this, data);
-        presenter.searchLocation((String) place.getAddress());
-      } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+      if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
         Status status = PlaceAutocomplete.getStatus(this, data);
         Toast.makeText(this, status.getStatusMessage(), Toast.LENGTH_SHORT).show();
         Timber.e(status.getStatusMessage());
+        return;
       }
+      Place place = PlaceAutocomplete.getPlace(this, data);
+      LatLng latLng = place.getLatLng();
+      presenter.searchLocation(latLng.latitude, latLng.longitude);
     }
   }
 
