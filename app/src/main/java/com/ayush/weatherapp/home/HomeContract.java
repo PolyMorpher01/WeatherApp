@@ -25,6 +25,10 @@ public interface HomeContract {
     void setRadioChecked();
 
     void setHomeBackground(@DrawableRes int drawableId);
+
+    void showHomeErrorMessage();
+
+    void changeHomeErrorVisibility(boolean isError);
   }
 
   interface Presenter extends BaseContract.Presenter {

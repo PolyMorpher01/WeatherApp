@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -75,6 +76,9 @@ public class HomeActivity extends BaseActivity
   @BindView(R.id.view_pager) ViewPager viewPager;
   @BindView(R.id.ll_content_frame) LinearLayout llContentFrame;
   @BindView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
+  @BindView(R.id.ll__group_bottom) LinearLayout llGroupBottom;
+  @BindView(R.id.ll_group_current_forecast) LinearLayout llGroupCurrentForecast;
+  @BindView(R.id.ll_msg_error) LinearLayout llMessageError;
   private TabPagerAdapter tabPagerAdapter;
   private HomeContract.Presenter presenter;
   private PreferenceRepository preferenceRepository;
@@ -143,6 +147,23 @@ public class HomeActivity extends BaseActivity
 
   @Override public void setHomeBackground(int drawableId) {
     llContentFrame.setBackground(getResources().getDrawable(drawableId));
+  }
+
+  @Override public void showHomeErrorMessage() {
+    ivWeather.setImageResource(R.drawable.img_no_connection);
+    llContentFrame.setBackground(getResources().getDrawable(R.drawable.background_gradient_error));
+  }
+
+  @Override public void changeHomeErrorVisibility(boolean isError) {
+    if (isError) {
+      llGroupBottom.setVisibility(View.GONE);
+      llGroupCurrentForecast.setVisibility(View.INVISIBLE);
+      llMessageError.setVisibility(View.VISIBLE);
+    } else {
+      llGroupBottom.setVisibility(View.VISIBLE);
+      llGroupCurrentForecast.setVisibility(View.VISIBLE);
+      llMessageError.setVisibility(View.GONE);
+    }
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {

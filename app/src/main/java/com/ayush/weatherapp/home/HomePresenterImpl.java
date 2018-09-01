@@ -245,6 +245,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         hourlyForecast = forecast.getHourlyForecast();
         hourlyDataList = hourlyForecast.getHourlyDataList();
         setForecastView();
+        view.changeHomeErrorVisibility(false);
         view.showSwipeRefresh(false);
 
         //save to provide coordinates during refresh
@@ -253,6 +254,8 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
       @Override public void onFailure(@NonNull Call<Forecast> call, @NonNull Throwable t) {
         Timber.e(t);
+        view.changeHomeErrorVisibility(true);
+        view.showHomeErrorMessage();
         view.showSwipeRefresh(false);
       }
     });

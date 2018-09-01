@@ -24,4 +24,6 @@
 
   <string name="google_places_api_key">AIzaSyDCRsLiCmzX3f4oL5iLJMrhLfe9iOE5o60</string>
   <string name="current_location">Current Location</string>
+  <string name="error_heading">It feels terrible.</string>
+  <string name="error_subheading">Something went wrong</string>
 </resources>
