@@ -168,12 +168,8 @@ public class HomeActivity extends BaseActivity
     return this;
   }
 
-  @Override public void showSwipeRefresh() {
-    swipeRefreshLayout.setRefreshing(true);
-  }
-
-  @Override public void dismissSwipeRefresh() {
-    swipeRefreshLayout.setRefreshing(false);
+  @Override public void showSwipeRefresh(boolean isShown) {
+    swipeRefreshLayout.setRefreshing(isShown);
   }
 
   @Override public void setCurrentForecast(CurrentForecast currentForecast) {

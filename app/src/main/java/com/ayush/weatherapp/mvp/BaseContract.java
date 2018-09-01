@@ -6,9 +6,7 @@ public interface BaseContract {
   interface View {
     Context getContext();
 
-    void showSwipeRefresh();
-
-    void dismissSwipeRefresh();
+    void showSwipeRefresh(boolean isShown);
   }
 
   interface Presenter {

@@ -229,7 +229,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   private void fetchWeatherForecast(String latLng) {
-    view.showSwipeRefresh();
+    view.showSwipeRefresh(true);
 
     WeatherAPIInterface weatherApiInterface =
         WeatherAPIClient.getClient().create(WeatherAPIInterface.class);
@@ -245,7 +245,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         hourlyForecast = forecast.getHourlyForecast();
         hourlyDataList = hourlyForecast.getHourlyDataList();
         setForecastView();
-        view.dismissSwipeRefresh();
+        view.showSwipeRefresh(false);
 
         //save to provide coordinates during refresh
         preferenceRepository.saveCurrentLocationCoordinates(latLng);
@@ -253,7 +253,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
       @Override public void onFailure(@NonNull Call<Forecast> call, @NonNull Throwable t) {
         Timber.e(t);
-        view.dismissSwipeRefresh();
+        view.showSwipeRefresh(false);
       }
     });
   }
