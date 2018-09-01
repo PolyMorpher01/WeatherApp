@@ -7,6 +7,7 @@ import android.support.v7.widget.AppCompatTextView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 import android.util.AttributeSet;
 import com.ayush.weatherapp.R;
@@ -68,6 +69,11 @@ public class TemperatureTextView extends AppCompatTextView {
   }
 
   @Override public void setText(CharSequence text, BufferType type) {
+    if(TextUtils.isEmpty(text) || !TextUtils.isDigitsOnly(text)){
+     super.setText("",type);
+     return;
+    }
+
     if (getPreferenceRepository().getTemperatureUnit() == TemperatureUnit.FAHRENHEIT) {
       text = getResources().getString(R.string.format_temperature_fahrenheit, text);
     } else {
