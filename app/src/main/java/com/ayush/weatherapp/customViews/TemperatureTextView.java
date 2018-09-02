@@ -9,6 +9,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
+import android.text.style.SuperscriptSpan;
 import android.util.AttributeSet;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
@@ -69,9 +70,9 @@ public class TemperatureTextView extends AppCompatTextView {
   }
 
   @Override public void setText(CharSequence text, BufferType type) {
-    if(TextUtils.isEmpty(text) || !TextUtils.isDigitsOnly(text)){
-     super.setText("",type);
-     return;
+    if (TextUtils.isEmpty(text) || !TextUtils.isDigitsOnly(text)) {
+      super.setText("", type);
+      return;
     }
 
     if (getPreferenceRepository().getTemperatureUnit() == TemperatureUnit.FAHRENHEIT) {
@@ -92,6 +93,10 @@ public class TemperatureTextView extends AppCompatTextView {
     Spannable spannableCurrentTemp = new SpannableString(currentTemp);
     spannableCurrentTemp.setSpan(new RelativeSizeSpan(proportion), start, end,
         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+    spannableCurrentTemp.setSpan(new SuperscriptSpan(), start, end,
+        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
     return spannableCurrentTemp;
   }
 }
