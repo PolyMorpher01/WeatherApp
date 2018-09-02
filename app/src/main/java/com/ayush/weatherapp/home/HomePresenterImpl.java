@@ -82,6 +82,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     if (forecast != null) {
       return;
     }
+    view.showSwipeRefresh(true);
     fetchByCurrentLocation();
     view.setRadioChecked();
   }
