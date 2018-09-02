@@ -11,6 +11,11 @@ public interface BaseContract {
 
   interface Presenter {
     void attachView();
+
     void detachView();
+
+    void onResume();
+
+    void onPause();
   }
 }

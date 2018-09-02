@@ -138,6 +138,11 @@ public class HomeActivity extends BaseActivity
     presenter.onPause();
   }
 
+  @Override protected void onRestart() {
+    super.onRestart();
+    presenter.onRestart();
+  }
+
   @Override public void setRadioChecked() {
     if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
       radioCelsius.setChecked(true);

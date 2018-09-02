@@ -74,17 +74,25 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   @Override public void detachView() {
   }
 
+  @Override public void onResume() {
+  }
+
   @Override public void onPause() {
     stopLocationUpdates();
   }
 
   @Override public void initHome() {
-    if (forecast != null) {
-      return;
-    }
     view.showSwipeRefresh(true);
     fetchByCurrentLocation();
     view.setRadioChecked();
+    Timber.e(this.toString());
+  }
+
+  @Override public void onRestart() {
+    if (forecast != null) {
+      return;
+    }
+    initHome();
   }
 
   @Override public void onSwipeRefresh() {
