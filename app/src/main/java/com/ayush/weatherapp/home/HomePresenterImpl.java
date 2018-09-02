@@ -92,6 +92,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   @Override public void onCurrentLocationClicked() {
+    view.showSwipeRefresh(true);
     fetchByCurrentLocation();
   }
 
