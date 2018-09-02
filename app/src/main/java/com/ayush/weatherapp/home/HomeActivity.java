@@ -126,12 +126,11 @@ public class HomeActivity extends BaseActivity
 
     swipeRefreshLayout.setOnRefreshListener(() -> presenter.onSwipeRefresh());
 
-    checkLocationPermission();
+    fetchHomeDetails();
   }
 
   @Override protected void onResume() {
     super.onResume();
-
   }
 
   @Override protected void onPause() {
@@ -252,22 +251,22 @@ public class HomeActivity extends BaseActivity
     EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
   }
 
-  private boolean hasLocationPermission() {
-    return EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION);
-  }
-
   @AfterPermissionGranted(RC_LOCATION_PERM)
-  public void checkLocationPermission() {
-    if (hasLocationPermission()) {
-      fetchHomeDetails();
-    } else {
+  public boolean isLocationPermissionGranted() {
+    boolean hasLocationPermission =
+        EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION);
+
+    if (!hasLocationPermission) {
       EasyPermissions.requestPermissions(this, getString(R.string.request_permission_location),
           RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
+      return false;
     }
+    return true;
   }
 
   @Override
   public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+    fetchHomeDetails();
   }
 
   @Override
@@ -287,7 +286,7 @@ public class HomeActivity extends BaseActivity
     super.onActivityResult(requestCode, resultCode, data);
     if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
       // Do something after user returned from app settings screen
-      checkLocationPermission();
+      fetchHomeDetails();
     }
 
     //after returning from places autocomplete activity
@@ -308,7 +307,9 @@ public class HomeActivity extends BaseActivity
   }
 
   private void fetchHomeDetails() {
-    presenter.initHome();
+    if (isLocationPermissionGranted()) {
+      presenter.initHome();
+    }
   }
 
   @Override public void setTabLayout() {
