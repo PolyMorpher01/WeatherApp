@@ -125,11 +125,13 @@ public class HomeActivity extends BaseActivity
     preferenceRepository = PreferenceRepositoryImpl.get();
 
     swipeRefreshLayout.setOnRefreshListener(() -> presenter.onSwipeRefresh());
+
+    checkLocationPermission();
   }
 
   @Override protected void onResume() {
     super.onResume();
-    checkLocationPermission();
+
   }
 
   @Override protected void onPause() {
@@ -266,7 +268,6 @@ public class HomeActivity extends BaseActivity
 
   @Override
   public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
-    fetchHomeDetails();
   }
 
   @Override
