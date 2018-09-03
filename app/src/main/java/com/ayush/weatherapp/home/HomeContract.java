@@ -8,8 +8,11 @@ import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
 import java.util.List;
 
-public interface HomeContract {
-  interface View extends BaseContract.View {
+public final class HomeContract {
+  private HomeContract() {
+  }
+
+  public interface View extends BaseContract.BaseView {
     void setCurrentForecast(CurrentForecast currentForecast);
 
     void setDailyForeCast(List<DailyForecast.DailyData> dailyForecastList);
@@ -31,7 +34,7 @@ public interface HomeContract {
     void changeErrorVisibility(boolean isError);
   }
 
-  interface Presenter extends BaseContract.Presenter {
+  public interface Presenter {
     void initHome();
 
     void onViewRestart();

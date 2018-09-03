@@ -12,6 +12,7 @@ import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.WeatherImage;
 import com.ayush.weatherapp.mvp.BaseContract;
+import com.ayush.weatherapp.mvp.BasePresenterImpl;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
 import com.ayush.weatherapp.repository.weather.WeatherRepository;
@@ -40,7 +41,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
-public class HomePresenterImpl implements HomeContract.Presenter {
+//public class WorkOrderDetailPresenterImpl extends BasePresenter<WorkOrderDetailContract.BaseView>
+//    implements WorkOrderDetailContract.Presenter, OnMapReadyCallback {
+
+public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
+    implements HomeContract.Presenter {
+
   private static final int LOCATION_REQ_INTERVAL = 10000;
   private static final int FASTEST_LOCATION_REQ_INTERVAL = 5000;
   private static final String ADDRESS_STREET = "route";
@@ -65,8 +71,12 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   private WeatherRepository weatherRepository;
 
   // TODO dagger
-  public HomePresenterImpl(BaseContract.View view) {
-    this.view = (HomeContract.View) view;
+  public HomePresenterImpl(BaseContract.BaseView baseView) {
+    this.view = (HomeContract.View) baseView;
+  }
+
+  @Override public void attachView(HomeContract.View view) {
+    super.attachView(view);
     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
     geocodingAPIInterface = GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
 
@@ -76,21 +86,12 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     weatherRepository = new WeatherRepositoryImpl();
   }
 
-  @Override public void attachView() {
-  }
-
-  @Override public void detachView() {
-  }
-
-  @Override public void onViewResume() {
-  }
-
   @Override public void onViewPause() {
     stopLocationUpdates();
   }
 
   @Override public void initHome() {
-    view.showSwipeRefresh(true);
+    view.showProgressBar("");
     fetchByCurrentLocation();
     view.setRadioChecked();
     Timber.e(this.toString());
@@ -108,7 +109,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   @Override public void onCurrentLocationClicked() {
-    view.showSwipeRefresh(true);
+    view.showProgressBar("");
     fetchByCurrentLocation();
   }
 
@@ -243,7 +244,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   private void fetchWeatherForecast(String latLng) {
-    view.showSwipeRefresh(true);
+    view.showProgressBar("");
 
     // TODO refactor after mvp complete
     Disposable disposable = weatherRepository.getForecast(latLng)
@@ -266,11 +267,11 @@ public class HomePresenterImpl implements HomeContract.Presenter {
             Timber.e(e);
             view.changeErrorVisibility(true);
             view.showErrorMessage();
-            view.showSwipeRefresh(false);
+            view.hideProgressBar();
           }
 
           @Override public void onComplete() {
-            view.showSwipeRefresh(false);
+            view.hideProgressBar();
           }
         });
   }
@@ -321,9 +322,5 @@ public class HomePresenterImpl implements HomeContract.Presenter {
       return false;
     }
     return true;
-  }
-
-  private Context getContext() {
-    return view.getContext();
   }
 }
