@@ -74,10 +74,10 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   @Override public void detachView() {
   }
 
-  @Override public void onResume() {
+  @Override public void onViewResume() {
   }
 
-  @Override public void onPause() {
+  @Override public void onViewPause() {
     stopLocationUpdates();
   }
 
@@ -88,7 +88,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     Timber.e(this.toString());
   }
 
-  @Override public void onRestart() {
+  @Override public void onViewRestart() {
     if (forecast != null) {
       return;
     }

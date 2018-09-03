@@ -34,7 +34,7 @@ public interface HomeContract {
   interface Presenter extends BaseContract.Presenter {
     void initHome();
 
-    void onRestart();
+    void onViewRestart();
 
     void onSwipeRefresh();
 

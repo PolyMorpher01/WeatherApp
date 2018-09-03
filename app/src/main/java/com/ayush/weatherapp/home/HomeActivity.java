@@ -135,12 +135,12 @@ public class HomeActivity extends BaseActivity
 
   @Override protected void onPause() {
     super.onPause();
-    presenter.onPause();
+    presenter.onViewPause();
   }
 
   @Override protected void onRestart() {
     super.onRestart();
-    presenter.onRestart();
+    presenter.onViewRestart();
   }
 
   @Override public void setRadioChecked() {

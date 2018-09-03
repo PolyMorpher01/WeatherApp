@@ -89,7 +89,6 @@
       <!--Horizontal line-->
       <include
           layout="@layout/horizontal_line"
-          android:id="@+id/line2"
           android:layout_width="fill_parent"
           android:layout_height="1dp"
           android:layout_marginBottom="@dimen/x2"

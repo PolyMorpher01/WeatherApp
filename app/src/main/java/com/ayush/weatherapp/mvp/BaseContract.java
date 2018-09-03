@@ -14,8 +14,8 @@ public interface BaseContract {
 
     void detachView();
 
-    void onResume();
+    void onViewResume();
 
-    void onPause();
+    void onViewPause();
   }
 }
