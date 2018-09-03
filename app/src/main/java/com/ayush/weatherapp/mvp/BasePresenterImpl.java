@@ -3,8 +3,8 @@ package com.ayush.weatherapp.mvp;
 import android.content.Context;
 import android.support.annotation.StringRes;
 
-//public class BasePresenter<T extends BaseView> implements Presenter<T> {
-public class BasePresenterImpl<T extends BaseContract.BaseView> implements BaseContract.Presenter<T> {
+public class BasePresenterImpl<T extends BaseContract.BaseView>
+    implements BaseContract.Presenter<T> {
 
   T view;
 

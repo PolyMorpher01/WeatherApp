@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-//public abstract class MvpBaseActivity<T extends BasePresenter> extends BaseActivity
-//    implements BaseView {
 public abstract class MVPBaseActivity<T extends BasePresenterImpl> extends BaseActivity
     implements BaseContract.BaseView {
 
