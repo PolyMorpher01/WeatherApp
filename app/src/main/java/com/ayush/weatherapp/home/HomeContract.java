@@ -25,12 +25,16 @@ public interface HomeContract {
     void setRadioChecked();
 
     void setHomeBackground(@DrawableRes int drawableId);
+
+    void showErrorMessage();
+
+    void changeErrorVisibility(boolean isError);
   }
 
   interface Presenter extends BaseContract.Presenter {
-    void onPause();
-
     void initHome();
+
+    void onViewRestart();
 
     void onSwipeRefresh();
 

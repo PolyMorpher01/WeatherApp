@@ -74,16 +74,25 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   @Override public void detachView() {
   }
 
-  @Override public void onPause() {
+  @Override public void onViewResume() {
+  }
+
+  @Override public void onViewPause() {
     stopLocationUpdates();
   }
 
   @Override public void initHome() {
+    view.showSwipeRefresh(true);
+    fetchByCurrentLocation();
+    view.setRadioChecked();
+    Timber.e(this.toString());
+  }
+
+  @Override public void onViewRestart() {
     if (forecast != null) {
       return;
     }
-    fetchByCurrentLocation();
-    view.setRadioChecked();
+    initHome();
   }
 
   @Override public void onSwipeRefresh() {
@@ -91,6 +100,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   @Override public void onCurrentLocationClicked() {
+    view.showSwipeRefresh(true);
     fetchByCurrentLocation();
   }
 
@@ -245,6 +255,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         hourlyForecast = forecast.getHourlyForecast();
         hourlyDataList = hourlyForecast.getHourlyDataList();
         setForecastView();
+        view.changeErrorVisibility(false);
         view.showSwipeRefresh(false);
 
         //save to provide coordinates during refresh
@@ -253,6 +264,8 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
       @Override public void onFailure(@NonNull Call<Forecast> call, @NonNull Throwable t) {
         Timber.e(t);
+        view.changeErrorVisibility(true);
+        view.showErrorMessage();
         view.showSwipeRefresh(false);
       }
     });

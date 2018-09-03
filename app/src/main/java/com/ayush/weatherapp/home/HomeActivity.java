@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -75,6 +76,9 @@ public class HomeActivity extends BaseActivity
   @BindView(R.id.view_pager) ViewPager viewPager;
   @BindView(R.id.ll_content_frame) LinearLayout llContentFrame;
   @BindView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
+  @BindView(R.id.ll_group_bottom) LinearLayout llGroupBottom;
+  @BindView(R.id.ll_group_current_forecast) LinearLayout llGroupCurrentForecast;
+  @BindView(R.id.ll_msg_error) LinearLayout llMessageError;
   private TabPagerAdapter tabPagerAdapter;
   private HomeContract.Presenter presenter;
   private PreferenceRepository preferenceRepository;
@@ -121,16 +125,22 @@ public class HomeActivity extends BaseActivity
     preferenceRepository = PreferenceRepositoryImpl.get();
 
     swipeRefreshLayout.setOnRefreshListener(() -> presenter.onSwipeRefresh());
+
+    fetchHomeDetails();
   }
 
   @Override protected void onResume() {
     super.onResume();
-    checkLocationPermission();
   }
 
   @Override protected void onPause() {
     super.onPause();
-    presenter.onPause();
+    presenter.onViewPause();
+  }
+
+  @Override protected void onRestart() {
+    super.onRestart();
+    presenter.onViewRestart();
   }
 
   @Override public void setRadioChecked() {
@@ -143,6 +153,23 @@ public class HomeActivity extends BaseActivity
 
   @Override public void setHomeBackground(int drawableId) {
     llContentFrame.setBackground(getResources().getDrawable(drawableId));
+  }
+
+  @Override public void showErrorMessage() {
+    ivWeather.setImageResource(R.drawable.img_no_connection);
+    llContentFrame.setBackground(getResources().getDrawable(R.drawable.background_gradient_error));
+  }
+
+  @Override public void changeErrorVisibility(boolean isError) {
+    if (isError) {
+      llGroupBottom.setVisibility(View.GONE);
+      llGroupCurrentForecast.setVisibility(View.INVISIBLE);
+      llMessageError.setVisibility(View.VISIBLE);
+    } else {
+      llGroupBottom.setVisibility(View.VISIBLE);
+      llGroupCurrentForecast.setVisibility(View.VISIBLE);
+      llMessageError.setVisibility(View.GONE);
+    }
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -229,18 +256,17 @@ public class HomeActivity extends BaseActivity
     EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
   }
 
-  private boolean hasLocationPermission() {
-    return EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION);
-  }
-
   @AfterPermissionGranted(RC_LOCATION_PERM)
-  public void checkLocationPermission() {
-    if (hasLocationPermission()) {
-      fetchHomeDetails();
-    } else {
+  public boolean isLocationPermissionGranted() {
+    boolean hasLocationPermission =
+        EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION);
+
+    if (!hasLocationPermission) {
       EasyPermissions.requestPermissions(this, getString(R.string.request_permission_location),
           RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
+      return false;
     }
+    return true;
   }
 
   @Override
@@ -265,7 +291,7 @@ public class HomeActivity extends BaseActivity
     super.onActivityResult(requestCode, resultCode, data);
     if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
       // Do something after user returned from app settings screen
-      checkLocationPermission();
+      fetchHomeDetails();
     }
 
     //after returning from places autocomplete activity
@@ -286,7 +312,9 @@ public class HomeActivity extends BaseActivity
   }
 
   private void fetchHomeDetails() {
-    presenter.initHome();
+    if (isLocationPermissionGranted()) {
+      presenter.initHome();
+    }
   }
 
   @Override public void setTabLayout() {
