@@ -4,6 +4,7 @@ import android.support.annotation.DrawableRes;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.mvp.BaseContract;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyData;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
 import java.util.List;
@@ -15,7 +16,7 @@ public final class HomeContract {
   public interface View extends BaseContract.BaseView {
     void setCurrentForecast(CurrentForecast currentForecast);
 
-    void setDailyForeCast(List<DailyForecast.DailyData> dailyForecastList);
+    void setDailyForeCast(List<DailyData> dailyForecastList);
 
     void setHourlyForeCast(List<HourlyForecast.HourlyData> hourlyForeCastList);
 
@@ -25,13 +26,15 @@ public final class HomeContract {
 
     void showGPSNotEnabledDialog(String title, String message);
 
-    void setRadioChecked();
-
     void setHomeBackground(@DrawableRes int drawableId);
 
     void showErrorMessage();
 
     void changeErrorVisibility(boolean isError);
+
+    void checkCelsiusButton(boolean check);
+
+    void checkFahrenheitButton(boolean check);
   }
 
   public interface Presenter {

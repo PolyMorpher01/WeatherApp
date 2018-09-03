@@ -32,16 +32,11 @@ import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
 import com.ayush.weatherapp.customViews.TemperatureTextView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
-import com.ayush.weatherapp.mvp.BaseActivity;
-import com.ayush.weatherapp.mvp.BaseContract;
 import com.ayush.weatherapp.mvp.MVPBaseActivity;
-import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
-import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyData;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
 import com.ayush.weatherapp.utils.DateUtils;
-import com.ayush.weatherapp.utils.UnitConversionUtils;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
@@ -59,8 +54,10 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     implements HomeContract.View, EasyPermissions.PermissionCallbacks {
 
   private static final int RC_LOCATION_PERM = 123;
+  // Todo remove
   private static final int TODAY = 0;
   private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+
   @BindView(R.id.layout_drawer) DrawerLayout drawerLayout;
   @BindView(R.id.nav_view) NavigationView navigationView;
   @BindView(R.id.toolbar) Toolbar toolbar;
@@ -82,7 +79,7 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
   @BindView(R.id.ll_msg_error) LinearLayout llMessageError;
 
   private TabPagerAdapter tabPagerAdapter;
-  private PreferenceRepository preferenceRepository;
+  //private PreferenceRepository preferenceRepository;
 
   @Override public HomePresenterImpl getPresenter() {
     return new HomePresenterImpl();
@@ -117,7 +114,6 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     initToolbar(toolbar);
     showTitleBar(false);
     tabPagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
-    preferenceRepository = PreferenceRepositoryImpl.get();
 
     swipeRefreshLayout.setOnRefreshListener(() -> presenter.onSwipeRefresh());
 
@@ -136,15 +132,6 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
   @Override protected void onRestart() {
     super.onRestart();
     presenter.onViewRestart();
-  }
-
-  @Override public void setRadioChecked() {
-    // TODO mvp violation ayush
-    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
-      radioCelsius.setChecked(true);
-    } else {
-      radioFahrenheit.setChecked(true);
-    }
   }
 
   @Override public void setHomeBackground(int drawableId) {
@@ -166,6 +153,14 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
       llGroupCurrentForecast.setVisibility(View.VISIBLE);
       llMessageError.setVisibility(View.GONE);
     }
+  }
+
+  @Override public void checkCelsiusButton(boolean check) {
+    radioCelsius.setChecked(check);
+  }
+
+  @Override public void checkFahrenheitButton(boolean check) {
+    radioFahrenheit.setChecked(check);
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -209,10 +204,10 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     ivWeather.setImageResource(WeatherImageMapper.getImageResource(currentForecast.getIcon()));
   }
 
-  @Override public void setDailyForeCast(List<DailyForecast.DailyData> dailyForecastList) {
+  @Override public void setDailyForeCast(List<DailyData> dailyForecastList) {
     tabPagerAdapter.setDailyForecastData(dailyForecastList);
     //get forecast detail of today
-    DailyForecast.DailyData forecastDetailToday = dailyForecastList.get(TODAY);
+    DailyData forecastDetailToday = dailyForecastList.get(TODAY);
     setTodayForecastDetails(forecastDetailToday);
   }
 
@@ -227,7 +222,7 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     tvLocation.setText(address);
   }
 
-  private void setTodayForecastDetails(DailyForecast.DailyData todaysForecast) {
+  private void setTodayForecastDetails(DailyData todaysForecast) {
 
     detailSun.setTopText((String.valueOf(DateUtils.getTime(todaysForecast.getSunriseTime()))));
     detailSun.setBottomText((DateUtils.getTime(todaysForecast.getSunsetTime())));
@@ -237,12 +232,12 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     double temperatureHigh = todaysForecast.getTemperatureHigh();
     double temperatureLow = todaysForecast.getTemperatureLow();
 
-    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
-      formatWind = R.string.format_wind_kph;
-      windSpeed = UnitConversionUtils.mphToKmph(windSpeed);
-      temperatureHigh = UnitConversionUtils.fahrenheitToCelsius(temperatureHigh);
-      temperatureLow = UnitConversionUtils.fahrenheitToCelsius(temperatureLow);
-    }
+    //if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
+    //  formatWind = R.string.format_wind_kph;
+    //  windSpeed = UnitConversionUtils.mphToKmph(windSpeed);
+    //  temperatureHigh = UnitConversionUtils.fahrenheitToCelsius(temperatureHigh);
+    //  temperatureLow = UnitConversionUtils.fahrenheitToCelsius(temperatureLow);
+    //}
 
     detailWind.setBottomText(getString(formatWind, windSpeed));
     detailTemperature.setTopText(
@@ -259,8 +254,7 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
   }
 
-  @AfterPermissionGranted(RC_LOCATION_PERM)
-  public boolean isLocationPermissionGranted() {
+  @AfterPermissionGranted(RC_LOCATION_PERM) public boolean isLocationPermissionGranted() {
     boolean hasLocationPermission =
         EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION);
 
@@ -272,13 +266,11 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     return true;
   }
 
-  @Override
-  public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+  @Override public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
     fetchHomeDetails();
   }
 
-  @Override
-  public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+  @Override public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
     Timber.e("onPermissionsDenied:" + requestCode + ":" + perms.size());
 
     // Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
@@ -329,9 +321,8 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
   @Override public void showGPSNotEnabledDialog(String title, String message) {
     AlertDialog.Builder dialog = new AlertDialog.Builder(this);
     dialog.setMessage(title);
-    dialog.setPositiveButton(message,
-        (dialogInterface, which) -> this.startActivity(
-            new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)));
+    dialog.setPositiveButton(message, (dialogInterface, which) -> this.startActivity(
+        new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)));
     dialog.setCancelable(false).show();
   }
 

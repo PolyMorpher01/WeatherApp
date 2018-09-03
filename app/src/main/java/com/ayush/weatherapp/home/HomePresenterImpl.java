@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
+import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.constants.WeatherImage;
 import com.ayush.weatherapp.mvp.BasePresenterImpl;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
@@ -22,9 +23,11 @@ import com.ayush.weatherapp.retrofit.geocodingApi.pojo.Address;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponents;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocation;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyData;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.Forecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
+import com.ayush.weatherapp.utils.UnitConversionUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -45,6 +48,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
   private static final int LOCATION_REQ_INTERVAL = 10000;
   private static final int FASTEST_LOCATION_REQ_INTERVAL = 5000;
+
   private static final String ADDRESS_STREET = "route";
   private static final String ADDRESS_CITY = "locality";
   private static final String ADDRESS_COUNTRY = "country";
@@ -54,29 +58,26 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private LocationRequest locationRequest;
   private LocationCallback locationCallback;
 
-  //private HomeContract.View view;
   private PreferenceRepository preferenceRepository;
   private GeocodingAPIInterface geocodingAPIInterface;
 
   private Forecast forecast;
   private CurrentForecast currentForecast;
   private DailyForecast dailyForecast;
-  private List<DailyForecast.DailyData> dailyForecastList;
+  private List<DailyData> dailyForecastList;
   private HourlyForecast hourlyForecast;
   private List<HourlyForecast.HourlyData> hourlyDataList;
   private WeatherRepository weatherRepository;
 
   // TODO dagger
   public HomePresenterImpl() {
-
+    preferenceRepository = PreferenceRepositoryImpl.get();
   }
 
   @Override public void attachView(HomeContract.View view) {
     super.attachView(view);
     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
     geocodingAPIInterface = GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
-
-    preferenceRepository = PreferenceRepositoryImpl.get();
     // todo Ayush fix this
     //preferenceRepository.onPreferenceChangeListener(newTemperature -> setForecastView());
     weatherRepository = new WeatherRepositoryImpl();
@@ -89,8 +90,15 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   @Override public void initHome() {
     getView().showProgressBar("");
     fetchByCurrentLocation();
-    getView().setRadioChecked();
-    Timber.e(this.toString());
+    setTemperatureUnit();
+  }
+
+  private void setTemperatureUnit() {
+    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
+      getView().checkCelsiusButton(true);
+    } else {
+      getView().checkFahrenheitButton(true);
+    }
   }
 
   @Override public void onViewRestart() {
@@ -275,6 +283,18 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     getView().changeErrorVisibility(false);
     //save to provide coordinates during refresh
     preferenceRepository.saveCurrentLocationCoordinates(latLng);
+  }
+
+  private DailyForecast convert(DailyForecast dailyForecast) {
+    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
+      //dailyForecast.
+      //  formatWind = R.string.format_wind_kph;
+      //  windSpeed = UnitConversionUtils.mphToKmph(windSpeed);
+      //  temperatureHigh = UnitConversionUtils.fahrenheitToCelsius(temperatureHigh);
+      //  temperatureLow = UnitConversionUtils.fahrenheitToCelsius(temperatureLow);
+
+    }
+    return dailyForecast;
   }
 
   private void setForecastView() {

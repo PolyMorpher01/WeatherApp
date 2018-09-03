@@ -16,6 +16,7 @@ import com.ayush.weatherapp.customViews.ForecastCompoundView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyData;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.utils.DateUtils;
 import com.ayush.weatherapp.utils.MathUtils;
@@ -30,7 +31,7 @@ public class DailyForecastFragment extends Fragment {
 
   private PreferenceRepository preferenceRepository;
 
-  public static DailyForecastFragment getInstance(List<DailyForecast.DailyData> dailyDataList) {
+  public static DailyForecastFragment getInstance(List<DailyData> dailyDataList) {
     DailyForecastFragment dailyForecastFragment = new DailyForecastFragment();
     Bundle bundle = new Bundle();
     bundle.putParcelableArrayList(EXTRA_DAILY_FORECAST,
@@ -49,18 +50,18 @@ public class DailyForecastFragment extends Fragment {
     return view;
   }
 
-  public void setData(List<DailyForecast.DailyData> dailyForecastList) {
+  public void setData(List<DailyData> dailyForecastList) {
     //remove child views
     if (llForecastDetails.getChildCount() > 0) {
       llForecastDetails.removeAllViews();
     }
 
-    for (DailyForecast.DailyData dailyData : dailyForecastList) {
+    for (DailyData dailyData : dailyForecastList) {
       setView(dailyData);
     }
   }
 
-  private void setView(DailyForecast.DailyData dailyData) {
+  private void setView(DailyData dailyData) {
     double averageTemperature = Math.round(
         MathUtils.getAverage(dailyData.getTemperatureHigh(), dailyData.getTemperatureLow()));
 
