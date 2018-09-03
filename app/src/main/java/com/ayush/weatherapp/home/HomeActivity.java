@@ -34,6 +34,7 @@ import com.ayush.weatherapp.customViews.TemperatureTextView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.mvp.BaseActivity;
 import com.ayush.weatherapp.mvp.BaseContract;
+import com.ayush.weatherapp.mvp.MVPBaseActivity;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
@@ -54,7 +55,7 @@ import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
-public class HomeActivity extends BaseActivity
+public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     implements HomeContract.View, EasyPermissions.PermissionCallbacks {
 
   private static final int RC_LOCATION_PERM = 123;
@@ -79,20 +80,16 @@ public class HomeActivity extends BaseActivity
   @BindView(R.id.ll_group_bottom) LinearLayout llGroupBottom;
   @BindView(R.id.ll_group_current_forecast) LinearLayout llGroupCurrentForecast;
   @BindView(R.id.ll_msg_error) LinearLayout llMessageError;
+
   private TabPagerAdapter tabPagerAdapter;
-  private HomeContract.Presenter presenter;
   private PreferenceRepository preferenceRepository;
+
+  @Override public HomePresenterImpl getPresenter() {
+    return new HomePresenterImpl();
+  }
 
   @Override protected int getLayoutId() {
     return R.layout.activity_home;
-  }
-
-  @Override protected void setupPresenter() {
-    presenter = new HomePresenterImpl(this);
-  }
-
-  @Override protected BaseContract.Presenter getPresenter() {
-    return presenter;
   }
 
   @OnCheckedChanged({ R.id.radio_celsius, R.id.radio_fahrenheit }) void onChecked(
@@ -117,10 +114,8 @@ public class HomeActivity extends BaseActivity
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
     initToolbar(toolbar);
     showTitleBar(false);
-    presenter = new HomePresenterImpl(this);
     tabPagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
     preferenceRepository = PreferenceRepositoryImpl.get();
 
@@ -144,6 +139,7 @@ public class HomeActivity extends BaseActivity
   }
 
   @Override public void setRadioChecked() {
+    // TODO mvp violation ayush
     if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
       radioCelsius.setChecked(true);
     } else {
@@ -195,8 +191,16 @@ public class HomeActivity extends BaseActivity
     return this;
   }
 
-  @Override public void showSwipeRefresh(boolean isShown) {
-    swipeRefreshLayout.setRefreshing(isShown);
+  @Override public void showProgressBar(String message) {
+    swipeRefreshLayout.setRefreshing(true);
+  }
+
+  @Override public void hideProgressBar() {
+    swipeRefreshLayout.setRefreshing(false);
+  }
+
+  @Override public void onFailure(String message) {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
   }
 
   @Override public void setCurrentForecast(CurrentForecast currentForecast) {
@@ -207,7 +211,6 @@ public class HomeActivity extends BaseActivity
 
   @Override public void setDailyForeCast(List<DailyForecast.DailyData> dailyForecastList) {
     tabPagerAdapter.setDailyForecastData(dailyForecastList);
-
     //get forecast detail of today
     DailyForecast.DailyData forecastDetailToday = dailyForecastList.get(TODAY);
     setTodayForecastDetails(forecastDetailToday);

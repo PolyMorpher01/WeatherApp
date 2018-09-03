@@ -11,7 +11,7 @@ import android.text.TextUtils;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.WeatherImage;
-import com.ayush.weatherapp.mvp.BaseContract;
+import com.ayush.weatherapp.mvp.BasePresenterImpl;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
 import com.ayush.weatherapp.repository.weather.WeatherRepository;
@@ -40,7 +40,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
-public class HomePresenterImpl implements HomeContract.Presenter {
+public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
+    implements HomeContract.Presenter {
+
   private static final int LOCATION_REQ_INTERVAL = 10000;
   private static final int FASTEST_LOCATION_REQ_INTERVAL = 5000;
   private static final String ADDRESS_STREET = "route";
@@ -52,7 +54,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   private LocationRequest locationRequest;
   private LocationCallback locationCallback;
 
-  private HomeContract.View view;
+  //private HomeContract.View view;
   private PreferenceRepository preferenceRepository;
   private GeocodingAPIInterface geocodingAPIInterface;
 
@@ -65,8 +67,12 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   private WeatherRepository weatherRepository;
 
   // TODO dagger
-  public HomePresenterImpl(BaseContract.View view) {
-    this.view = (HomeContract.View) view;
+  public HomePresenterImpl() {
+
+  }
+
+  @Override public void attachView(HomeContract.View view) {
+    super.attachView(view);
     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
     geocodingAPIInterface = GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
 
@@ -76,23 +82,14 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     weatherRepository = new WeatherRepositoryImpl();
   }
 
-  @Override public void attachView() {
-  }
-
-  @Override public void detachView() {
-  }
-
-  @Override public void onViewResume() {
-  }
-
   @Override public void onViewPause() {
     stopLocationUpdates();
   }
 
   @Override public void initHome() {
-    view.showSwipeRefresh(true);
+    getView().showProgressBar("");
     fetchByCurrentLocation();
-    view.setRadioChecked();
+    getView().setRadioChecked();
     Timber.e(this.toString());
   }
 
@@ -108,7 +105,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   @Override public void onCurrentLocationClicked() {
-    view.showSwipeRefresh(true);
+    getView().showProgressBar("");
     fetchByCurrentLocation();
   }
 
@@ -173,9 +170,9 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
         if (addressList != null && !addressList.isEmpty()) {
           List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
-          view.setAddress(getAddress(addressComponentsList));
+          getView().setAddress(getAddress(addressComponentsList));
         } else {
-          view.setAddress(getContext().getResources().getString(R.string.not_available));
+          getView().setAddress(getContext().getResources().getString(R.string.not_available));
         }
       }
 
@@ -243,7 +240,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   private void fetchWeatherForecast(String latLng) {
-    view.showSwipeRefresh(true);
+    getView().showProgressBar("");
 
     // TODO refactor after mvp complete
     Disposable disposable = weatherRepository.getForecast(latLng)
@@ -251,35 +248,40 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(new DisposableObserver<Forecast>() {
           @Override public void onNext(Forecast forecast) {
-            currentForecast = forecast.getCurrentForecast();
-            dailyForecast = forecast.getDailyForecast();
-            dailyForecastList = dailyForecast.getDailyDataList();
-            hourlyForecast = forecast.getHourlyForecast();
-            hourlyDataList = hourlyForecast.getHourlyDataList();
-            setForecastView();
-            view.changeErrorVisibility(false);
-            //save to provide coordinates during refresh
-            preferenceRepository.saveCurrentLocationCoordinates(latLng);
+            setForecast(forecast, latLng);
           }
 
           @Override public void onError(Throwable e) {
             Timber.e(e);
-            view.changeErrorVisibility(true);
-            view.showErrorMessage();
-            view.showSwipeRefresh(false);
+            getView().changeErrorVisibility(true);
+            getView().showErrorMessage();
+            getView().hideProgressBar();
           }
 
           @Override public void onComplete() {
-            view.showSwipeRefresh(false);
+            getView().hideProgressBar();
           }
         });
   }
 
+  private void setForecast(Forecast forecast, String latLng) {
+    this.forecast = forecast;
+    currentForecast = forecast.getCurrentForecast();
+    dailyForecast = forecast.getDailyForecast();
+    dailyForecastList = dailyForecast.getDailyDataList();
+    hourlyForecast = forecast.getHourlyForecast();
+    hourlyDataList = hourlyForecast.getHourlyDataList();
+    setForecastView();
+    getView().changeErrorVisibility(false);
+    //save to provide coordinates during refresh
+    preferenceRepository.saveCurrentLocationCoordinates(latLng);
+  }
+
   private void setForecastView() {
-    view.setCurrentForecast(currentForecast);
-    view.setDailyForeCast(dailyForecastList);
-    view.setHourlyForeCast(hourlyDataList);
-    view.setTabLayout();
+    getView().setCurrentForecast(currentForecast);
+    getView().setDailyForeCast(dailyForecastList);
+    getView().setHourlyForeCast(hourlyDataList);
+    getView().setTabLayout();
 
     changeHomeBackground();
   }
@@ -287,21 +289,21 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   private void changeHomeBackground() {
     switch (currentForecast.getIcon()) {
       case WeatherImage.CLEAR_DAY:
-        view.setHomeBackground(R.drawable.background_gradient_sunny);
+        getView().setHomeBackground(R.drawable.background_gradient_sunny);
         break;
 
       case WeatherImage.RAINY:
       case WeatherImage.SNOW:
-        view.setHomeBackground(R.drawable.background_gradient_rainy);
+        getView().setHomeBackground(R.drawable.background_gradient_rainy);
         break;
 
       case WeatherImage.CLOUDY:
       case WeatherImage.PARTLY_CLOUDY_DAY:
-        view.setHomeBackground(R.drawable.background_gradient_cloudy);
+        getView().setHomeBackground(R.drawable.background_gradient_cloudy);
         break;
 
       default:
-        view.setHomeBackground(R.drawable.background_gradient_default);
+        getView().setHomeBackground(R.drawable.background_gradient_default);
     }
   }
 
@@ -315,15 +317,11 @@ public class HomePresenterImpl implements HomeContract.Presenter {
     networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
     if (!gpsEnabled && !networkEnabled) {
-      view.showGPSNotEnabledDialog(
+      getView().showGPSNotEnabledDialog(
           getContext().getResources().getString(R.string.location_services_not_enabled),
           getContext().getResources().getString(R.string.open_location_settings));
       return false;
     }
     return true;
-  }
-
-  private Context getContext() {
-    return view.getContext();
   }
 }

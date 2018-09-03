@@ -15,24 +15,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(getLayoutId());
     ButterKnife.bind(this);
-
-    setupPresenter();
-    getPresenter().attachView();
-  }
-
-  @Override protected void onDestroy() {
-    super.onDestroy();
-    getPresenter().detachView();
   }
 
   protected abstract int getLayoutId();
 
-  protected abstract void setupPresenter();
-
-  protected abstract BaseContract.Presenter getPresenter();
-
-  @SuppressWarnings("ConstantConditions")
-  public void initToolbar(Toolbar toolbar) {
+  @SuppressWarnings("ConstantConditions") public void initToolbar(Toolbar toolbar) {
     setSupportActionBar(toolbar);
     actionBar = getSupportActionBar();
     actionBar.setDisplayHomeAsUpEnabled(true);
