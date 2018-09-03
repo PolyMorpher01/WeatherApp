@@ -24,6 +24,10 @@ public class BasePresenterImpl<T extends BaseContract.BaseView> implements BaseC
 
   }
 
+  @Override public T getView() {
+    return view;
+  }
+
   @Override public Context getContext() {
     return view.getContext();
   }

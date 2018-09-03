@@ -26,6 +26,8 @@ public interface BaseContract {
 
     void onViewPause();
 
+    T getView();
+
     Context getContext();
 
     String getString(@StringRes int id, Object... args);

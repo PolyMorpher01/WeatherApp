@@ -85,7 +85,7 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
   private PreferenceRepository preferenceRepository;
 
   @Override public HomePresenterImpl getPresenter() {
-    return new HomePresenterImpl(this);
+    return new HomePresenterImpl();
   }
 
   @Override protected int getLayoutId() {
