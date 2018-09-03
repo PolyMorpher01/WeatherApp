@@ -1,4 +1,4 @@
-package com.ayush.weatherapp.preferences;
+package com.ayush.weatherapp.repository.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;

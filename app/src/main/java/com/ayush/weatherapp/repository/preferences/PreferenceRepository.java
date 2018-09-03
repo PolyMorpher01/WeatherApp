@@ -1,4 +1,4 @@
-package com.ayush.weatherapp.preferences;
+package com.ayush.weatherapp.repository.preferences;
 
 public interface PreferenceRepository {
   void saveTemperatureUnit(int value);

@@ -12,15 +12,15 @@ import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.WeatherImage;
 import com.ayush.weatherapp.mvp.BaseContract;
-import com.ayush.weatherapp.preferences.PreferenceRepository;
-import com.ayush.weatherapp.preferences.PreferenceRepositoryImpl;
+import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
+import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
+import com.ayush.weatherapp.repository.weather.WeatherRepository;
+import com.ayush.weatherapp.repository.weather.WeatherRepositoryImpl;
 import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIClient;
 import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIInterface;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.Address;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponents;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocation;
-import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIClient;
-import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIInterface;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.Forecast;
@@ -30,6 +30,10 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -58,14 +62,18 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   private List<DailyForecast.DailyData> dailyForecastList;
   private HourlyForecast hourlyForecast;
   private List<HourlyForecast.HourlyData> hourlyDataList;
+  private WeatherRepository weatherRepository;
 
-  HomePresenterImpl(BaseContract.View view) {
+  // TODO dagger
+  public HomePresenterImpl(BaseContract.View view) {
     this.view = (HomeContract.View) view;
     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
     geocodingAPIInterface = GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
 
     preferenceRepository = PreferenceRepositoryImpl.get();
-    preferenceRepository.onPreferenceChangeListener(newTemperature -> setForecastView());
+    // todo Ayush fix this
+    //preferenceRepository.onPreferenceChangeListener(newTemperature -> setForecastView());
+    weatherRepository = new WeatherRepositoryImpl();
   }
 
   @Override public void attachView() {
@@ -140,8 +148,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   }
 
   private void startLocationUpdates() {
-    if (ActivityCompat.checkSelfPermission(getContext(),
-        Manifest.permission.ACCESS_FINE_LOCATION)
+    if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
         != PackageManager.PERMISSION_GRANTED) {
       throw new RuntimeException("Location permission not provided");
     }
@@ -156,12 +163,10 @@ public class HomePresenterImpl implements HomeContract.Presenter {
 
   private void fetchAddress(String latLng) {
 
-    Call<GeoLocation> geoLocationCall =
-        geocodingAPIInterface.getLocationDetails(latLng);
+    Call<GeoLocation> geoLocationCall = geocodingAPIInterface.getLocationDetails(latLng);
 
     geoLocationCall.enqueue(new Callback<GeoLocation>() {
-      @Override
-      public void onResponse(@NonNull Call<GeoLocation> call,
+      @Override public void onResponse(@NonNull Call<GeoLocation> call,
           @NonNull Response<GeoLocation> response) {
         GeoLocation geoLocation = response.body();
         List<Address> addressList = geoLocation.getAddresses();
@@ -174,8 +179,7 @@ public class HomePresenterImpl implements HomeContract.Presenter {
         }
       }
 
-      @Override
-      public void onFailure(@NonNull Call<GeoLocation> call, @NonNull Throwable t) {
+      @Override public void onFailure(@NonNull Call<GeoLocation> call, @NonNull Throwable t) {
         Timber.e(t);
       }
     });
@@ -241,34 +245,34 @@ public class HomePresenterImpl implements HomeContract.Presenter {
   private void fetchWeatherForecast(String latLng) {
     view.showSwipeRefresh(true);
 
-    WeatherAPIInterface weatherApiInterface =
-        WeatherAPIClient.getClient().create(WeatherAPIInterface.class);
-    Call<Forecast> forecastCall = weatherApiInterface.getForecast(latLng);
+    // TODO refactor after mvp complete
+    Disposable disposable = weatherRepository.getForecast(latLng)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeWith(new DisposableObserver<Forecast>() {
+          @Override public void onNext(Forecast forecast) {
+            currentForecast = forecast.getCurrentForecast();
+            dailyForecast = forecast.getDailyForecast();
+            dailyForecastList = dailyForecast.getDailyDataList();
+            hourlyForecast = forecast.getHourlyForecast();
+            hourlyDataList = hourlyForecast.getHourlyDataList();
+            setForecastView();
+            view.changeErrorVisibility(false);
+            //save to provide coordinates during refresh
+            preferenceRepository.saveCurrentLocationCoordinates(latLng);
+          }
 
-    forecastCall.enqueue(new Callback<Forecast>() {
-      @Override
-      public void onResponse(@NonNull Call<Forecast> call, @NonNull Response<Forecast> response) {
-        forecast = response.body();
-        currentForecast = forecast.getCurrentForecast();
-        dailyForecast = forecast.getDailyForecast();
-        dailyForecastList = dailyForecast.getDailyDataList();
-        hourlyForecast = forecast.getHourlyForecast();
-        hourlyDataList = hourlyForecast.getHourlyDataList();
-        setForecastView();
-        view.changeErrorVisibility(false);
-        view.showSwipeRefresh(false);
+          @Override public void onError(Throwable e) {
+            Timber.e(e);
+            view.changeErrorVisibility(true);
+            view.showErrorMessage();
+            view.showSwipeRefresh(false);
+          }
 
-        //save to provide coordinates during refresh
-        preferenceRepository.saveCurrentLocationCoordinates(latLng);
-      }
-
-      @Override public void onFailure(@NonNull Call<Forecast> call, @NonNull Throwable t) {
-        Timber.e(t);
-        view.changeErrorVisibility(true);
-        view.showErrorMessage();
-        view.showSwipeRefresh(false);
-      }
-    });
+          @Override public void onComplete() {
+            view.showSwipeRefresh(false);
+          }
+        });
   }
 
   private void setForecastView() {

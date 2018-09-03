@@ -14,8 +14,8 @@ import android.util.AttributeSet;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
-import com.ayush.weatherapp.preferences.PreferenceRepository;
-import com.ayush.weatherapp.preferences.PreferenceRepositoryImpl;
+import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
+import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
 import com.ayush.weatherapp.utils.UnitConversionUtils;
 
 public class TemperatureTextView extends AppCompatTextView {

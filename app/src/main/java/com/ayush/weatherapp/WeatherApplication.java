@@ -1,7 +1,7 @@
 package com.ayush.weatherapp;
 
 import android.app.Application;
-import com.ayush.weatherapp.preferences.PreferenceRepositoryImpl;
+import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
 import timber.log.Timber;
 import timber.log.Timber.DebugTree;
 
