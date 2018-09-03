@@ -26,9 +26,9 @@ public interface HomeContract {
 
     void setHomeBackground(@DrawableRes int drawableId);
 
-    void showHomeErrorMessage();
+    void showErrorMessage();
 
-    void changeHomeErrorVisibility(boolean isError);
+    void changeErrorVisibility(boolean isError);
   }
 
   interface Presenter extends BaseContract.Presenter {

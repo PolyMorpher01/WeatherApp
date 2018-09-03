@@ -76,7 +76,7 @@ public class HomeActivity extends BaseActivity
   @BindView(R.id.view_pager) ViewPager viewPager;
   @BindView(R.id.ll_content_frame) LinearLayout llContentFrame;
   @BindView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
-  @BindView(R.id.ll__group_bottom) LinearLayout llGroupBottom;
+  @BindView(R.id.ll_group_bottom) LinearLayout llGroupBottom;
   @BindView(R.id.ll_group_current_forecast) LinearLayout llGroupCurrentForecast;
   @BindView(R.id.ll_msg_error) LinearLayout llMessageError;
   private TabPagerAdapter tabPagerAdapter;
@@ -155,12 +155,12 @@ public class HomeActivity extends BaseActivity
     llContentFrame.setBackground(getResources().getDrawable(drawableId));
   }
 
-  @Override public void showHomeErrorMessage() {
+  @Override public void showErrorMessage() {
     ivWeather.setImageResource(R.drawable.img_no_connection);
     llContentFrame.setBackground(getResources().getDrawable(R.drawable.background_gradient_error));
   }
 
-  @Override public void changeHomeErrorVisibility(boolean isError) {
+  @Override public void changeErrorVisibility(boolean isError) {
     if (isError) {
       llGroupBottom.setVisibility(View.GONE);
       llGroupCurrentForecast.setVisibility(View.INVISIBLE);
