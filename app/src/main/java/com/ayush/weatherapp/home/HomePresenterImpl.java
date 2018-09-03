@@ -285,21 +285,22 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     preferenceRepository.saveCurrentLocationCoordinates(latLng);
   }
 
-  private DailyForecast convert(DailyForecast dailyForecast) {
+  private List<DailyData> convert(List<DailyData> dailyDatas) {
     if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
-      //dailyForecast.
-      //  formatWind = R.string.format_wind_kph;
-      //  windSpeed = UnitConversionUtils.mphToKmph(windSpeed);
-      //  temperatureHigh = UnitConversionUtils.fahrenheitToCelsius(temperatureHigh);
-      //  temperatureLow = UnitConversionUtils.fahrenheitToCelsius(temperatureLow);
-
+      for (DailyData dailyData : dailyDatas) {
+        dailyData.setWindSpeed(UnitConversionUtils.mphToKmph(dailyData.getWindSpeed()));
+        dailyData.setTemperatureHigh(
+            UnitConversionUtils.fahrenheitToCelsius(dailyData.getTemperatureHigh()));
+        dailyData.setTemperatureLow(
+            UnitConversionUtils.fahrenheitToCelsius(dailyData.getTemperatureLow()));
+      }
     }
-    return dailyForecast;
+    return dailyDatas;
   }
 
   private void setForecastView() {
     getView().setCurrentForecast(currentForecast);
-    getView().setDailyForeCast(dailyForecastList);
+    getView().setDailyForeCast(convert(dailyForecastList));
     getView().setHourlyForeCast(hourlyDataList);
     getView().setTabLayout();
 

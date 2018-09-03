@@ -232,13 +232,6 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     double temperatureHigh = todaysForecast.getTemperatureHigh();
     double temperatureLow = todaysForecast.getTemperatureLow();
 
-    //if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
-    //  formatWind = R.string.format_wind_kph;
-    //  windSpeed = UnitConversionUtils.mphToKmph(windSpeed);
-    //  temperatureHigh = UnitConversionUtils.fahrenheitToCelsius(temperatureHigh);
-    //  temperatureLow = UnitConversionUtils.fahrenheitToCelsius(temperatureLow);
-    //}
-
     detailWind.setBottomText(getString(formatWind, windSpeed));
     detailTemperature.setTopText(
         "Max " + getString(R.string.format_temperature, Math.round(temperatureHigh)));

@@ -96,4 +96,44 @@ public class DailyData implements Parcelable {
     dest.writeDouble(apparentTemperatureLow);
     dest.writeDouble(windSpeed);
   }
+
+  public void setTime(long time) {
+    this.time = time;
+  }
+
+  public void setSummary(String summary) {
+    this.summary = summary;
+  }
+
+  public void setIcon(String icon) {
+    this.icon = icon;
+  }
+
+  public void setSunriseTime(int sunriseTime) {
+    this.sunriseTime = sunriseTime;
+  }
+
+  public void setSunsetTime(int sunsetTime) {
+    this.sunsetTime = sunsetTime;
+  }
+
+  public void setTemperatureHigh(double temperatureHigh) {
+    this.temperatureHigh = temperatureHigh;
+  }
+
+  public void setTemperatureLow(double temperatureLow) {
+    this.temperatureLow = temperatureLow;
+  }
+
+  public void setApparentTemperatureHigh(double apparentTemperatureHigh) {
+    this.apparentTemperatureHigh = apparentTemperatureHigh;
+  }
+
+  public void setApparentTemperatureLow(double apparentTemperatureLow) {
+    this.apparentTemperatureLow = apparentTemperatureLow;
+  }
+
+  public void setWindSpeed(double windSpeed) {
+    this.windSpeed = windSpeed;
+  }
 }
