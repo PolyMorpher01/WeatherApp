@@ -65,7 +65,7 @@
 
     <!--Bottom group starting from the horizontal line-->
     <LinearLayout
-        android:id="@+id/ll__group_bottom"
+        android:id="@+id/ll_group_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
