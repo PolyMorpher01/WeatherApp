@@ -41,9 +41,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
-//public class WorkOrderDetailPresenterImpl extends BasePresenter<WorkOrderDetailContract.BaseView>
-//    implements WorkOrderDetailContract.Presenter, OnMapReadyCallback {
-
 public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     implements HomeContract.Presenter {
 
