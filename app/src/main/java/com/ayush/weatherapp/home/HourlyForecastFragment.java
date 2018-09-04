@@ -47,10 +47,7 @@ public class HourlyForecastFragment extends Fragment {
   }
 
   public void setData(List<HourlyForecast.HourlyData> hourlyForeCastList) {
-    //remove child views
-    if (llForecastDetails.getChildCount() > 0) {
-      llForecastDetails.removeAllViews();
-    }
+    llForecastDetails.removeAllViews();
 
     for (HourlyForecast.HourlyData hourlyData : hourlyForeCastList) {
       setView(hourlyData);
@@ -64,9 +61,9 @@ public class HourlyForecastFragment extends Fragment {
 
     double hourlyTemperature = hourlyData.getTemperature();
 
-    //if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
-    //  hourlyTemperature = UnitConversionUtils.fahrenheitToCelsius(hourlyTemperature);
-    //}
+    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
+      hourlyTemperature = UnitConversionUtils.fahrenheitToCelsius(hourlyTemperature);
+    }
 
     forecastCompoundView.setTopText(DateUtils.getTime(hourlyData.getTime()));
     forecastCompoundView.setMidImage(

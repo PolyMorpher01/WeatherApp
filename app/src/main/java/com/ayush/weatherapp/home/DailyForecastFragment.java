@@ -17,7 +17,6 @@ import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyData;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.utils.DateUtils;
 import com.ayush.weatherapp.utils.MathUtils;
 import com.ayush.weatherapp.utils.UnitConversionUtils;
@@ -51,10 +50,7 @@ public class DailyForecastFragment extends Fragment {
   }
 
   public void setData(List<DailyData> dailyForecastList) {
-    //remove child views
-    if (llForecastDetails.getChildCount() > 0) {
-      llForecastDetails.removeAllViews();
-    }
+    llForecastDetails.removeAllViews();
 
     for (DailyData dailyData : dailyForecastList) {
       setView(dailyData);
@@ -64,10 +60,10 @@ public class DailyForecastFragment extends Fragment {
   private void setView(DailyData dailyData) {
     double averageTemperature = Math.round(
         MathUtils.getAverage(dailyData.getTemperatureHigh(), dailyData.getTemperatureLow()));
-    //
-    //if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
-    //  averageTemperature = UnitConversionUtils.fahrenheitToCelsius(averageTemperature);
-    //}
+
+    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
+      averageTemperature = UnitConversionUtils.fahrenheitToCelsius(averageTemperature);
+    }
 
     ForecastCompoundView forecastCompoundView =
         (ForecastCompoundView) getLayoutInflater().inflate(R.layout.item_forecast_compound_view,

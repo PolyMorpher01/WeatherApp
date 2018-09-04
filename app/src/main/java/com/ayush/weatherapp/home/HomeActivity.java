@@ -79,7 +79,6 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
   @BindView(R.id.ll_msg_error) LinearLayout llMessageError;
 
   private TabPagerAdapter tabPagerAdapter;
-  //private PreferenceRepository preferenceRepository;
 
   @Override public HomePresenterImpl getPresenter() {
     return new HomePresenterImpl();
@@ -200,7 +199,6 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
 
   @Override public void setCurrentForecast(CurrentForecast currentForecast) {
     tvCurrentForecastSummary.setText(currentForecast.getSummary());
-    //tvTempCurrent.setText(String.valueOf(Math.round(currentForecast.getTemperature())));
     ivWeather.setImageResource(WeatherImageMapper.getImageResource(currentForecast.getIcon()));
   }
 
@@ -268,8 +266,6 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
   }
 
   @Override public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
-    Timber.e("onPermissionsDenied:" + requestCode + ":" + perms.size());
-
     // Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
     // This will display a dialog directing them to enable the permission in app settings.
     if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {

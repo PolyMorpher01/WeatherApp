@@ -69,20 +69,6 @@ public class TemperatureTextView extends AppCompatTextView {
   }
 
   @Override public void setText(CharSequence text, BufferType type) {
-/*    if (TextUtils.isEmpty(text) || !TextUtils.isDigitsOnly(text)) {
-      super.setText("", type);
-      return;
-    }
-
-    if (getPreferenceRepository().getTemperatureUnit() == TemperatureUnit.FAHRENHEIT) {
-      text = getResources().getString(R.string.format_temperature_fahrenheit, text);
-    } else {
-      text = String.valueOf(Math.round(
-          UnitConversionUtils.fahrenheitToCelsius(Double.parseDouble(String.valueOf(text)))));
-      text = getResources().getString(R.string.format_temperature_celsius, text);
-    }
-    */
-
     if (TextUtils.isEmpty(text)) {
       super.setText("", type);
       return;
