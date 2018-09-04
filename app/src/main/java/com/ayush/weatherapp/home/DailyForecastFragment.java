@@ -16,7 +16,7 @@ import com.ayush.weatherapp.customViews.ForecastCompoundView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyData;
 import com.ayush.weatherapp.utils.DateUtils;
 import com.ayush.weatherapp.utils.MathUtils;
 import com.ayush.weatherapp.utils.UnitConversionUtils;
@@ -28,9 +28,7 @@ public class DailyForecastFragment extends Fragment {
 
   @BindView(R.id.ll_forecast_details) LinearLayout llForecastDetails;
 
-  private PreferenceRepository preferenceRepository;
-
-  public static DailyForecastFragment getInstance(List<DailyForecast.DailyData> dailyDataList) {
+  public static DailyForecastFragment getInstance(List<DailyData> dailyDataList) {
     DailyForecastFragment dailyForecastFragment = new DailyForecastFragment();
     Bundle bundle = new Bundle();
     bundle.putParcelableArrayList(EXTRA_DAILY_FORECAST,
@@ -42,31 +40,23 @@ public class DailyForecastFragment extends Fragment {
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       Bundle savedInstanceState) {
-    preferenceRepository = PreferenceRepositoryImpl.get();
     View view = inflater.inflate(R.layout.forecast_fragment, container, false);
     ButterKnife.bind(this, view);
     setData(getArguments().getParcelableArrayList(EXTRA_DAILY_FORECAST));
     return view;
   }
 
-  public void setData(List<DailyForecast.DailyData> dailyForecastList) {
-    //remove child views
-    if (llForecastDetails.getChildCount() > 0) {
-      llForecastDetails.removeAllViews();
-    }
+  public void setData(List<DailyData> dailyForecastList) {
+    llForecastDetails.removeAllViews();
 
-    for (DailyForecast.DailyData dailyData : dailyForecastList) {
+    for (DailyData dailyData : dailyForecastList) {
       setView(dailyData);
     }
   }
 
-  private void setView(DailyForecast.DailyData dailyData) {
+  private void setView(DailyData dailyData) {
     double averageTemperature = Math.round(
         MathUtils.getAverage(dailyData.getTemperatureHigh(), dailyData.getTemperatureLow()));
-
-    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
-      averageTemperature = UnitConversionUtils.fahrenheitToCelsius(averageTemperature);
-    }
 
     ForecastCompoundView forecastCompoundView =
         (ForecastCompoundView) getLayoutInflater().inflate(R.layout.item_forecast_compound_view,

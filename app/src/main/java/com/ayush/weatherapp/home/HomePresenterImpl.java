@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
+import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.constants.WeatherImage;
 import com.ayush.weatherapp.mvp.BasePresenterImpl;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
@@ -22,9 +23,12 @@ import com.ayush.weatherapp.retrofit.geocodingApi.pojo.Address;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponents;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocation;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyData;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.Forecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyData;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
+import com.ayush.weatherapp.utils.UnitConversionUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -45,6 +49,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
   private static final int LOCATION_REQ_INTERVAL = 10000;
   private static final int FASTEST_LOCATION_REQ_INTERVAL = 5000;
+
   private static final String ADDRESS_STREET = "route";
   private static final String ADDRESS_CITY = "locality";
   private static final String ADDRESS_COUNTRY = "country";
@@ -54,31 +59,28 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private LocationRequest locationRequest;
   private LocationCallback locationCallback;
 
-  //private HomeContract.View view;
   private PreferenceRepository preferenceRepository;
   private GeocodingAPIInterface geocodingAPIInterface;
 
   private Forecast forecast;
   private CurrentForecast currentForecast;
   private DailyForecast dailyForecast;
-  private List<DailyForecast.DailyData> dailyForecastList;
+  private List<DailyData> dailyForecastList;
   private HourlyForecast hourlyForecast;
-  private List<HourlyForecast.HourlyData> hourlyDataList;
+  private List<HourlyData> hourlyDataList;
   private WeatherRepository weatherRepository;
 
   // TODO dagger
   public HomePresenterImpl() {
-
+    preferenceRepository = PreferenceRepositoryImpl.get();
   }
 
   @Override public void attachView(HomeContract.View view) {
     super.attachView(view);
     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
     geocodingAPIInterface = GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
-
-    preferenceRepository = PreferenceRepositoryImpl.get();
     // todo Ayush fix this
-    //preferenceRepository.onPreferenceChangeListener(newTemperature -> setForecastView());
+    preferenceRepository.onPreferenceChangeListener(newTemperature -> setForecastView());
     weatherRepository = new WeatherRepositoryImpl();
   }
 
@@ -89,8 +91,15 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   @Override public void initHome() {
     getView().showProgressBar("");
     fetchByCurrentLocation();
-    getView().setRadioChecked();
-    Timber.e(this.toString());
+    setTemperatureUnit();
+  }
+
+  private void setTemperatureUnit() {
+    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
+      getView().checkCelsiusButton(true);
+    } else {
+      getView().checkFahrenheitButton(true);
+    }
   }
 
   @Override public void onViewRestart() {
@@ -172,7 +181,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
           List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
           getView().setAddress(getAddress(addressComponentsList));
         } else {
-          getView().setAddress(getContext().getResources().getString(R.string.not_available));
+          getView().setAddress(getString(R.string.not_available));
         }
       }
 
@@ -271,19 +280,73 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     dailyForecastList = dailyForecast.getDailyDataList();
     hourlyForecast = forecast.getHourlyForecast();
     hourlyDataList = hourlyForecast.getHourlyDataList();
+
     setForecastView();
+    getView().setTabLayout();
+    changeHomeBackground();
     getView().changeErrorVisibility(false);
+
     //save to provide coordinates during refresh
     preferenceRepository.saveCurrentLocationCoordinates(latLng);
   }
 
-  private void setForecastView() {
-    getView().setCurrentForecast(currentForecast);
-    getView().setDailyForeCast(dailyForecastList);
-    getView().setHourlyForeCast(hourlyDataList);
-    getView().setTabLayout();
+  private List<DailyData> convertDailyData(List<DailyData> dailyDatas) {
+    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
+      for (DailyData dailyData : dailyDatas) {
+        dailyData.setWindSpeed(UnitConversionUtils.mphToKmph(dailyData.getWindSpeed()));
+        dailyData.setTemperatureHigh(
+            UnitConversionUtils.fahrenheitToCelsius(dailyData.getTemperatureHigh()));
+        dailyData.setTemperatureLow(
+            UnitConversionUtils.fahrenheitToCelsius(dailyData.getTemperatureLow()));
+      }
+    } else {
+      for (DailyData dailyData : dailyDatas) {
+        dailyData.setWindSpeed(UnitConversionUtils.kmphToMph(dailyData.getWindSpeed()));
+        dailyData.setTemperatureHigh(
+            UnitConversionUtils.celsiusToFahrenheit(dailyData.getTemperatureHigh()));
+        dailyData.setTemperatureLow(
+            UnitConversionUtils.celsiusToFahrenheit(dailyData.getTemperatureLow()));
+      }
+    }
 
-    changeHomeBackground();
+    return dailyDatas;
+  }
+
+  private List<HourlyData> convertHourlyData(List<HourlyData> hourlyDatas) {
+
+    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
+      for (HourlyData hourlyData : hourlyDatas) {
+        hourlyData.setTemperature(
+            UnitConversionUtils.fahrenheitToCelsius(hourlyData.getTemperature()));
+      }
+    } else {
+      for (HourlyData hourlyData : hourlyDatas) {
+        hourlyData.setTemperature(
+            UnitConversionUtils.celsiusToFahrenheit(hourlyData.getTemperature()));
+      }
+    }
+    return hourlyDatas;
+  }
+
+  private void setCurrentTemperature(double temperature) {
+    String modifiedTemperature = String.valueOf(Math.round(temperature));
+
+    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.FAHRENHEIT) {
+      modifiedTemperature = getString(R.string.format_temperature_fahrenheit, modifiedTemperature);
+    } else {
+      modifiedTemperature = String.valueOf(Math.round(UnitConversionUtils.fahrenheitToCelsius(
+          Double.parseDouble(String.valueOf(modifiedTemperature)))));
+      modifiedTemperature = getString(R.string.format_temperature_celsius, modifiedTemperature);
+    }
+
+    getView().setCurrentTemperature(modifiedTemperature);
+  }
+
+  private void setForecastView() {
+    getView().setDailyForeCast(convertDailyData(dailyForecastList));
+    getView().setHourlyForeCast(convertHourlyData(hourlyDataList));
+    getView().setCurrentForecast(currentForecast);
+    setCurrentTemperature(currentForecast.getTemperature());
   }
 
   private void changeHomeBackground() {
@@ -317,9 +380,8 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
     if (!gpsEnabled && !networkEnabled) {
-      getView().showGPSNotEnabledDialog(
-          getContext().getResources().getString(R.string.location_services_not_enabled),
-          getContext().getResources().getString(R.string.open_location_settings));
+      getView().showGPSNotEnabledDialog(getString(R.string.location_services_not_enabled),
+          getString(R.string.open_location_settings));
       return false;
     }
     return true;

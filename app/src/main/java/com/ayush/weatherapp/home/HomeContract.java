@@ -4,20 +4,19 @@ import android.support.annotation.DrawableRes;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.mvp.BaseContract;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyData;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyData;
 import java.util.List;
 
-public final class HomeContract {
-  private HomeContract() {
-  }
-
-  public interface View extends BaseContract.BaseView {
+public interface HomeContract {
+  interface View extends BaseContract.BaseView {
     void setCurrentForecast(CurrentForecast currentForecast);
 
-    void setDailyForeCast(List<DailyForecast.DailyData> dailyForecastList);
+    void setCurrentTemperature(String temperature);
 
-    void setHourlyForeCast(List<HourlyForecast.HourlyData> hourlyForeCastList);
+    void setDailyForeCast(List<DailyData> dailyForecastList);
+
+    void setHourlyForeCast(List<HourlyData> hourlyForeCastList);
 
     void setAddress(String address);
 
@@ -25,16 +24,18 @@ public final class HomeContract {
 
     void showGPSNotEnabledDialog(String title, String message);
 
-    void setRadioChecked();
-
     void setHomeBackground(@DrawableRes int drawableId);
 
     void showErrorMessage();
 
     void changeErrorVisibility(boolean isError);
+
+    void checkCelsiusButton(boolean check);
+
+    void checkFahrenheitButton(boolean check);
   }
 
-  public interface Presenter {
+  interface Presenter {
     void initHome();
 
     void onViewRestart();
