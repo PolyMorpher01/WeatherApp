@@ -3,6 +3,7 @@ package com.ayush.weatherapp.retrofit.geocodingApi;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GeocodingAPIClient {
@@ -21,6 +22,7 @@ public class GeocodingAPIClient {
     return new Retrofit.Builder()
         .baseUrl(API_BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .client(client)
         .build();
   }
