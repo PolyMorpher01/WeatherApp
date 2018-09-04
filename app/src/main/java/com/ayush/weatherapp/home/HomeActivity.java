@@ -200,8 +200,12 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
 
   @Override public void setCurrentForecast(CurrentForecast currentForecast) {
     tvCurrentForecastSummary.setText(currentForecast.getSummary());
-    tvTempCurrent.setText(String.valueOf(Math.round(currentForecast.getTemperature())));
+    //tvTempCurrent.setText(String.valueOf(Math.round(currentForecast.getTemperature())));
     ivWeather.setImageResource(WeatherImageMapper.getImageResource(currentForecast.getIcon()));
+  }
+
+  @Override public void setCurrentTemperature(String temperature) {
+    tvTempCurrent.setText(temperature);
   }
 
   @Override public void setDailyForeCast(List<DailyData> dailyForecastList) {

@@ -64,10 +64,10 @@ public class DailyForecastFragment extends Fragment {
   private void setView(DailyData dailyData) {
     double averageTemperature = Math.round(
         MathUtils.getAverage(dailyData.getTemperatureHigh(), dailyData.getTemperatureLow()));
-
-    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
-      averageTemperature = UnitConversionUtils.fahrenheitToCelsius(averageTemperature);
-    }
+    //
+    //if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
+    //  averageTemperature = UnitConversionUtils.fahrenheitToCelsius(averageTemperature);
+    //}
 
     ForecastCompoundView forecastCompoundView =
         (ForecastCompoundView) getLayoutInflater().inflate(R.layout.item_forecast_compound_view,

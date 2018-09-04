@@ -64,9 +64,9 @@ public class HourlyForecastFragment extends Fragment {
 
     double hourlyTemperature = hourlyData.getTemperature();
 
-    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
-      hourlyTemperature = UnitConversionUtils.fahrenheitToCelsius(hourlyTemperature);
-    }
+    //if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
+    //  hourlyTemperature = UnitConversionUtils.fahrenheitToCelsius(hourlyTemperature);
+    //}
 
     forecastCompoundView.setTopText(DateUtils.getTime(hourlyData.getTime()));
     forecastCompoundView.setMidImage(

@@ -79,7 +79,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
     geocodingAPIInterface = GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
     // todo Ayush fix this
-    //preferenceRepository.onPreferenceChangeListener(newTemperature -> setForecastView());
+    preferenceRepository.onPreferenceChangeListener(newTemperature -> setForecastView());
     weatherRepository = new WeatherRepositoryImpl();
   }
 
@@ -279,13 +279,17 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     dailyForecastList = dailyForecast.getDailyDataList();
     hourlyForecast = forecast.getHourlyForecast();
     hourlyDataList = hourlyForecast.getHourlyDataList();
+
     setForecastView();
+    getView().setTabLayout();
+    changeHomeBackground();
     getView().changeErrorVisibility(false);
+
     //save to provide coordinates during refresh
     preferenceRepository.saveCurrentLocationCoordinates(latLng);
   }
 
-  private List<DailyData> convert(List<DailyData> dailyDatas) {
+  private List<DailyData> convertDailyData(List<DailyData> dailyDatas) {
     if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
       for (DailyData dailyData : dailyDatas) {
         dailyData.setWindSpeed(UnitConversionUtils.mphToKmph(dailyData.getWindSpeed()));
@@ -298,13 +302,25 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     return dailyDatas;
   }
 
+  private void setCurrentTemperature(double temperature) {
+    String modifiedTemperature = String.valueOf(Math.round(temperature));
+
+    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.FAHRENHEIT) {
+      modifiedTemperature = getString(R.string.format_temperature_fahrenheit, modifiedTemperature);
+    } else {
+      modifiedTemperature = String.valueOf(Math.round(UnitConversionUtils.fahrenheitToCelsius(
+          Double.parseDouble(String.valueOf(modifiedTemperature)))));
+      modifiedTemperature = getString(R.string.format_temperature_celsius, modifiedTemperature);
+    }
+
+    getView().setCurrentTemperature(modifiedTemperature);
+  }
+
   private void setForecastView() {
     getView().setCurrentForecast(currentForecast);
-    getView().setDailyForeCast(convert(dailyForecastList));
+    getView().setDailyForeCast(convertDailyData(dailyForecastList));
     getView().setHourlyForeCast(hourlyDataList);
-    getView().setTabLayout();
-
-    changeHomeBackground();
+    setCurrentTemperature(currentForecast.getTemperature());
   }
 
   private void changeHomeBackground() {

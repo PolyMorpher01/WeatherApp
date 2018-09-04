@@ -6,7 +6,7 @@ import android.support.annotation.StringRes;
 public class BasePresenterImpl<T extends BaseContract.BaseView>
     implements BaseContract.Presenter<T> {
 
-  T view;
+  private T view;
 
   @Override public void attachView(T view) {
     this.view = view;

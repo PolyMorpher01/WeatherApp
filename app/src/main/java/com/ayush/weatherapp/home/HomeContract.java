@@ -5,16 +5,14 @@ import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.mvp.BaseContract;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyData;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
 import java.util.List;
 
-public final class HomeContract {
-  private HomeContract() {
-  }
-
-  public interface View extends BaseContract.BaseView {
+public interface HomeContract {
+  interface View extends BaseContract.BaseView {
     void setCurrentForecast(CurrentForecast currentForecast);
+
+    void setCurrentTemperature(String temperature);
 
     void setDailyForeCast(List<DailyData> dailyForecastList);
 
@@ -37,7 +35,7 @@ public final class HomeContract {
     void checkFahrenheitButton(boolean check);
   }
 
-  public interface Presenter {
+  interface Presenter {
     void initHome();
 
     void onViewRestart();

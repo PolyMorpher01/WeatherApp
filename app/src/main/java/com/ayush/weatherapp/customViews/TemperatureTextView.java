@@ -16,7 +16,6 @@ import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
-import com.ayush.weatherapp.utils.UnitConversionUtils;
 
 public class TemperatureTextView extends AppCompatTextView {
 
@@ -70,7 +69,7 @@ public class TemperatureTextView extends AppCompatTextView {
   }
 
   @Override public void setText(CharSequence text, BufferType type) {
-    if (TextUtils.isEmpty(text) || !TextUtils.isDigitsOnly(text)) {
+/*    if (TextUtils.isEmpty(text) || !TextUtils.isDigitsOnly(text)) {
       super.setText("", type);
       return;
     }
@@ -82,8 +81,14 @@ public class TemperatureTextView extends AppCompatTextView {
           UnitConversionUtils.fahrenheitToCelsius(Double.parseDouble(String.valueOf(text)))));
       text = getResources().getString(R.string.format_temperature_celsius, text);
     }
-    Spannable spannableText =
-        getSpannableTextSize((String) text, text.length() - 2, text.length());
+    */
+
+    if (TextUtils.isEmpty(text)) {
+      super.setText("", type);
+      return;
+    }
+
+    Spannable spannableText = getSpannableTextSize((String) text, text.length() - 2, text.length());
 
     super.setText(spannableText, type);
   }
