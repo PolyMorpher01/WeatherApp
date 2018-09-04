@@ -55,6 +55,8 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private static final String ADDRESS_COUNTRY = "country";
   private static final String ADDRESS_ADMINISTRATIVE_AREA = "administrative_area_level_1";
 
+  private boolean firstLaunch = false;
+
   private FusedLocationProviderClient fusedLocationProviderClient;
   private LocationRequest locationRequest;
   private LocationCallback locationCallback;
@@ -299,8 +301,33 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
         dailyData.setTemperatureLow(
             UnitConversionUtils.fahrenheitToCelsius(dailyData.getTemperatureLow()));
       }
+    } else {
+      for (DailyData dailyData : dailyDatas) {
+        dailyData.setWindSpeed(UnitConversionUtils.kmphToMph(dailyData.getWindSpeed()));
+        dailyData.setTemperatureHigh(
+            UnitConversionUtils.celsiusToFahrenheit(dailyData.getTemperatureHigh()));
+        dailyData.setTemperatureLow(
+            UnitConversionUtils.celsiusToFahrenheit(dailyData.getTemperatureLow()));
+      }
     }
+
     return dailyDatas;
+  }
+
+  private List<HourlyData> convertHourlyData(List<HourlyData> hourlyDatas) {
+
+    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
+      for (HourlyData hourlyData : hourlyDatas) {
+        hourlyData.setTemperature(
+            UnitConversionUtils.fahrenheitToCelsius(hourlyData.getTemperature()));
+      }
+    } else {
+      for (HourlyData hourlyData : hourlyDatas) {
+        hourlyData.setTemperature(
+            UnitConversionUtils.celsiusToFahrenheit(hourlyData.getTemperature()));
+      }
+    }
+    return hourlyDatas;
   }
 
   private void setCurrentTemperature(double temperature) {
@@ -318,9 +345,9 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   private void setForecastView() {
-    getView().setCurrentForecast(currentForecast);
     getView().setDailyForeCast(convertDailyData(dailyForecastList));
-    getView().setHourlyForeCast(hourlyDataList);
+    getView().setHourlyForeCast(convertHourlyData(hourlyDataList));
+    getView().setCurrentForecast(currentForecast);
     setCurrentTemperature(currentForecast.getTemperature());
   }
 

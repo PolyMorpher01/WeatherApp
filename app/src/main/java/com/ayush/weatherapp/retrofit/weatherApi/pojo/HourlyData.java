@@ -62,4 +62,24 @@ public class HourlyData implements Parcelable {
     dest.writeDouble(temperature);
     dest.writeDouble(apparentTemperature);
   }
+
+  public void setTime(long time) {
+    this.time = time;
+  }
+
+  public void setSummary(String summary) {
+    this.summary = summary;
+  }
+
+  public void setIcon(String icon) {
+    this.icon = icon;
+  }
+
+  public void setTemperature(double temperature) {
+    this.temperature = temperature;
+  }
+
+  public void setApparentTemperature(double apparentTemperature) {
+    this.apparentTemperature = apparentTemperature;
+  }
 }

@@ -28,8 +28,6 @@ public class DailyForecastFragment extends Fragment {
 
   @BindView(R.id.ll_forecast_details) LinearLayout llForecastDetails;
 
-  private PreferenceRepository preferenceRepository;
-
   public static DailyForecastFragment getInstance(List<DailyData> dailyDataList) {
     DailyForecastFragment dailyForecastFragment = new DailyForecastFragment();
     Bundle bundle = new Bundle();
@@ -42,7 +40,6 @@ public class DailyForecastFragment extends Fragment {
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       Bundle savedInstanceState) {
-    preferenceRepository = PreferenceRepositoryImpl.get();
     View view = inflater.inflate(R.layout.forecast_fragment, container, false);
     ButterKnife.bind(this, view);
     setData(getArguments().getParcelableArrayList(EXTRA_DAILY_FORECAST));
@@ -60,10 +57,6 @@ public class DailyForecastFragment extends Fragment {
   private void setView(DailyData dailyData) {
     double averageTemperature = Math.round(
         MathUtils.getAverage(dailyData.getTemperatureHigh(), dailyData.getTemperatureLow()));
-
-    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
-      averageTemperature = UnitConversionUtils.fahrenheitToCelsius(averageTemperature);
-    }
 
     ForecastCompoundView forecastCompoundView =
         (ForecastCompoundView) getLayoutInflater().inflate(R.layout.item_forecast_compound_view,

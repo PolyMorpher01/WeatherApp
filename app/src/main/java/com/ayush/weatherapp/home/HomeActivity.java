@@ -36,7 +36,6 @@ import com.ayush.weatherapp.mvp.MVPBaseActivity;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyData;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyData;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
 import com.ayush.weatherapp.utils.DateUtils;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -229,17 +228,13 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
 
     detailSun.setTopText((String.valueOf(DateUtils.getTime(todaysForecast.getSunriseTime()))));
     detailSun.setBottomText((DateUtils.getTime(todaysForecast.getSunsetTime())));
-
-    int formatWind = R.string.format_wind_mph;
-    double windSpeed = todaysForecast.getWindSpeed();
-    double temperatureHigh = todaysForecast.getTemperatureHigh();
-    double temperatureLow = todaysForecast.getTemperatureLow();
-
-    detailWind.setBottomText(getString(formatWind, windSpeed));
+    detailWind.setBottomText(getString(R.string.format_wind_mph, todaysForecast.getWindSpeed()));
     detailTemperature.setTopText(
-        "Max " + getString(R.string.format_temperature, Math.round(temperatureHigh)));
+        "Max " + getString(R.string.format_temperature,
+            Math.round(todaysForecast.getTemperatureHigh())));
     detailTemperature.setBottomText(
-        "Min " + getString(R.string.format_temperature, Math.round(temperatureLow)));
+        "Min " + getString(R.string.format_temperature,
+            Math.round(todaysForecast.getTemperatureLow())));
   }
 
   @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,

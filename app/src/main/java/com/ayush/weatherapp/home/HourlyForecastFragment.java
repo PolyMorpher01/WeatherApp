@@ -25,7 +25,6 @@ public class HourlyForecastFragment extends Fragment {
 
   public static final String EXTRA_HOURLY_FORECAST = "HourlyForecastList";
   @BindView(R.id.ll_forecast_details) LinearLayout llForecastDetails;
-  private PreferenceRepository preferenceRepository;
 
   public static HourlyForecastFragment getInstance(List<HourlyData> hourlyDataList) {
     HourlyForecastFragment hourlyForecastFragment = new HourlyForecastFragment();
@@ -39,7 +38,6 @@ public class HourlyForecastFragment extends Fragment {
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       Bundle savedInstanceState) {
-    preferenceRepository = PreferenceRepositoryImpl.get();
     View view = inflater.inflate(R.layout.forecast_fragment, container, false);
     ButterKnife.bind(this, view);
     setData(getArguments().getParcelableArrayList(EXTRA_HOURLY_FORECAST));
@@ -60,10 +58,6 @@ public class HourlyForecastFragment extends Fragment {
             llForecastDetails, false);
 
     double hourlyTemperature = hourlyData.getTemperature();
-
-    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
-      hourlyTemperature = UnitConversionUtils.fahrenheitToCelsius(hourlyTemperature);
-    }
 
     forecastCompoundView.setTopText(DateUtils.getTime(hourlyData.getTime()));
     forecastCompoundView.setMidImage(
