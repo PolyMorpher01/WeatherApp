@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import com.ayush.weatherapp.R;
@@ -167,18 +168,22 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     Disposable disposable = geocodingRepository.getLocationDetails(latLng)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(new DisposableObserver<GeoLocation>() {
-          @Override public void onNext(GeoLocation geoLocation) {
-            setLocation(geoLocation);
-          }
+        .subscribeWith(getGeoLocationObserver());
+  }
 
-          @Override public void onError(Throwable e) {
-            Timber.e(e);
-          }
+  @NonNull private DisposableObserver<GeoLocation> getGeoLocationObserver() {
+    return new DisposableObserver<GeoLocation>() {
+      @Override public void onNext(GeoLocation geoLocation) {
+        setLocation(geoLocation);
+      }
 
-          @Override public void onComplete() {
-          }
-        });
+      @Override public void onError(Throwable e) {
+        Timber.e(e);
+      }
+
+      @Override public void onComplete() {
+      }
+    };
   }
 
   private void setLocation(GeoLocation geoLocation) {
@@ -257,22 +262,26 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     Disposable disposable = weatherRepository.getForecast(latLng)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(new DisposableObserver<Forecast>() {
-          @Override public void onNext(Forecast forecast) {
-            setForecast(forecast, latLng);
-          }
+        .subscribeWith(getWeatherForecastObserver(latLng));
+  }
 
-          @Override public void onError(Throwable e) {
-            Timber.e(e);
-            getView().changeErrorVisibility(true);
-            getView().showErrorMessage();
-            getView().hideProgressBar();
-          }
+  @NonNull private DisposableObserver<Forecast> getWeatherForecastObserver(String latLng) {
+    return new DisposableObserver<Forecast>() {
+      @Override public void onNext(Forecast forecast) {
+        setForecast(forecast, latLng);
+      }
 
-          @Override public void onComplete() {
-            getView().hideProgressBar();
-          }
-        });
+      @Override public void onError(Throwable e) {
+        Timber.e(e);
+        getView().changeErrorVisibility(true);
+        getView().showErrorMessage();
+        getView().hideProgressBar();
+      }
+
+      @Override public void onComplete() {
+        getView().hideProgressBar();
+      }
+    };
   }
 
   private void setForecast(Forecast forecast, String latLng) {
