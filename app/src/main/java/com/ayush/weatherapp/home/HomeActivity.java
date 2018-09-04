@@ -310,7 +310,7 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
   @Override public void showGPSNotEnabledDialog(String title, String message) {
     AlertDialog.Builder dialog = new AlertDialog.Builder(this);
     dialog.setMessage(title);
-    dialog.setPositiveButton(message, (dialogInterface, which) -> this.startActivity(
+    dialog.setPositiveButton(message, (dialogInterface, which) -> startActivity(
         new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)));
     dialog.setCancelable(false).show();
   }
