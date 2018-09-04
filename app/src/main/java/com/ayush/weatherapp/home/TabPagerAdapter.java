@@ -5,13 +5,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyData;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyData;
 import java.util.List;
 
 public class TabPagerAdapter extends FragmentPagerAdapter {
   private final static int NUMBER_OF_TABS = 2;
   private final static String TAB_TITLES[] = new String[] { "Daily", "Hourly" };
-  private List<HourlyForecast.HourlyData> hourlyData;
+  private List<HourlyData> hourlyData;
   private List<DailyData> dailyData;
 
   TabPagerAdapter(FragmentManager fm) {
@@ -39,7 +39,7 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
     this.dailyData = dailyData;
   }
 
-  public void setHourlyForecastData(List<HourlyForecast.HourlyData> hourlyData) {
+  public void setHourlyForecastData(List<HourlyData> hourlyData) {
     this.hourlyData = hourlyData;
   }
 }

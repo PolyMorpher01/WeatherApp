@@ -26,6 +26,7 @@ import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyData;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.Forecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyData;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
 import com.ayush.weatherapp.utils.UnitConversionUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -66,7 +67,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private DailyForecast dailyForecast;
   private List<DailyData> dailyForecastList;
   private HourlyForecast hourlyForecast;
-  private List<HourlyForecast.HourlyData> hourlyDataList;
+  private List<HourlyData> hourlyDataList;
   private WeatherRepository weatherRepository;
 
   // TODO dagger

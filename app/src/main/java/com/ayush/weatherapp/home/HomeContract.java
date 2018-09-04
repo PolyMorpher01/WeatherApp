@@ -5,7 +5,7 @@ import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.mvp.BaseContract;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyData;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyData;
 import java.util.List;
 
 public interface HomeContract {
@@ -16,7 +16,7 @@ public interface HomeContract {
 
     void setDailyForeCast(List<DailyData> dailyForecastList);
 
-    void setHourlyForeCast(List<HourlyForecast.HourlyData> hourlyForeCastList);
+    void setHourlyForeCast(List<HourlyData> hourlyForeCastList);
 
     void setAddress(String address);
 

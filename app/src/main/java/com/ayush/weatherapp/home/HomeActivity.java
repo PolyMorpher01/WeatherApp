@@ -35,6 +35,7 @@ import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.mvp.MVPBaseActivity;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyData;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyData;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
 import com.ayush.weatherapp.utils.DateUtils;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -213,7 +214,7 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     setTodayForecastDetails(forecastDetailToday);
   }
 
-  @Override public void setHourlyForeCast(List<HourlyForecast.HourlyData> hourlyForeCastList) {
+  @Override public void setHourlyForeCast(List<HourlyData> hourlyForeCastList) {
     //show only 6 data
     final int MAX_NUMBER_OF_DATA = 6;
     tabPagerAdapter.setHourlyForecastData(

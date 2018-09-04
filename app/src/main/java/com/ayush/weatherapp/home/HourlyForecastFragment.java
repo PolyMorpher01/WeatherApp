@@ -15,7 +15,7 @@ import com.ayush.weatherapp.customViews.ForecastCompoundView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyData;
 import com.ayush.weatherapp.utils.DateUtils;
 import com.ayush.weatherapp.utils.UnitConversionUtils;
 import java.util.ArrayList;
@@ -27,11 +27,11 @@ public class HourlyForecastFragment extends Fragment {
   @BindView(R.id.ll_forecast_details) LinearLayout llForecastDetails;
   private PreferenceRepository preferenceRepository;
 
-  public static HourlyForecastFragment getInstance(List<HourlyForecast.HourlyData> hourlyDataList) {
+  public static HourlyForecastFragment getInstance(List<HourlyData> hourlyDataList) {
     HourlyForecastFragment hourlyForecastFragment = new HourlyForecastFragment();
     Bundle bundle = new Bundle();
     bundle.putParcelableArrayList(EXTRA_HOURLY_FORECAST,
-        (ArrayList<HourlyForecast.HourlyData>) hourlyDataList);
+        (ArrayList<HourlyData>) hourlyDataList);
     hourlyForecastFragment.setArguments(bundle);
     return hourlyForecastFragment;
   }
@@ -46,15 +46,15 @@ public class HourlyForecastFragment extends Fragment {
     return view;
   }
 
-  public void setData(List<HourlyForecast.HourlyData> hourlyForeCastList) {
+  public void setData(List<HourlyData> hourlyForeCastList) {
     llForecastDetails.removeAllViews();
 
-    for (HourlyForecast.HourlyData hourlyData : hourlyForeCastList) {
+    for (HourlyData hourlyData : hourlyForeCastList) {
       setView(hourlyData);
     }
   }
 
-  private void setView(HourlyForecast.HourlyData hourlyData) {
+  private void setView(HourlyData hourlyData) {
     ForecastCompoundView forecastCompoundView =
         (ForecastCompoundView) getLayoutInflater().inflate(R.layout.item_forecast_compound_view,
             llForecastDetails, false);
