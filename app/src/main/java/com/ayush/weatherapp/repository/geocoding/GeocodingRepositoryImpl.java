@@ -15,6 +15,6 @@ public class GeocodingRepositoryImpl implements GeocodingRepository {
   }
 
   @Override public Observable<GeoLocation> getLocationDetails(String latlng) {
-    return geocodingAPIInterface.getLocationDetailsRX(latlng);
+    return geocodingAPIInterface.getLocationDetails(latlng);
   }
 }
