@@ -318,7 +318,7 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
   private void startPlaceAutoCompleteActivity() {
     try {
       Intent intent =
-          new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN).build(this);
+          new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(this);
       startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
     } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
       Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();

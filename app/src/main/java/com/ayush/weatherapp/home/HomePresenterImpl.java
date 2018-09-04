@@ -183,7 +183,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
           List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
           getView().setAddress(getAddress(addressComponentsList));
         } else {
-          getView().setAddress(getContext().getResources().getString(R.string.not_available));
+          getView().setAddress(getString(R.string.not_available));
         }
       }
 
@@ -382,9 +382,8 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
     if (!gpsEnabled && !networkEnabled) {
-      getView().showGPSNotEnabledDialog(
-          getContext().getResources().getString(R.string.location_services_not_enabled),
-          getContext().getResources().getString(R.string.open_location_settings));
+      getView().showGPSNotEnabledDialog(getString(R.string.location_services_not_enabled),
+          getString(R.string.open_location_settings));
       return false;
     }
     return true;
