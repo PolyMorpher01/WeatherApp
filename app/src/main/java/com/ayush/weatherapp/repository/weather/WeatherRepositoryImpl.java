@@ -14,6 +14,6 @@ public class WeatherRepositoryImpl implements WeatherRepository {
   }
 
   @Override public Observable<Forecast> getForecast(String coordinates) {
-    return weatherApiInterface.getForecastRX(coordinates);
+    return weatherApiInterface.getForecast(coordinates);
   }
 }

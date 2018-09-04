@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import com.ayush.weatherapp.R;
@@ -13,12 +12,12 @@ import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.constants.WeatherImage;
 import com.ayush.weatherapp.mvp.BasePresenterImpl;
+import com.ayush.weatherapp.repository.geocoding.GeocodingRepository;
+import com.ayush.weatherapp.repository.geocoding.GeocodingRepositoryImpl;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
 import com.ayush.weatherapp.repository.weather.WeatherRepository;
 import com.ayush.weatherapp.repository.weather.WeatherRepositoryImpl;
-import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIClient;
-import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIInterface;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.Address;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponents;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocation;
@@ -39,9 +38,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import java.util.List;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import timber.log.Timber;
 
 public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
@@ -60,8 +56,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private LocationCallback locationCallback;
 
   private PreferenceRepository preferenceRepository;
-  private GeocodingAPIInterface geocodingAPIInterface;
-
   private Forecast forecast;
   private CurrentForecast currentForecast;
   private DailyForecast dailyForecast;
@@ -69,6 +63,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private HourlyForecast hourlyForecast;
   private List<HourlyData> hourlyDataList;
   private WeatherRepository weatherRepository;
+  private GeocodingRepository geocodingRepository;
 
   // TODO dagger
   public HomePresenterImpl() {
@@ -78,10 +73,10 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   @Override public void attachView(HomeContract.View view) {
     super.attachView(view);
     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-    geocodingAPIInterface = GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
     // todo Ayush fix this
     preferenceRepository.onPreferenceChangeListener(newTemperature -> setForecastView());
     weatherRepository = new WeatherRepositoryImpl();
+    geocodingRepository = new GeocodingRepositoryImpl();
   }
 
   @Override public void onViewPause() {
@@ -168,27 +163,28 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   private void fetchAddress(String latLng) {
+    // TODO refactor after mvp complete
+    Disposable disposable = geocodingRepository.getLocationDetails(latLng)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeWith(new DisposableObserver<GeoLocation>() {
+          @Override public void onNext(GeoLocation geoLocation) {
+            setLocation(geoLocation);
+          }
 
-    Call<GeoLocation> geoLocationCall = geocodingAPIInterface.getLocationDetails(latLng);
+          @Override public void onError(Throwable e) {
+            Timber.e(e);
+          }
 
-    geoLocationCall.enqueue(new Callback<GeoLocation>() {
-      @Override public void onResponse(@NonNull Call<GeoLocation> call,
-          @NonNull Response<GeoLocation> response) {
-        GeoLocation geoLocation = response.body();
-        List<Address> addressList = geoLocation.getAddresses();
+          @Override public void onComplete() {
+          }
+        });
+  }
 
-        if (addressList != null && !addressList.isEmpty()) {
-          List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
-          getView().setAddress(getAddress(addressComponentsList));
-        } else {
-          getView().setAddress(getString(R.string.not_available));
-        }
-      }
-
-      @Override public void onFailure(@NonNull Call<GeoLocation> call, @NonNull Throwable t) {
-        Timber.e(t);
-      }
-    });
+  private void setLocation(GeoLocation geoLocation) {
+    List<Address> addressList = geoLocation.getAddresses();
+    List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
+    getView().setAddress(getAddress(addressComponentsList));
   }
 
   @Override public void searchLocation(double lat, double lng) {
