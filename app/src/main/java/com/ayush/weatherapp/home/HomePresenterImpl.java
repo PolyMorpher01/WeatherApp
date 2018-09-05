@@ -11,6 +11,7 @@ import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.constants.WeatherImage;
+import com.ayush.weatherapp.home.models.WeatherModel;
 import com.ayush.weatherapp.mvp.BasePresenterImpl;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepository;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepositoryImpl;
@@ -64,6 +65,9 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private List<HourlyData> hourlyDataList;
   private WeatherRepository weatherRepository;
   private GeocodingRepository geocodingRepository;
+  private WeatherModel weatherModel;
+  @Temperature
+  private int modelTemperatureUnit = TemperatureUnit.FAHRENHEIT;
 
   // TODO dagger
   public HomePresenterImpl() {
@@ -73,7 +77,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   @Override public void attachView(HomeContract.View view) {
     super.attachView(view);
     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-    // todo Ayush fix this
     preferenceRepository.onPreferenceChangeListener(newTemperature -> setForecastView());
     weatherRepository = new WeatherRepositoryImpl();
     geocodingRepository = new GeocodingRepositoryImpl();
@@ -183,8 +186,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
   private void setLocation(GeoLocation geoLocation) {
     List<Address> addressList = geoLocation.getAddresses();
-    List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
-    getView().setAddress(getAddress(addressComponentsList));
+    getView().setAddress(getAddress(addressList));
   }
 
   @Override public void searchLocation(double lat, double lng) {
@@ -199,7 +201,14 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     }
   }
 
-  private String getAddress(List<AddressComponents> addressComponentsList) {
+  private String getAddress(List<Address> addressList) {
+
+    if (addressList == null || addressList.isEmpty()) {
+      return getString(R.string.not_available);
+    }
+
+    List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
+
     String primaryAddress = getAddressPrimary(addressComponentsList);
     String secondaryAddress = getAddressSecondary(addressComponentsList);
     String address = "";
@@ -267,10 +276,21 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
             getView().hideProgressBar();
           }
         });
+/*    forecast = weatherModel.fetchWeatherForecast(latLng);
+
+    setForecast(forecast, latLng);*/
+  }
+
+  public void onFetchError() {
+    getView().changeErrorVisibility(true);
+    getView().showErrorMessage();
+  }
+
+  public void onFetchComplete() {
+    getView().hideProgressBar();
   }
 
   private void setForecast(Forecast forecast, String latLng) {
-    this.forecast = forecast;
     currentForecast = forecast.getCurrentForecast();
     dailyForecast = forecast.getDailyForecast();
     dailyForecastList = dailyForecast.getDailyDataList();
@@ -278,7 +298,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     hourlyDataList = hourlyForecast.getHourlyDataList();
 
     setForecastView();
-    getView().setTabLayout();
     changeHomeBackground();
     getView().changeErrorVisibility(false);
 
@@ -304,7 +323,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
             UnitConversionUtils.celsiusToFahrenheit(dailyData.getTemperatureLow()));
       }
     }
-
     return dailyDatas;
   }
 
@@ -339,10 +357,19 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   private void setForecastView() {
-    getView().setDailyForeCast(convertDailyData(dailyForecastList));
-    getView().setHourlyForeCast(convertHourlyData(hourlyDataList));
+
+    if (preferenceRepository.getTemperatureUnit() == modelTemperatureUnit) {
+      //don't convert
+      getView().setDailyForeCast(dailyForecastList);
+      getView().setHourlyForeCast(hourlyDataList);
+    } else {
+      getView().setDailyForeCast(convertDailyData(dailyForecastList));
+      getView().setHourlyForeCast(convertHourlyData(hourlyDataList));
+      modelTemperatureUnit = preferenceRepository.getTemperatureUnit();
+    }
     getView().setCurrentForecast(currentForecast);
     setCurrentTemperature(currentForecast.getTemperature());
+    getView().setTabLayout();
   }
 
   private void changeHomeBackground() {
