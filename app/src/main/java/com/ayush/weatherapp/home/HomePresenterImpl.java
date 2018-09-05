@@ -65,6 +65,8 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private WeatherRepository weatherRepository;
   private GeocodingRepository geocodingRepository;
 
+  @Temperature private int modelTemperatureUnit = TemperatureUnit.FAHRENHEIT;
+
   // TODO dagger
   public HomePresenterImpl() {
     preferenceRepository = PreferenceRepositoryImpl.get();
@@ -73,7 +75,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   @Override public void attachView(HomeContract.View view) {
     super.attachView(view);
     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-    // todo Ayush fix this
     preferenceRepository.onPreferenceChangeListener(newTemperature -> setForecastView());
     weatherRepository = new WeatherRepositoryImpl();
     geocodingRepository = new GeocodingRepositoryImpl();
@@ -183,8 +184,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
   private void setLocation(GeoLocation geoLocation) {
     List<Address> addressList = geoLocation.getAddresses();
-    List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
-    getView().setAddress(getAddress(addressComponentsList));
+    getView().setAddress(getAddress(addressList));
   }
 
   @Override public void searchLocation(double lat, double lng) {
@@ -199,7 +199,14 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     }
   }
 
-  private String getAddress(List<AddressComponents> addressComponentsList) {
+  private String getAddress(List<Address> addressList) {
+
+    if (addressList == null || addressList.isEmpty()) {
+      return getString(R.string.not_available);
+    }
+
+    List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
+
     String primaryAddress = getAddressPrimary(addressComponentsList);
     String secondaryAddress = getAddressSecondary(addressComponentsList);
     String address = "";
@@ -267,6 +274,18 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
             getView().hideProgressBar();
           }
         });
+/*    forecast = weatherModel.fetchWeatherForecast(latLng);
+
+    setForecast(forecast, latLng);*/
+  }
+
+  public void onFetchError() {
+    getView().changeErrorVisibility(true);
+    getView().showErrorMessage();
+  }
+
+  public void onFetchComplete() {
+    getView().hideProgressBar();
   }
 
   private void setForecast(ForecastDTO forecastDTO, String latLng) {
@@ -276,9 +295,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     dailyForecastList = dailyForecastDTO.getDailyDataDTOList();
     hourlyForecastDTO = forecastDTO.getHourlyForecastDTO();
     hourlyDataDTOList = hourlyForecastDTO.getHourlyDataDTOList();
-
     setForecastView();
-    getView().setTabLayout();
     changeHomeBackground();
     getView().changeErrorVisibility(false);
 
@@ -304,7 +321,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
             UnitConversionUtils.celsiusToFahrenheit(dailyDataDTO.getTemperatureLow()));
       }
     }
-
     return dailyDataDTOS;
   }
 
@@ -339,10 +355,19 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   private void setForecastView() {
-    getView().setDailyForeCast(convertDailyData(dailyForecastList));
-    getView().setHourlyForeCast(convertHourlyData(hourlyDataDTOList));
+
+    if (preferenceRepository.getTemperatureUnit() == modelTemperatureUnit) {
+      //don't convert
+      getView().setDailyForeCast(dailyForecastList);
+      getView().setHourlyForeCast(hourlyDataDTOList);
+    } else {
+      getView().setDailyForeCast(convertDailyData(dailyForecastList));
+      getView().setHourlyForeCast(convertHourlyData(hourlyDataDTOList));
+      modelTemperatureUnit = preferenceRepository.getTemperatureUnit();
+    }
     getView().setCurrentForecast(currentForecastDTO);
     setCurrentTemperature(currentForecastDTO.getTemperature());
+    getView().setTabLayout();
   }
 
   private void changeHomeBackground() {
