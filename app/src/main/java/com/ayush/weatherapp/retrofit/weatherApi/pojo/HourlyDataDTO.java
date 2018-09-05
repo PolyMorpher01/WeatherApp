@@ -4,17 +4,17 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
-public class HourlyData implements Parcelable {
-  public static final Creator<HourlyData> CREATOR =
-      new Creator<HourlyData>() {
+public class HourlyDataDTO implements Parcelable {
+  public static final Creator<HourlyDataDTO> CREATOR =
+      new Creator<HourlyDataDTO>() {
         @Override
-        public HourlyData createFromParcel(Parcel in) {
-          return new HourlyData(in);
+        public HourlyDataDTO createFromParcel(Parcel in) {
+          return new HourlyDataDTO(in);
         }
 
         @Override
-        public HourlyData[] newArray(int size) {
-          return new HourlyData[size];
+        public HourlyDataDTO[] newArray(int size) {
+          return new HourlyDataDTO[size];
         }
       };
   @SerializedName("time") private long time;
@@ -23,7 +23,7 @@ public class HourlyData implements Parcelable {
   @SerializedName("temperature") private double temperature;
   @SerializedName("apparentTemperature") private double apparentTemperature;
 
-  HourlyData(Parcel in) {
+  HourlyDataDTO(Parcel in) {
     time = in.readLong();
     summary = in.readString();
     icon = in.readString();

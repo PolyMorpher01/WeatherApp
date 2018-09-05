@@ -21,12 +21,12 @@ import com.ayush.weatherapp.repository.weather.WeatherRepositoryImpl;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.Address;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponents;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocation;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyData;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecast;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.Forecast;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyData;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecastDTO;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyDataDTO;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecastDTO;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.ForecastDTO;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyDataDTO;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecastDTO;
 import com.ayush.weatherapp.utils.UnitConversionUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -56,12 +56,12 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private LocationCallback locationCallback;
 
   private PreferenceRepository preferenceRepository;
-  private Forecast forecast;
-  private CurrentForecast currentForecast;
-  private DailyForecast dailyForecast;
-  private List<DailyData> dailyForecastList;
-  private HourlyForecast hourlyForecast;
-  private List<HourlyData> hourlyDataList;
+  private ForecastDTO forecastDTO;
+  private CurrentForecastDTO currentForecastDTO;
+  private DailyForecastDTO dailyForecastDTO;
+  private List<DailyDataDTO> dailyForecastList;
+  private HourlyForecastDTO hourlyForecastDTO;
+  private List<HourlyDataDTO> hourlyDataDTOList;
   private WeatherRepository weatherRepository;
   private GeocodingRepository geocodingRepository;
 
@@ -98,7 +98,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   @Override public void onViewRestart() {
-    if (forecast != null) {
+    if (forecastDTO != null) {
       return;
     }
     initHome();
@@ -251,8 +251,8 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     Disposable disposable = weatherRepository.getForecast(latLng)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(new DisposableObserver<Forecast>() {
-          @Override public void onNext(Forecast forecast) {
+        .subscribeWith(new DisposableObserver<ForecastDTO>() {
+          @Override public void onNext(ForecastDTO forecast) {
             setForecast(forecast, latLng);
           }
 
@@ -269,13 +269,13 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
         });
   }
 
-  private void setForecast(Forecast forecast, String latLng) {
-    this.forecast = forecast;
-    currentForecast = forecast.getCurrentForecast();
-    dailyForecast = forecast.getDailyForecast();
-    dailyForecastList = dailyForecast.getDailyDataList();
-    hourlyForecast = forecast.getHourlyForecast();
-    hourlyDataList = hourlyForecast.getHourlyDataList();
+  private void setForecast(ForecastDTO forecastDTO, String latLng) {
+    this.forecastDTO = forecastDTO;
+    currentForecastDTO = forecastDTO.getCurrentForecastDTO();
+    dailyForecastDTO = forecastDTO.getDailyForecastDTO();
+    dailyForecastList = dailyForecastDTO.getDailyDataDTOList();
+    hourlyForecastDTO = forecastDTO.getHourlyForecastDTO();
+    hourlyDataDTOList = hourlyForecastDTO.getHourlyDataDTOList();
 
     setForecastView();
     getView().setTabLayout();
@@ -286,42 +286,42 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     preferenceRepository.saveCurrentLocationCoordinates(latLng);
   }
 
-  private List<DailyData> convertDailyData(List<DailyData> dailyDatas) {
+  private List<DailyDataDTO> convertDailyData(List<DailyDataDTO> dailyDataDTOS) {
     if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
-      for (DailyData dailyData : dailyDatas) {
-        dailyData.setWindSpeed(UnitConversionUtils.mphToKmph(dailyData.getWindSpeed()));
-        dailyData.setTemperatureHigh(
-            UnitConversionUtils.fahrenheitToCelsius(dailyData.getTemperatureHigh()));
-        dailyData.setTemperatureLow(
-            UnitConversionUtils.fahrenheitToCelsius(dailyData.getTemperatureLow()));
+      for (DailyDataDTO dailyDataDTO : dailyDataDTOS) {
+        dailyDataDTO.setWindSpeed(UnitConversionUtils.mphToKmph(dailyDataDTO.getWindSpeed()));
+        dailyDataDTO.setTemperatureHigh(
+            UnitConversionUtils.fahrenheitToCelsius(dailyDataDTO.getTemperatureHigh()));
+        dailyDataDTO.setTemperatureLow(
+            UnitConversionUtils.fahrenheitToCelsius(dailyDataDTO.getTemperatureLow()));
       }
     } else {
-      for (DailyData dailyData : dailyDatas) {
-        dailyData.setWindSpeed(UnitConversionUtils.kmphToMph(dailyData.getWindSpeed()));
-        dailyData.setTemperatureHigh(
-            UnitConversionUtils.celsiusToFahrenheit(dailyData.getTemperatureHigh()));
-        dailyData.setTemperatureLow(
-            UnitConversionUtils.celsiusToFahrenheit(dailyData.getTemperatureLow()));
+      for (DailyDataDTO dailyDataDTO : dailyDataDTOS) {
+        dailyDataDTO.setWindSpeed(UnitConversionUtils.kmphToMph(dailyDataDTO.getWindSpeed()));
+        dailyDataDTO.setTemperatureHigh(
+            UnitConversionUtils.celsiusToFahrenheit(dailyDataDTO.getTemperatureHigh()));
+        dailyDataDTO.setTemperatureLow(
+            UnitConversionUtils.celsiusToFahrenheit(dailyDataDTO.getTemperatureLow()));
       }
     }
 
-    return dailyDatas;
+    return dailyDataDTOS;
   }
 
-  private List<HourlyData> convertHourlyData(List<HourlyData> hourlyDatas) {
+  private List<HourlyDataDTO> convertHourlyData(List<HourlyDataDTO> hourlyDataDTOS) {
 
     if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
-      for (HourlyData hourlyData : hourlyDatas) {
-        hourlyData.setTemperature(
-            UnitConversionUtils.fahrenheitToCelsius(hourlyData.getTemperature()));
+      for (HourlyDataDTO hourlyDataDTO : hourlyDataDTOS) {
+        hourlyDataDTO.setTemperature(
+            UnitConversionUtils.fahrenheitToCelsius(hourlyDataDTO.getTemperature()));
       }
     } else {
-      for (HourlyData hourlyData : hourlyDatas) {
-        hourlyData.setTemperature(
-            UnitConversionUtils.celsiusToFahrenheit(hourlyData.getTemperature()));
+      for (HourlyDataDTO hourlyDataDTO : hourlyDataDTOS) {
+        hourlyDataDTO.setTemperature(
+            UnitConversionUtils.celsiusToFahrenheit(hourlyDataDTO.getTemperature()));
       }
     }
-    return hourlyDatas;
+    return hourlyDataDTOS;
   }
 
   private void setCurrentTemperature(double temperature) {
@@ -340,13 +340,13 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
   private void setForecastView() {
     getView().setDailyForeCast(convertDailyData(dailyForecastList));
-    getView().setHourlyForeCast(convertHourlyData(hourlyDataList));
-    getView().setCurrentForecast(currentForecast);
-    setCurrentTemperature(currentForecast.getTemperature());
+    getView().setHourlyForeCast(convertHourlyData(hourlyDataDTOList));
+    getView().setCurrentForecast(currentForecastDTO);
+    setCurrentTemperature(currentForecastDTO.getTemperature());
   }
 
   private void changeHomeBackground() {
-    switch (currentForecast.getIcon()) {
+    switch (currentForecastDTO.getIcon()) {
       case WeatherImage.CLEAR_DAY:
         getView().setHomeBackground(R.drawable.background_gradient_sunny);
         break;

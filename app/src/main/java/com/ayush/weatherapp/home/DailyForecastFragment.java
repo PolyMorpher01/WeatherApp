@@ -11,15 +11,11 @@ import android.widget.LinearLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.ayush.weatherapp.R;
-import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.customViews.ForecastCompoundView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
-import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
-import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyData;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyDataDTO;
 import com.ayush.weatherapp.utils.DateUtils;
 import com.ayush.weatherapp.utils.MathUtils;
-import com.ayush.weatherapp.utils.UnitConversionUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,11 +24,11 @@ public class DailyForecastFragment extends Fragment {
 
   @BindView(R.id.ll_forecast_details) LinearLayout llForecastDetails;
 
-  public static DailyForecastFragment getInstance(List<DailyData> dailyDataList) {
+  public static DailyForecastFragment getInstance(List<DailyDataDTO> dailyDataDTOList) {
     DailyForecastFragment dailyForecastFragment = new DailyForecastFragment();
     Bundle bundle = new Bundle();
     bundle.putParcelableArrayList(EXTRA_DAILY_FORECAST,
-        (ArrayList<? extends Parcelable>) dailyDataList);
+        (ArrayList<? extends Parcelable>) dailyDataDTOList);
     dailyForecastFragment.setArguments(bundle);
     return dailyForecastFragment;
   }
@@ -46,25 +42,25 @@ public class DailyForecastFragment extends Fragment {
     return view;
   }
 
-  public void setData(List<DailyData> dailyForecastList) {
+  public void setData(List<DailyDataDTO> dailyForecastList) {
     llForecastDetails.removeAllViews();
 
-    for (DailyData dailyData : dailyForecastList) {
-      setView(dailyData);
+    for (DailyDataDTO dailyDataDTO : dailyForecastList) {
+      setView(dailyDataDTO);
     }
   }
 
-  private void setView(DailyData dailyData) {
+  private void setView(DailyDataDTO dailyDataDTO) {
     double averageTemperature = Math.round(
-        MathUtils.getAverage(dailyData.getTemperatureHigh(), dailyData.getTemperatureLow()));
+        MathUtils.getAverage(dailyDataDTO.getTemperatureHigh(), dailyDataDTO.getTemperatureLow()));
 
     ForecastCompoundView forecastCompoundView =
         (ForecastCompoundView) getLayoutInflater().inflate(R.layout.item_forecast_compound_view,
             llForecastDetails, false);
 
-    forecastCompoundView.setTopText(DateUtils.getDayOfTheWeek(dailyData.getTime()));
+    forecastCompoundView.setTopText(DateUtils.getDayOfTheWeek(dailyDataDTO.getTime()));
     forecastCompoundView.setMidImage(
-        WeatherImageMapper.getSmallImageResource(dailyData.getIcon()));
+        WeatherImageMapper.getSmallImageResource(dailyDataDTO.getIcon()));
     forecastCompoundView.setBottomText(String.valueOf(Math.round(averageTemperature)));
 
     llForecastDetails.addView(forecastCompoundView, llForecastDetails.getChildCount());

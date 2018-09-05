@@ -3,10 +3,10 @@ package com.ayush.weatherapp.retrofit.weatherApi.pojo;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
-public class HourlyForecast {
+public class HourlyForecastDTO {
   @SerializedName("summary") private String summary;
   @SerializedName("icon") private String icon;
-  @SerializedName("data") private List<HourlyData> hourlyDataList;
+  @SerializedName("data") private List<HourlyDataDTO> hourlyDataDTOList;
 
   public String getSummary() {
     return summary;
@@ -16,7 +16,7 @@ public class HourlyForecast {
     return icon;
   }
 
-  public List<HourlyData> getHourlyDataList() {
-    return hourlyDataList;
+  public List<HourlyDataDTO> getHourlyDataDTOList() {
+    return hourlyDataDTOList;
   }
 }

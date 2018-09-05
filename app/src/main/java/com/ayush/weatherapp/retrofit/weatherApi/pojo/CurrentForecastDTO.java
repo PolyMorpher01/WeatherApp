@@ -2,7 +2,7 @@ package com.ayush.weatherapp.retrofit.weatherApi.pojo;
 
 import com.google.gson.annotations.SerializedName;
 
-public class CurrentForecast {
+public class CurrentForecastDTO {
   @SerializedName("time") private long time;
   @SerializedName("summary") private String summary;
   @SerializedName("icon") private String icon;

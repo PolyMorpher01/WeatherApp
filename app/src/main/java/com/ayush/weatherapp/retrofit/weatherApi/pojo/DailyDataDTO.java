@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
-public class DailyData implements Parcelable {
+public class DailyDataDTO implements Parcelable {
 
   @SerializedName("time") private long time;
   @SerializedName("summary") private String summary;
@@ -17,7 +17,7 @@ public class DailyData implements Parcelable {
   @SerializedName("apparentTemperatureLow") private double apparentTemperatureLow;
   @SerializedName("windSpeed") private double windSpeed;
 
-  DailyData(Parcel in) {
+  DailyDataDTO(Parcel in) {
     time = in.readLong();
     summary = in.readString();
     icon = in.readString();
@@ -30,13 +30,13 @@ public class DailyData implements Parcelable {
     windSpeed = in.readDouble();
   }
 
-  public static final Creator<DailyData> CREATOR = new Creator<DailyData>() {
-    @Override public DailyData createFromParcel(Parcel in) {
-      return new DailyData(in);
+  public static final Creator<DailyDataDTO> CREATOR = new Creator<DailyDataDTO>() {
+    @Override public DailyDataDTO createFromParcel(Parcel in) {
+      return new DailyDataDTO(in);
     }
 
-    @Override public DailyData[] newArray(int size) {
-      return new DailyData[size];
+    @Override public DailyDataDTO[] newArray(int size) {
+      return new DailyDataDTO[size];
     }
   };
 

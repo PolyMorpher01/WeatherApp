@@ -10,14 +10,10 @@ import android.widget.LinearLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.ayush.weatherapp.R;
-import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.customViews.ForecastCompoundView;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
-import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
-import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyData;
+import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyDataDTO;
 import com.ayush.weatherapp.utils.DateUtils;
-import com.ayush.weatherapp.utils.UnitConversionUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,11 +22,11 @@ public class HourlyForecastFragment extends Fragment {
   public static final String EXTRA_HOURLY_FORECAST = "HourlyForecastList";
   @BindView(R.id.ll_forecast_details) LinearLayout llForecastDetails;
 
-  public static HourlyForecastFragment getInstance(List<HourlyData> hourlyDataList) {
+  public static HourlyForecastFragment getInstance(List<HourlyDataDTO> hourlyDataDTOList) {
     HourlyForecastFragment hourlyForecastFragment = new HourlyForecastFragment();
     Bundle bundle = new Bundle();
     bundle.putParcelableArrayList(EXTRA_HOURLY_FORECAST,
-        (ArrayList<HourlyData>) hourlyDataList);
+        (ArrayList<HourlyDataDTO>) hourlyDataDTOList);
     hourlyForecastFragment.setArguments(bundle);
     return hourlyForecastFragment;
   }
@@ -44,24 +40,24 @@ public class HourlyForecastFragment extends Fragment {
     return view;
   }
 
-  public void setData(List<HourlyData> hourlyForeCastList) {
+  public void setData(List<HourlyDataDTO> hourlyForeCastList) {
     llForecastDetails.removeAllViews();
 
-    for (HourlyData hourlyData : hourlyForeCastList) {
-      setView(hourlyData);
+    for (HourlyDataDTO hourlyDataDTO : hourlyForeCastList) {
+      setView(hourlyDataDTO);
     }
   }
 
-  private void setView(HourlyData hourlyData) {
+  private void setView(HourlyDataDTO hourlyDataDTO) {
     ForecastCompoundView forecastCompoundView =
         (ForecastCompoundView) getLayoutInflater().inflate(R.layout.item_forecast_compound_view,
             llForecastDetails, false);
 
-    double hourlyTemperature = hourlyData.getTemperature();
+    double hourlyTemperature = hourlyDataDTO.getTemperature();
 
-    forecastCompoundView.setTopText(DateUtils.getTime(hourlyData.getTime()));
+    forecastCompoundView.setTopText(DateUtils.getTime(hourlyDataDTO.getTime()));
     forecastCompoundView.setMidImage(
-        WeatherImageMapper.getSmallImageResource(hourlyData.getIcon()));
+        WeatherImageMapper.getSmallImageResource(hourlyDataDTO.getIcon()));
     forecastCompoundView.setBottomText(String.valueOf(Math.round(hourlyTemperature)));
 
     llForecastDetails.addView(forecastCompoundView, llForecastDetails.getChildCount());
