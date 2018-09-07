@@ -44,10 +44,21 @@ public final class RealmUtils {
 
   @Nullable public static <E extends RealmModel> E getRealmModel(Class<E> mClass, long primaryKey) {
     Realm realm = getRealm();
-    E reammModel = realm.where(mClass).equalTo("primaryKey", primaryKey).findFirst();
+    E realmModel = realm.where(mClass).equalTo("primaryKey", primaryKey).findFirst();
     E realmModelCopy = null;
-    if (reammModel != null) {
-      realmModelCopy = realm.copyFromRealm(reammModel);
+    if (realmModel != null) {
+      realmModelCopy = realm.copyFromRealm(realmModel);
+    }
+    realm.close();
+    return realmModelCopy;
+  }
+
+  @Nullable public static <E extends RealmModel> E getRealmModel(Class<E> mClass) {
+    Realm realm = getRealm();
+    E realmModel = realm.where(mClass).findFirst();
+    E realmModelCopy = null;
+    if (realmModel != null) {
+      realmModelCopy = realm.copyFromRealm(realmModel);
     }
     realm.close();
     return realmModelCopy;
