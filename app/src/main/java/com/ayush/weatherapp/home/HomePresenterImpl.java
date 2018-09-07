@@ -62,7 +62,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private List<DailyDataDTO> dailyForecastList;
   private HourlyForecastDTO hourlyForecastDTO;
   private List<HourlyDataDTO> hourlyDataDTOList;
-  private WeatherRepository weatherRepository;
+  private WeatherRepository weatherRepositoryImpl;
   private GeocodingRepository geocodingRepository;
 
   @Temperature private int modelTemperatureUnit = TemperatureUnit.FAHRENHEIT;
@@ -76,7 +76,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     super.attachView(view);
     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
     preferenceRepository.onPreferenceChangeListener(newTemperature -> setForecastView());
-    weatherRepository = new WeatherRepositoryImpl();
+    weatherRepositoryImpl = new WeatherRepositoryImpl();
     geocodingRepository = new GeocodingRepositoryImpl();
   }
 
@@ -254,8 +254,8 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private void fetchWeatherForecast(String latLng) {
     getView().showProgressBar("");
 
-    // TODO refactor after mvp complete
-    Disposable disposable = weatherRepository.getForecast(latLng)
+    //TODO refactor after mvp complete
+    Disposable disposable = weatherRepositoryImpl.getForecast(latLng)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(new DisposableObserver<ForecastDTO>() {
@@ -274,18 +274,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
             getView().hideProgressBar();
           }
         });
-/*    forecast = weatherModel.fetchWeatherForecast(latLng);
-
-    setForecast(forecast, latLng);*/
-  }
-
-  public void onFetchError() {
-    getView().changeErrorVisibility(true);
-    getView().showErrorMessage();
-  }
-
-  public void onFetchComplete() {
-    getView().hideProgressBar();
   }
 
   private void setForecast(ForecastDTO forecastDTO, String latLng) {

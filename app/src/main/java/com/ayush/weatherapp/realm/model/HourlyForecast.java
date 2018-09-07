@@ -44,7 +44,7 @@ public class HourlyForecast extends RealmObject {
   }
 
   public void setHourlyDataList(List<HourlyData> hourlyDataList) {
-    hourlyDataList = new RealmList<>();
-    hourlyDataList.addAll(hourlyDataList);
+    this.hourlyDataList = new RealmList<>();
+    this.hourlyDataList.addAll(hourlyDataList);
   }
 }

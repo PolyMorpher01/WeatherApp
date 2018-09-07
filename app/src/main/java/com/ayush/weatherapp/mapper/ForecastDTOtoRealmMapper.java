@@ -40,6 +40,7 @@ public final class ForecastDTOtoRealmMapper {
     CurrentForecast currentForecast = new CurrentForecast(++primaryKey);
 
     currentForecast.setTime(dto.getTime());
+    currentForecast.setSummary(dto.getSummary());
     currentForecast.setIcon(dto.getIcon());
     currentForecast.setTemperature(dto.getTemperature());
     currentForecast.setApparentTemperature(dto.getApparentTemperature());
