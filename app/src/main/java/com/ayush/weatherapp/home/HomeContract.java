@@ -2,6 +2,9 @@ package com.ayush.weatherapp.home;
 
 import android.support.annotation.DrawableRes;
 import com.ayush.weatherapp.constants.Temperature;
+import com.ayush.weatherapp.entities.CurrentForecastEntity;
+import com.ayush.weatherapp.entities.DailyDataEntity;
+import com.ayush.weatherapp.entities.HourlyDataEntity;
 import com.ayush.weatherapp.mvp.BaseContract;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecastDTO;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyDataDTO;
@@ -10,13 +13,13 @@ import java.util.List;
 
 public interface HomeContract {
   interface View extends BaseContract.BaseView {
-    void setCurrentForecast(CurrentForecastDTO currentForecastDTO);
+    void setCurrentForecast(CurrentForecastEntity currentForecastDTO);
 
     void setCurrentTemperature(String temperature);
 
-    void setDailyForeCast(List<DailyDataDTO> dailyForecastList);
+    void setDailyForeCast(List<DailyDataEntity> dailyForecastList);
 
-    void setHourlyForeCast(List<HourlyDataDTO> hourlyForeCastList);
+    void setHourlyForeCast(List<HourlyDataEntity> hourlyForeCastList);
 
     void setAddress(String address);
 

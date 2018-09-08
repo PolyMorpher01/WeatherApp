@@ -1,8 +1,9 @@
 package com.ayush.weatherapp.repository.weather;
 
+import com.ayush.weatherapp.mapper.ForecastDTOtoRealmMapper;
+import com.ayush.weatherapp.realm.model.Forecast;
 import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIClient;
 import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIInterface;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.ForecastDTO;
 import io.reactivex.Observable;
 
 public class OnlineWeatherRepositoryImpl implements WeatherRepository {
@@ -13,7 +14,7 @@ public class OnlineWeatherRepositoryImpl implements WeatherRepository {
     weatherApiInterface = WeatherAPIClient.getClient().create(WeatherAPIInterface.class);
   }
 
-  @Override public Observable<ForecastDTO> getForecast(String coordinates) {
-    return weatherApiInterface.getForecast(coordinates);
+  @Override public Observable<Forecast> getForecast(String coordinates) {
+    return weatherApiInterface.getForecast(coordinates).map(ForecastDTOtoRealmMapper::transform);
   }
 }
