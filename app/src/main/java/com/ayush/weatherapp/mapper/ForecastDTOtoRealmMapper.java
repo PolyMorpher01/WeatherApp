@@ -53,9 +53,6 @@ public final class ForecastDTOtoRealmMapper {
 
     return currentForecast;
   }
-  /* private String summary;
-  private String icon;
-  private RealmList<DailyData> dailyDataList;*/
 
   public static DailyForecast transform(DailyForecastDTO dto) {
     long primaryKey = RealmUtils.getMaxIdForPrimaryKey(DailyForecast.class);
