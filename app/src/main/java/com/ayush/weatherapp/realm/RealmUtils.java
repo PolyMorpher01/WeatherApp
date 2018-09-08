@@ -63,4 +63,10 @@ public final class RealmUtils {
     realm.close();
     return realmModelCopy;
   }
+
+  public static void removeAll() {
+    Realm realm = RealmUtils.getRealm();
+    realm.executeTransaction(r -> r.deleteAll());
+    realm.close();
+  }
 }
