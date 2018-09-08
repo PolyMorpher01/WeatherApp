@@ -127,6 +127,7 @@ public final class ForecastDTOtoRealmMapper {
   private static HourlyData transform(HourlyDataDTO dto, long primaryKey) {
     HourlyData hourlyData = new HourlyData(primaryKey);
 
+    hourlyData.setIcon(dto.getIcon());
     hourlyData.setTime(dto.getTime());
     hourlyData.setSummary(dto.getSummary());
     hourlyData.setTemperature(dto.getTemperature());
