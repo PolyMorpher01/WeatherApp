@@ -1,6 +1,20 @@
 package com.ayush.weatherapp.entities;
 
-public class DailyDataEntity {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class DailyDataEntity implements Parcelable {
+  public static final Creator<DailyDataEntity> CREATOR = new Creator<DailyDataEntity>() {
+    @Override
+    public DailyDataEntity createFromParcel(Parcel in) {
+      return new DailyDataEntity(in);
+    }
+
+    @Override
+    public DailyDataEntity[] newArray(int size) {
+      return new DailyDataEntity[size];
+    }
+  };
   private long time;
   private String summary;
   private String icon;
@@ -9,6 +23,20 @@ public class DailyDataEntity {
   private double temperatureHigh;
   private double temperatureLow;
   private double windSpeed;
+
+  protected DailyDataEntity(Parcel in) {
+    time = in.readLong();
+    summary = in.readString();
+    icon = in.readString();
+    sunriseTime = in.readInt();
+    sunsetTime = in.readInt();
+    temperatureHigh = in.readDouble();
+    temperatureLow = in.readDouble();
+    windSpeed = in.readDouble();
+  }
+
+  public DailyDataEntity() {
+  }
 
   public long getTime() {
     return time;
@@ -72,5 +100,20 @@ public class DailyDataEntity {
 
   public void setWindSpeed(double windSpeed) {
     this.windSpeed = windSpeed;
+  }
+
+  @Override public int describeContents() {
+    return 0;
+  }
+
+  @Override public void writeToParcel(Parcel dest, int flags) {
+    dest.writeLong(time);
+    dest.writeString(summary);
+    dest.writeString(icon);
+    dest.writeInt(sunriseTime);
+    dest.writeInt(sunsetTime);
+    dest.writeDouble(temperatureHigh);
+    dest.writeDouble(temperatureLow);
+    dest.writeDouble(windSpeed);
   }
 }
