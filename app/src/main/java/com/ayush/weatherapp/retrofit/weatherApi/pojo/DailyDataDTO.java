@@ -1,11 +1,8 @@
 package com.ayush.weatherapp.retrofit.weatherApi.pojo;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
-public class DailyDataDTO implements Parcelable {
-
+public class DailyDataDTO {
   @SerializedName("time") private long time;
   @SerializedName("summary") private String summary;
   @SerializedName("icon") private String icon;
@@ -16,29 +13,6 @@ public class DailyDataDTO implements Parcelable {
   @SerializedName("apparentTemperatureHigh") private double apparentTemperatureHigh;
   @SerializedName("apparentTemperatureLow") private double apparentTemperatureLow;
   @SerializedName("windSpeed") private double windSpeed;
-
-  DailyDataDTO(Parcel in) {
-    time = in.readLong();
-    summary = in.readString();
-    icon = in.readString();
-    sunriseTime = in.readInt();
-    sunsetTime = in.readInt();
-    temperatureHigh = in.readDouble();
-    temperatureLow = in.readDouble();
-    apparentTemperatureHigh = in.readDouble();
-    apparentTemperatureLow = in.readDouble();
-    windSpeed = in.readDouble();
-  }
-
-  public static final Creator<DailyDataDTO> CREATOR = new Creator<DailyDataDTO>() {
-    @Override public DailyDataDTO createFromParcel(Parcel in) {
-      return new DailyDataDTO(in);
-    }
-
-    @Override public DailyDataDTO[] newArray(int size) {
-      return new DailyDataDTO[size];
-    }
-  };
 
   public long getTime() {
     return time;
@@ -78,62 +52,5 @@ public class DailyDataDTO implements Parcelable {
 
   public double getWindSpeed() {
     return windSpeed;
-  }
-
-  @Override public int describeContents() {
-    return 0;
-  }
-
-  @Override public void writeToParcel(Parcel dest, int flags) {
-    dest.writeLong(time);
-    dest.writeString(summary);
-    dest.writeString(icon);
-    dest.writeInt(sunriseTime);
-    dest.writeInt(sunsetTime);
-    dest.writeDouble(temperatureHigh);
-    dest.writeDouble(temperatureLow);
-    dest.writeDouble(apparentTemperatureHigh);
-    dest.writeDouble(apparentTemperatureLow);
-    dest.writeDouble(windSpeed);
-  }
-
-  public void setTime(long time) {
-    this.time = time;
-  }
-
-  public void setSummary(String summary) {
-    this.summary = summary;
-  }
-
-  public void setIcon(String icon) {
-    this.icon = icon;
-  }
-
-  public void setSunriseTime(int sunriseTime) {
-    this.sunriseTime = sunriseTime;
-  }
-
-  public void setSunsetTime(int sunsetTime) {
-    this.sunsetTime = sunsetTime;
-  }
-
-  public void setTemperatureHigh(double temperatureHigh) {
-    this.temperatureHigh = temperatureHigh;
-  }
-
-  public void setTemperatureLow(double temperatureLow) {
-    this.temperatureLow = temperatureLow;
-  }
-
-  public void setApparentTemperatureHigh(double apparentTemperatureHigh) {
-    this.apparentTemperatureHigh = apparentTemperatureHigh;
-  }
-
-  public void setApparentTemperatureLow(double apparentTemperatureLow) {
-    this.apparentTemperatureLow = apparentTemperatureLow;
-  }
-
-  public void setWindSpeed(double windSpeed) {
-    this.windSpeed = windSpeed;
   }
 }
