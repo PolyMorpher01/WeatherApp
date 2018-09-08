@@ -17,7 +17,6 @@ import com.ayush.weatherapp.entities.DailyForecastEntity;
 import com.ayush.weatherapp.entities.ForecastEntity;
 import com.ayush.weatherapp.entities.HourlyDataEntity;
 import com.ayush.weatherapp.entities.HourlyForecastEntity;
-import com.ayush.weatherapp.mapper.ForecastRealmToEntityMapper;
 import com.ayush.weatherapp.mvp.BasePresenterImpl;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepository;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepositoryImpl;
@@ -28,8 +27,6 @@ import com.ayush.weatherapp.repository.weather.WeatherRepositoryImpl;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.Address;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponents;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocation;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyDataDTO;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyDataDTO;
 import com.ayush.weatherapp.utils.UnitConversionUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -37,6 +34,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
@@ -68,19 +66,28 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private WeatherRepository weatherRepositoryImpl;
   private GeocodingRepository geocodingRepository;
 
+  private CompositeDisposable disposables;
+
   @Temperature private int modelTemperatureUnit = TemperatureUnit.FAHRENHEIT;
 
   // TODO dagger
   public HomePresenterImpl() {
     preferenceRepository = PreferenceRepositoryImpl.get();
+    disposables = new CompositeDisposable();
   }
 
   @Override public void attachView(HomeContract.View view) {
     super.attachView(view);
     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-    preferenceRepository.onPreferenceChangeListener(newTemperature -> setForecastView());
+    preferenceRepository.onPreferenceChangeListener(newTemperature -> {
+    });//todo
     weatherRepositoryImpl = new WeatherRepositoryImpl();
     geocodingRepository = new GeocodingRepositoryImpl();
+  }
+
+  @Override public void detachView() {
+    super.detachView();
+    disposables.dispose();
   }
 
   @Override public void onViewPause() {
@@ -183,6 +190,8 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
           @Override public void onComplete() {
           }
         });
+
+    disposables.add(disposable);
   }
 
   private void setLocation(GeoLocation geoLocation) {
@@ -255,32 +264,35 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   private void fetchWeatherForecast(String latLng) {
-    getView().showProgressBar("");
 
     //TODO refactor after mvp complete
     Disposable disposable = weatherRepositoryImpl.getForecast(latLng)
-        .map(ForecastRealmToEntityMapper::transform)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
+        .doOnSubscribe(d -> getView().showProgressBar(""))
         .subscribeWith(new DisposableObserver<ForecastEntity>() {
-          @Override public void onNext(ForecastEntity entity) {
-            setForecast(entity, latLng);
+          @Override public void onNext(ForecastEntity forecast) {
+            setForecast(forecast, latLng);
+            getView().hideProgressBar();
           }
 
           @Override public void onError(Throwable e) {
-            Timber.e(e);
-            getView().changeErrorVisibility(true);
-            getView().showErrorMessage();
+
+          /*  getView().changeErrorVisibility(true);
+            getView().showErrorMessage();*/
+            Timber.tag("FETCH").e("%s%s", this.toString(), e);
             getView().hideProgressBar();
           }
 
           @Override public void onComplete() {
-            getView().hideProgressBar();
           }
         });
+
+    disposables.add(disposable);
   }
 
   private void setForecast(ForecastEntity forecast, String latLng) {
+    Timber.e("set forecast");
     this.forecast = forecast;
     currentForecast = forecast.getCurrentForecastEntity();
     dailyForecast = forecast.getDailyForecastEntity();
@@ -295,7 +307,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     preferenceRepository.saveCurrentLocationCoordinates(latLng);
   }
 
-  private List<DailyDataDTO> convertDailyData(List<DailyDataDTO> dailyDataDTOS) {
+/*  private List<DailyDataDTO> convertDailyData(List<DailyDataDTO> dailyDataDTOS) {
     if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
       for (DailyDataDTO dailyDataDTO : dailyDataDTOS) {
         dailyDataDTO.setWindSpeed(UnitConversionUtils.mphToKmph(dailyDataDTO.getWindSpeed()));
@@ -330,7 +342,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
       }
     }
     return hourlyDataDTOS;
-  }
+  }*/
 
   private void setCurrentTemperature(double temperature) {
     String modifiedTemperature = String.valueOf(Math.round(temperature));
