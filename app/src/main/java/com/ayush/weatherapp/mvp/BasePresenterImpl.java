@@ -24,14 +24,6 @@ public class BasePresenterImpl<T extends BaseContract.BaseView>
     disposables.dispose();
   }
 
-  @Override public void onViewResume() {
-
-  }
-
-  @Override public void onViewPause() {
-
-  }
-
   @Override public void addSubscription(Disposable disposable) {
     disposables.add(disposable);
   }

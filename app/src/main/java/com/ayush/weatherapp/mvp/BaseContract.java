@@ -23,10 +23,6 @@ public interface BaseContract {
 
     void detachView();
 
-    void onViewResume();
-
-    void onViewPause();
-
     void addSubscription(Disposable disposable);
 
     T getView();

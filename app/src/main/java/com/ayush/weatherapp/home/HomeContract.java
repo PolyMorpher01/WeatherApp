@@ -41,6 +41,8 @@ public interface HomeContract {
   interface Presenter {
     void initHome();
 
+    void onViewPause();
+
     void onViewRestart();
 
     void onSwipeRefresh();
