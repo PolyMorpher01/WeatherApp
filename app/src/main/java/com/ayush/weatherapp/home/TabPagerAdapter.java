@@ -3,12 +3,12 @@ package com.ayush.weatherapp.home;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import com.ayush.weatherapp.entities.DailyDataEntity;
 import com.ayush.weatherapp.entities.HourlyDataEntity;
 import java.util.List;
 
-public class TabPagerAdapter extends FragmentPagerAdapter {
+public class TabPagerAdapter extends FragmentStatePagerAdapter {
   private final static int NUMBER_OF_TABS = 2;
   private final static String TAB_TITLES[] = new String[] { "Daily", "Hourly" };
   private List<HourlyDataEntity> hourlyDatum;
