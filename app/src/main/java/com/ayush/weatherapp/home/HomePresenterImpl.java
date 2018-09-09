@@ -13,12 +13,9 @@ import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.constants.WeatherImage;
 import com.ayush.weatherapp.entities.CurrentForecastEntity;
-import com.ayush.weatherapp.entities.DailyDataEntity;
-import com.ayush.weatherapp.entities.DailyForecastEntity;
 import com.ayush.weatherapp.entities.ForecastEntity;
-import com.ayush.weatherapp.entities.HourlyDataEntity;
-import com.ayush.weatherapp.entities.HourlyForecastEntity;
 import com.ayush.weatherapp.mvp.BasePresenterImpl;
+import com.ayush.weatherapp.realm.model.CurrentForecast;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepository;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepositoryImpl;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
@@ -59,11 +56,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
   private PreferenceRepository preferenceRepository;
   private ForecastEntity forecast;
-  private CurrentForecastEntity currentForecast;
-  private DailyForecastEntity dailyForecast;
-  private List<DailyDataEntity> dailyForecastList;
-  private HourlyForecastEntity hourlyForecast;
-  private List<HourlyDataEntity> hourlyDataList;
   private WeatherRepository weatherRepositoryImpl;
   private GeocodingRepository geocodingRepository;
 
@@ -292,7 +284,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private void setForecast(ForecastEntity forecast, String latLng) {
     this.forecast = forecast;
     setForecastView(forecast);
-    changeHomeBackground();
     getView().changeErrorVisibility(false);
 
     //save to provide coordinates during refresh
@@ -301,7 +292,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
   private void setCurrentTemperature(double temperature) {
     String modifiedTemperature = String.valueOf(Math.round(temperature));
-
+//todo: remove this implementation to repository
     if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.FAHRENHEIT) {
       modifiedTemperature = getString(R.string.format_temperature_fahrenheit, modifiedTemperature);
     } else {
@@ -316,13 +307,13 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private void setForecastView(ForecastEntity forecast) {
     getView().setDailyForeCast(forecast.getDailyForecastEntity().getDailyDataEntityList());
     getView().setHourlyForeCast(forecast.getHourlyForecastEntity().getHourlyDataEntityList());
-
     getView().setCurrentForecast(forecast.getCurrentForecastEntity());
-    setCurrentTemperature(currentForecast.getTemperature());
+    setCurrentTemperature(forecast.getCurrentForecastEntity().getTemperature());
     getView().setTabLayout();
+    changeHomeBackground(forecast.getCurrentForecastEntity());
   }
 
-  private void changeHomeBackground() {
+  private void changeHomeBackground(CurrentForecastEntity currentForecast) {
     switch (currentForecast.getIcon()) {
       case WeatherImage.CLEAR_DAY:
         getView().setHomeBackground(R.drawable.background_gradient_sunny);
