@@ -11,15 +11,11 @@ import android.widget.LinearLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.ayush.weatherapp.R;
-import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.customViews.ForecastCompoundView;
+import com.ayush.weatherapp.entities.DailyDataEntity;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
-import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
-import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyData;
 import com.ayush.weatherapp.utils.DateUtils;
 import com.ayush.weatherapp.utils.MathUtils;
-import com.ayush.weatherapp.utils.UnitConversionUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +24,7 @@ public class DailyForecastFragment extends Fragment {
 
   @BindView(R.id.ll_forecast_details) LinearLayout llForecastDetails;
 
-  public static DailyForecastFragment getInstance(List<DailyData> dailyDataList) {
+  public static DailyForecastFragment getInstance(List<DailyDataEntity> dailyDataList) {
     DailyForecastFragment dailyForecastFragment = new DailyForecastFragment();
     Bundle bundle = new Bundle();
     bundle.putParcelableArrayList(EXTRA_DAILY_FORECAST,
@@ -46,15 +42,15 @@ public class DailyForecastFragment extends Fragment {
     return view;
   }
 
-  public void setData(List<DailyData> dailyForecastList) {
+  public void setData(List<DailyDataEntity> dailyForecastList) {
     llForecastDetails.removeAllViews();
 
-    for (DailyData dailyData : dailyForecastList) {
+    for (DailyDataEntity dailyData : dailyForecastList) {
       setView(dailyData);
     }
   }
 
-  private void setView(DailyData dailyData) {
+  private void setView(DailyDataEntity dailyData) {
     double averageTemperature = Math.round(
         MathUtils.getAverage(dailyData.getTemperatureHigh(), dailyData.getTemperatureLow()));
 

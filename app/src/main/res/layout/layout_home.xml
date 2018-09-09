@@ -13,7 +13,7 @@
       android:orientation="vertical"
       >
 
-    <!--Current Forecast group-->
+    <!--Current ForecastDTO group-->
     <LinearLayout
         android:id="@+id/ll_group_current_forecast"
         android:layout_width="match_parent"

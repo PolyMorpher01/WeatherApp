@@ -1,19 +1,43 @@
 package com.ayush.weatherapp.repository.weather;
 
-import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIClient;
-import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIInterface;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.Forecast;
+import com.ayush.weatherapp.entities.ForecastEntity;
+import com.ayush.weatherapp.mapper.ForecastRealmToEntityMapper;
+import com.ayush.weatherapp.realm.RealmUtils;
+import com.ayush.weatherapp.realm.model.Forecast;
 import io.reactivex.Observable;
+import io.realm.Realm;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class WeatherRepositoryImpl implements WeatherRepository {
-  private WeatherAPIInterface weatherApiInterface;
+  private WeatherDataStore onlineWeatherRepository;
+  private WeatherDataStore localWeatherRepository;
 
-  // TODO provide dependencies using dagger
   public WeatherRepositoryImpl() {
-    weatherApiInterface = WeatherAPIClient.getClient().create(WeatherAPIInterface.class);
+    onlineWeatherRepository = new OnlineWeatherDataStoreImpl();
+    localWeatherRepository = new LocalWeatherDataStoreImpl();
   }
 
-  @Override public Observable<Forecast> getForecast(String coordinates) {
-    return weatherApiInterface.getForecast(coordinates);
+  @Override public Observable<ForecastEntity> getForecast(String coordinates) {
+    return Observable.create(emitter -> {
+      localWeatherRepository.getForecast(coordinates)
+          .map(ForecastRealmToEntityMapper::transform)
+          .subscribe(emitter::onNext, throwable -> {});
+
+      onlineWeatherRepository.getForecast(coordinates)
+          .map(forecast -> {
+            saveWeatherForecast(forecast);
+            return ForecastRealmToEntityMapper.transform(forecast);
+          })
+          .subscribe(emitter::onNext, emitter::onError);
+    });
+  }
+
+  private void saveWeatherForecast(Forecast forecast) {
+    RealmUtils.removeAll();
+
+    Realm realm = RealmUtils.getRealm();
+    realm.executeTransaction(r -> realm.insert(forecast));
+    realm.close();
   }
 }

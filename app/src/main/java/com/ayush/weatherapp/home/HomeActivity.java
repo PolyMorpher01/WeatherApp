@@ -31,11 +31,11 @@ import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
 import com.ayush.weatherapp.customViews.TemperatureTextView;
+import com.ayush.weatherapp.entities.CurrentForecastEntity;
+import com.ayush.weatherapp.entities.DailyDataEntity;
+import com.ayush.weatherapp.entities.HourlyDataEntity;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.mvp.MVPBaseActivity;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecast;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyData;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyData;
 import com.ayush.weatherapp.utils.DateUtils;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -43,7 +43,6 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
-import java.util.ArrayList;
 import java.util.List;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -197,7 +196,7 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
   }
 
-  @Override public void setCurrentForecast(CurrentForecast currentForecast) {
+  @Override public void setCurrentForecast(CurrentForecastEntity currentForecast) {
     tvCurrentForecastSummary.setText(currentForecast.getSummary());
     ivWeather.setImageResource(WeatherImageMapper.getImageResource(currentForecast.getIcon()));
   }
@@ -206,25 +205,22 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     tvTempCurrent.setText(temperature);
   }
 
-  @Override public void setDailyForeCast(List<DailyData> dailyForecastList) {
+  @Override public void setDailyForeCast(List<DailyDataEntity> dailyForecastList) {
     tabPagerAdapter.setDailyForecastData(dailyForecastList);
     //get forecast detail of today
-    DailyData forecastDetailToday = dailyForecastList.get(TODAY);
+    DailyDataEntity forecastDetailToday = dailyForecastList.get(TODAY);
     setTodayForecastDetails(forecastDetailToday);
   }
 
-  @Override public void setHourlyForeCast(List<HourlyData> hourlyForeCastList) {
-    //show only 6 data
-    final int MAX_NUMBER_OF_DATA = 6;
-    tabPagerAdapter.setHourlyForecastData(
-        new ArrayList<>(hourlyForeCastList.subList(0, MAX_NUMBER_OF_DATA)));
+  @Override public void setHourlyForeCast(List<HourlyDataEntity> hourlyForeCastList) {
+    tabPagerAdapter.setHourlyForecastData(hourlyForeCastList);
   }
 
   @Override public void setAddress(String address) {
     tvLocation.setText(address);
   }
 
-  private void setTodayForecastDetails(DailyData todaysForecast) {
+  private void setTodayForecastDetails(DailyDataEntity todaysForecast) {
 
     detailSun.setTopText((String.valueOf(DateUtils.getTime(todaysForecast.getSunriseTime()))));
     detailSun.setBottomText((DateUtils.getTime(todaysForecast.getSunsetTime())));
