@@ -6,6 +6,8 @@ import com.ayush.weatherapp.realm.RealmUtils;
 import com.ayush.weatherapp.realm.model.Forecast;
 import io.reactivex.Observable;
 import io.realm.Realm;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class WeatherRepositoryImpl implements WeatherRepository {
   private WeatherDataStore onlineWeatherRepository;
@@ -20,7 +22,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     return Observable.create(emitter -> {
       localWeatherRepository.getForecast(coordinates)
           .map(ForecastRealmToEntityMapper::transform)
-          .subscribe(emitter::onNext, emitter::onError);
+          .subscribe(emitter::onNext, throwable -> {});
 
       onlineWeatherRepository.getForecast(coordinates)
           .map(forecast -> {
