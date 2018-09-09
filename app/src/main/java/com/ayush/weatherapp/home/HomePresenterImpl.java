@@ -281,7 +281,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
             Toast.makeText(getContext(), "Error fetching new data", Toast.LENGTH_SHORT).show();
           /*  getView().changeErrorVisibility(true);
             getView().showErrorMessage();*/
-            Timber.tag("FETCH").e("%s%s", this.toString(), e);
             getView().hideProgressBar();
           }
 
