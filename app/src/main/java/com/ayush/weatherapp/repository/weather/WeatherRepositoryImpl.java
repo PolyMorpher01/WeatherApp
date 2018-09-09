@@ -32,14 +32,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
           .subscribe(emitter::onNext, emitter::onError);
     });
   }
-
-  //private boolean isSavedLocally() {
-  //  Realm realm = RealmUtils.getRealm();
-  //  boolean isSaved = realm.where(Forecast.class).count() > 0;
-  //  realm.close();
-  //  return isSaved;
-  //}
-
+  
   private void saveWeatherForecast(Forecast forecast) {
     RealmUtils.removeAll();
 

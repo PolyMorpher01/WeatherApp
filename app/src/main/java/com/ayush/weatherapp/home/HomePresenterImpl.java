@@ -290,14 +290,8 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   private void setForecast(ForecastEntity forecast, String latLng) {
-    Timber.e("set forecast");
     this.forecast = forecast;
-    currentForecast = forecast.getCurrentForecastEntity();
-    dailyForecast = forecast.getDailyForecastEntity();
-    dailyForecastList = dailyForecast.getDailyDataEntityList();
-    hourlyForecast = forecast.getHourlyForecastEntity();
-    hourlyDataList = hourlyForecast.getHourlyDataEntityList();
-    setForecastView();
+    setForecastView(forecast);
     changeHomeBackground();
     getView().changeErrorVisibility(false);
 
@@ -319,11 +313,11 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     getView().setCurrentTemperature(modifiedTemperature);
   }
 
-  private void setForecastView() {
-    getView().setDailyForeCast(dailyForecastList);
-    getView().setHourlyForeCast(hourlyDataList);
+  private void setForecastView(ForecastEntity forecast) {
+    getView().setDailyForeCast(forecast.getDailyForecastEntity().getDailyDataEntityList());
+    getView().setHourlyForeCast(forecast.getHourlyForecastEntity().getHourlyDataEntityList());
 
-    getView().setCurrentForecast(currentForecast);
+    getView().setCurrentForecast(forecast.getCurrentForecastEntity());
     setCurrentTemperature(currentForecast.getTemperature());
     getView().setTabLayout();
   }

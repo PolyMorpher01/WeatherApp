@@ -6,7 +6,7 @@ import java.util.List;
 public class DailyForecastDTO {
   @SerializedName("summary") private String summary;
   @SerializedName("icon") private String icon;
-  @SerializedName("data") private List<DailyDataDTO> dailyDataDTOList = null;
+  @SerializedName("data") private List<DailyDataDTO> dailyDataDTOList;
 
   public String getSummary() {
     return summary;

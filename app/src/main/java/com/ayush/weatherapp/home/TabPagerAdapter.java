@@ -11,8 +11,8 @@ import java.util.List;
 public class TabPagerAdapter extends FragmentStatePagerAdapter {
   private final static int NUMBER_OF_TABS = 2;
   private final static String TAB_TITLES[] = new String[] { "Daily", "Hourly" };
-  private List<HourlyDataEntity> hourlyDatum;
-  private List<DailyDataEntity> dailyDatum;
+  private List<HourlyDataEntity> hourlyDatas;
+  private List<DailyDataEntity> dailyDatas;
 
   TabPagerAdapter(FragmentManager fm) {
     super(fm);
@@ -20,9 +20,9 @@ public class TabPagerAdapter extends FragmentStatePagerAdapter {
 
   @Override public Fragment getItem(int position) {
     if (position == 0) {
-      return DailyForecastFragment.getInstance(dailyDatum);
+      return DailyForecastFragment.getInstance(dailyDatas);
     } else if (position == 1) {
-      return HourlyForecastFragment.getInstance(hourlyDatum);
+      return HourlyForecastFragment.getInstance(hourlyDatas);
     }
     return null;
   }
@@ -35,11 +35,11 @@ public class TabPagerAdapter extends FragmentStatePagerAdapter {
     return TAB_TITLES[position];
   }
 
-  public void setDailyForecastData(List<DailyDataEntity> dailyDatum) {
-    this.dailyDatum = dailyDatum;
+  public void setDailyForecastData(List<DailyDataEntity> dailyDatas) {
+    this.dailyDatas = dailyDatas;
   }
 
-  public void setHourlyForecastData(List<HourlyDataEntity> hourlyDatum) {
-    this.hourlyDatum = hourlyDatum;
+  public void setHourlyForecastData(List<HourlyDataEntity> hourlyDatas) {
+    this.hourlyDatas = hourlyDatas;
   }
 }
