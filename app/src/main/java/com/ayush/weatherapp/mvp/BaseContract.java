@@ -7,7 +7,6 @@ import io.reactivex.disposables.Disposable;
 public interface BaseContract {
 
   interface BaseView {
-
     Context getContext();
 
     void showProgressBar(String message);
@@ -18,7 +17,6 @@ public interface BaseContract {
   }
 
   interface Presenter<T extends BaseView> {
-
     void attachView(T view);
 
     void detachView();

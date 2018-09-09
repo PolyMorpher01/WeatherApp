@@ -7,7 +7,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
-import android.widget.Toast;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
@@ -258,7 +257,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
           }
 
           @Override public void onError(Throwable e) {
-            Toast.makeText(getContext(), "Error fetching new data", Toast.LENGTH_SHORT).show();
+            getView().onFailure("Error fetching new data");
           /*  getView().changeErrorVisibility(true);
             getView().showErrorMessage();*/
             getView().hideProgressBar();

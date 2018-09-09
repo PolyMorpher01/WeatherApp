@@ -6,10 +6,9 @@ import android.support.annotation.Nullable;
 
 public abstract class MVPBaseActivity<T extends BasePresenterImpl> extends BaseActivity
     implements BaseContract.BaseView {
+  private T presenter;
 
   public abstract T getPresenter();
-
-  protected T presenter;
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
