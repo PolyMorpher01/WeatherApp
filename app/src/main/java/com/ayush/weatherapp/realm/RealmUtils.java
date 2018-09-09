@@ -65,7 +65,7 @@ public final class RealmUtils {
   }
 
   public static void removeAll() {
-    Realm realm = RealmUtils.getRealm();
+    Realm realm = getRealm();
     realm.executeTransaction(r -> r.deleteAll());
     realm.close();
   }

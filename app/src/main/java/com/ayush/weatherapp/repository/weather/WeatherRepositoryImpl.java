@@ -32,7 +32,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
           .subscribe(emitter::onNext, emitter::onError);
     });
   }
-  
+
   private void saveWeatherForecast(Forecast forecast) {
     RealmUtils.removeAll();
 
