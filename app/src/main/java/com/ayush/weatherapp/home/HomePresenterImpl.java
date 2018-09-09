@@ -69,8 +69,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
   private CompositeDisposable disposables;
 
-  @Temperature private int modelTemperatureUnit = TemperatureUnit.FAHRENHEIT;
-
   // TODO dagger
   public HomePresenterImpl() {
     preferenceRepository = PreferenceRepositoryImpl.get();
@@ -307,43 +305,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     preferenceRepository.saveCurrentLocationCoordinates(latLng);
   }
 
-/*  private List<DailyDataDTO> convertDailyData(List<DailyDataDTO> dailyDataDTOS) {
-    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
-      for (DailyDataDTO dailyDataDTO : dailyDataDTOS) {
-        dailyDataDTO.setWindSpeed(UnitConversionUtils.mphToKmph(dailyDataDTO.getWindSpeed()));
-        dailyDataDTO.setTemperatureHigh(
-            UnitConversionUtils.fahrenheitToCelsius(dailyDataDTO.getTemperatureHigh()));
-        dailyDataDTO.setTemperatureLow(
-            UnitConversionUtils.fahrenheitToCelsius(dailyDataDTO.getTemperatureLow()));
-      }
-    } else {
-      for (DailyDataDTO dailyDataDTO : dailyDataDTOS) {
-        dailyDataDTO.setWindSpeed(UnitConversionUtils.kmphToMph(dailyDataDTO.getWindSpeed()));
-        dailyDataDTO.setTemperatureHigh(
-            UnitConversionUtils.celsiusToFahrenheit(dailyDataDTO.getTemperatureHigh()));
-        dailyDataDTO.setTemperatureLow(
-            UnitConversionUtils.celsiusToFahrenheit(dailyDataDTO.getTemperatureLow()));
-      }
-    }
-    return dailyDataDTOS;
-  }
-
-  private List<HourlyDataDTO> convertHourlyData(List<HourlyDataDTO> hourlyDataDTOS) {
-
-    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
-      for (HourlyDataDTO hourlyDataDTO : hourlyDataDTOS) {
-        hourlyDataDTO.setTemperature(
-            UnitConversionUtils.fahrenheitToCelsius(hourlyDataDTO.getTemperature()));
-      }
-    } else {
-      for (HourlyDataDTO hourlyDataDTO : hourlyDataDTOS) {
-        hourlyDataDTO.setTemperature(
-            UnitConversionUtils.celsiusToFahrenheit(hourlyDataDTO.getTemperature()));
-      }
-    }
-    return hourlyDataDTOS;
-  }*/
-
   private void setCurrentTemperature(double temperature) {
     String modifiedTemperature = String.valueOf(Math.round(temperature));
 
@@ -359,18 +320,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   private void setForecastView() {
-
-/*    if (preferenceRepository.getTemperatureUnit() == modelTemperatureUnit) {
-      //don't convert
-      getView().setDailyForeCast(dailyForecastList);
-      getView().setHourlyForeCast(hourlyDataList);
-    } else {
-      getView().setDailyForeCast(convertDailyData(dailyForecastList));
-      getView().setHourlyForeCast(convertHourlyData(hourlyDataList));
-      modelTemperatureUnit = preferenceRepository.getTemperatureUnit();
-    }*/
-
-    //
     getView().setDailyForeCast(dailyForecastList);
     getView().setHourlyForeCast(hourlyDataList);
 
