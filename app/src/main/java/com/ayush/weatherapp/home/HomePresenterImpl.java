@@ -15,7 +15,6 @@ import com.ayush.weatherapp.constants.WeatherImage;
 import com.ayush.weatherapp.entities.CurrentForecastEntity;
 import com.ayush.weatherapp.entities.ForecastEntity;
 import com.ayush.weatherapp.mvp.BasePresenterImpl;
-import com.ayush.weatherapp.realm.model.CurrentForecast;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepository;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepositoryImpl;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
@@ -32,7 +31,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
@@ -59,12 +57,9 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private WeatherRepository weatherRepositoryImpl;
   private GeocodingRepository geocodingRepository;
 
-  private CompositeDisposable disposables;
-
   // TODO dagger
   public HomePresenterImpl() {
     preferenceRepository = PreferenceRepositoryImpl.get();
-    disposables = new CompositeDisposable();
   }
 
   @Override public void attachView(HomeContract.View view) {
@@ -74,11 +69,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     });//todo
     weatherRepositoryImpl = new WeatherRepositoryImpl();
     geocodingRepository = new GeocodingRepositoryImpl();
-  }
-
-  @Override public void detachView() {
-    super.detachView();
-    disposables.dispose();
   }
 
   @Override public void onViewPause() {
@@ -182,7 +172,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
           }
         });
 
-    disposables.add(disposable);
+    addSubscription(disposable);
   }
 
   private void setLocation(GeoLocation geoLocation) {
@@ -278,7 +268,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
           }
         });
 
-    disposables.add(disposable);
+    addSubscription(disposable);
   }
 
   private void setForecast(ForecastEntity forecast, String latLng) {
@@ -292,7 +282,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
   private void setCurrentTemperature(double temperature) {
     String modifiedTemperature = String.valueOf(Math.round(temperature));
-//todo: remove this implementation to repository
+    //todo: remove this implementation to repository
     if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.FAHRENHEIT) {
       modifiedTemperature = getString(R.string.format_temperature_fahrenheit, modifiedTemperature);
     } else {

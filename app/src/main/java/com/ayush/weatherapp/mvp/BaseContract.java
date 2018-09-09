@@ -2,6 +2,7 @@ package com.ayush.weatherapp.mvp;
 
 import android.content.Context;
 import android.support.annotation.StringRes;
+import io.reactivex.disposables.Disposable;
 
 public interface BaseContract {
 
@@ -25,6 +26,8 @@ public interface BaseContract {
     void onViewResume();
 
     void onViewPause();
+
+    void addSubscription(Disposable disposable);
 
     T getView();
 
