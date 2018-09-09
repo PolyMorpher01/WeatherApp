@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 
 public abstract class MVPBaseActivity<T extends BasePresenterImpl> extends BaseActivity
     implements BaseContract.BaseView {
-  private T presenter;
+  protected T presenter;
 
   public abstract T getPresenter();
 
