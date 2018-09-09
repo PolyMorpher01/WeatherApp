@@ -43,7 +43,6 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
-import java.util.ArrayList;
 import java.util.List;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -214,10 +213,7 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
   }
 
   @Override public void setHourlyForeCast(List<HourlyDataEntity> hourlyForeCastList) {
-    //show only 6 data
-    final int MAX_NUMBER_OF_DATA = 6;
-    tabPagerAdapter.setHourlyForecastData(
-        new ArrayList<>(hourlyForeCastList.subList(0, MAX_NUMBER_OF_DATA)));
+    tabPagerAdapter.setHourlyForecastData(hourlyForeCastList);
   }
 
   @Override public void setAddress(String address) {

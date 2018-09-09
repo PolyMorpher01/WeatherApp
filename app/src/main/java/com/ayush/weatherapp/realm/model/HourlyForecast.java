@@ -3,9 +3,11 @@ package com.ayush.weatherapp.realm.model;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HourlyForecast extends RealmObject {
+  private static final int MAX_NUMBER_OF_DATA = 6;
 
   @PrimaryKey private long primaryKey;
   private String summary;
@@ -40,7 +42,7 @@ public class HourlyForecast extends RealmObject {
   }
 
   public List<HourlyData> getHourlyDataList() {
-    return hourlyDataList;
+    return new ArrayList<>(hourlyDataList.subList(0, MAX_NUMBER_OF_DATA));
   }
 
   public void setHourlyDataList(List<HourlyData> hourlyDataList) {
