@@ -2,6 +2,7 @@ package com.ayush.weatherapp.entities;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.ayush.weatherapp.utils.MathUtils;
 
 public class DailyDataEntity implements Parcelable {
   public static final Creator<DailyDataEntity> CREATOR = new Creator<DailyDataEntity>() {
@@ -100,6 +101,10 @@ public class DailyDataEntity implements Parcelable {
 
   public void setWindSpeed(double windSpeed) {
     this.windSpeed = windSpeed;
+  }
+
+  public long getAverageTemperature() {
+    return Math.round(MathUtils.getAverage(getTemperatureHigh(), getTemperatureLow()));
   }
 
   @Override public int describeContents() {

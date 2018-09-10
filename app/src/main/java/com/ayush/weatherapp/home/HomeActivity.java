@@ -240,7 +240,8 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     tabPagerAdapter.setDailyForecastData(dailyForecastList);
   }
 
-  @Override public void setTodaysForecastDetail(DailyDataEntity dailyDataEntity, int tempUnit) {
+  @Override
+  public void setTodaysForecastDetail(DailyDataEntity dailyDataEntity, @Temperature int tempUnit) {
     if (tempUnit == TemperatureUnit.CELSIUS) {
       detailWind.setBottomText(getString(R.string.format_wind_kph, dailyDataEntity.getWindSpeed()));
     } else {
