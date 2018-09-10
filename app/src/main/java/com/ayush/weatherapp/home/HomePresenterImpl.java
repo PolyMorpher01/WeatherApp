@@ -10,8 +10,6 @@ import android.text.TextUtils;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
-import com.ayush.weatherapp.constants.WeatherImage;
-import com.ayush.weatherapp.entities.CurrentForecastEntity;
 import com.ayush.weatherapp.entities.ForecastEntity;
 import com.ayush.weatherapp.mvp.BasePresenterImpl;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepository;
@@ -287,28 +285,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     getView().setTodaysForecastDetail(forecast.getDailyForecastEntity().getTodaysDataEntity(),
         preferenceRepository.getTemperatureUnit());
     getView().setTabLayout();
-    changeHomeBackground(forecast.getCurrentForecastEntity());
-  }
-
-  private void changeHomeBackground(CurrentForecastEntity currentForecast) {
-    switch (currentForecast.getIcon()) {
-      case WeatherImage.CLEAR_DAY:
-        getView().setHomeBackground(R.drawable.background_gradient_sunny);
-        break;
-
-      case WeatherImage.RAINY:
-      case WeatherImage.SNOW:
-        getView().setHomeBackground(R.drawable.background_gradient_rainy);
-        break;
-
-      case WeatherImage.CLOUDY:
-      case WeatherImage.PARTLY_CLOUDY_DAY:
-        getView().setHomeBackground(R.drawable.background_gradient_cloudy);
-        break;
-
-      default:
-        getView().setHomeBackground(R.drawable.background_gradient_default);
-    }
+    getView().changeHomeBackground(forecast.getCurrentForecastEntity());
   }
 
   private boolean isLocationServicesEnabled() {
