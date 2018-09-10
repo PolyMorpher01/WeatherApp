@@ -35,7 +35,6 @@ import timber.log.Timber;
 
 public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     implements HomeContract.Presenter {
-
   private static final int LOCATION_REQ_INTERVAL = 10000;
   private static final int FASTEST_LOCATION_REQ_INTERVAL = 5000;
 
@@ -276,7 +275,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   private void setForecastView() {
-    weatherRepositoryImpl.checkUnitConversion(forecast);
+    //weatherRepositoryImpl.checkUnitConversion(forecast);
     getView().setDailyForeCast(forecast.getDailyForecastEntity().getDailyDataEntityList());
     getView().setHourlyForeCast(forecast.getHourlyForecastEntity().getHourlyDataEntityList());
     getView().setCurrentForecast(forecast.getCurrentForecastEntity());
@@ -285,7 +284,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     getView().setTodaysForecastDetail(forecast.getDailyForecastEntity().getTodaysDataEntity(),
         preferenceRepository.getTemperatureUnit());
     getView().setTabLayout();
-    getView().changeHomeBackground(forecast.getCurrentForecastEntity());
   }
 
   private boolean isLocationServicesEnabled() {

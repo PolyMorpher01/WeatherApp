@@ -36,8 +36,6 @@ public interface HomeContract {
     void checkCelsiusButton(boolean check);
 
     void checkFahrenheitButton(boolean check);
-
-    void changeHomeBackground(CurrentForecastEntity currentForecast);
   }
 
   interface Presenter {

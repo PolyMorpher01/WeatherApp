@@ -160,31 +160,6 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     radioFahrenheit.setChecked(check);
   }
 
-  @Override public void changeHomeBackground(CurrentForecastEntity currentForecast) {
-    switch (currentForecast.getIcon()) {
-      case WeatherImage.CLEAR_DAY:
-        setHomeBackground(R.drawable.background_gradient_sunny);
-        break;
-
-      case WeatherImage.RAINY:
-      case WeatherImage.SNOW:
-        setHomeBackground(R.drawable.background_gradient_rainy);
-        break;
-
-      case WeatherImage.CLOUDY:
-      case WeatherImage.PARTLY_CLOUDY_DAY:
-        setHomeBackground(R.drawable.background_gradient_cloudy);
-        break;
-
-      default:
-        setHomeBackground(R.drawable.background_gradient_default);
-    }
-  }
-
-  private void setHomeBackground(@DrawableRes int drawableId) {
-    llContentFrame.setBackground(getResources().getDrawable(drawableId));
-  }
-
   @Override public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.search_menu, menu);
@@ -223,6 +198,32 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
   @Override public void setCurrentForecast(CurrentForecastEntity currentForecast) {
     tvCurrentForecastSummary.setText(currentForecast.getSummary());
     ivWeather.setImageResource(WeatherImageMapper.getImageResource(currentForecast.getIcon()));
+    changeHomeBackground(currentForecast);
+  }
+
+  private void changeHomeBackground(CurrentForecastEntity currentForecast) {
+    switch (currentForecast.getIcon()) {
+      case WeatherImage.CLEAR_DAY:
+        setHomeBackground(R.drawable.background_gradient_sunny);
+        break;
+
+      case WeatherImage.RAINY:
+      case WeatherImage.SNOW:
+        setHomeBackground(R.drawable.background_gradient_rainy);
+        break;
+
+      case WeatherImage.CLOUDY:
+      case WeatherImage.PARTLY_CLOUDY_DAY:
+        setHomeBackground(R.drawable.background_gradient_cloudy);
+        break;
+
+      default:
+        setHomeBackground(R.drawable.background_gradient_default);
+    }
+  }
+
+  private void setHomeBackground(@DrawableRes int drawableId) {
+    llContentFrame.setBackground(getResources().getDrawable(drawableId));
   }
 
   @Override public void setCurrentTemperature(int temperature, @Temperature int tempUnit) {
