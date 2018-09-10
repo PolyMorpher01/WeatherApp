@@ -17,11 +17,10 @@ import io.realm.Realm;
 import java.util.List;
 
 public class WeatherRepositoryImpl implements WeatherRepository {
+  @Temperature private static int defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
   private WeatherDataStore onlineWeatherRepository;
   private WeatherDataStore localWeatherRepository;
   private PreferenceRepository preferenceRepository;
-
-  @Temperature private static int defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
 
   public WeatherRepositoryImpl() {
     onlineWeatherRepository = new OnlineWeatherDataStoreImpl();
@@ -38,6 +37,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
 
       onlineWeatherRepository.getForecast(coordinates)
           .map(forecast -> {
+            defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT; //initialize value again
             saveWeatherForecast(forecast);
             return ForecastRealmToEntityMapper.transform(forecast);
           })
@@ -46,7 +46,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
   }
 
   @Override public void checkUnitConversion(ForecastEntity forecast) {
-    //TODO logic is not sufficient
+    //TODO logic is not elegant
     if (preferenceRepository.getTemperatureUnit() != defaultTemperatureUnit) {
       convertCurrentTemperature(forecast.getCurrentForecastEntity());
       convertDailyData(forecast.getDailyForecastEntity().getDailyDataEntityList());
