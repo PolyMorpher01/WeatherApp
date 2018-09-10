@@ -29,8 +29,6 @@ public interface HomeContract {
 
     void showGPSNotEnabledDialog(String title, String message);
 
-    void setHomeBackground(@DrawableRes int drawableId);
-
     void showErrorMessage();
 
     void changeErrorVisibility(boolean isError);
@@ -38,6 +36,8 @@ public interface HomeContract {
     void checkCelsiusButton(boolean check);
 
     void checkFahrenheitButton(boolean check);
+
+    void changeHomeBackground(CurrentForecastEntity currentForecast);
   }
 
   interface Presenter {

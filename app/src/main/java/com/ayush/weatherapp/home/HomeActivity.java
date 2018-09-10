@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -30,6 +31,7 @@ import butterknife.OnClick;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
+import com.ayush.weatherapp.constants.WeatherImage;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
 import com.ayush.weatherapp.customViews.TemperatureTextView;
 import com.ayush.weatherapp.entities.CurrentForecastEntity;
@@ -133,10 +135,6 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     presenter.onViewRestart();
   }
 
-  @Override public void setHomeBackground(int drawableId) {
-    llContentFrame.setBackground(getResources().getDrawable(drawableId));
-  }
-
   @Override public void showErrorMessage() {
     ivWeather.setImageResource(R.drawable.img_no_connection);
     llContentFrame.setBackground(getResources().getDrawable(R.drawable.background_gradient_error));
@@ -160,6 +158,31 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
 
   @Override public void checkFahrenheitButton(boolean check) {
     radioFahrenheit.setChecked(check);
+  }
+
+  @Override public void changeHomeBackground(CurrentForecastEntity currentForecast) {
+    switch (currentForecast.getIcon()) {
+      case WeatherImage.CLEAR_DAY:
+        setHomeBackground(R.drawable.background_gradient_sunny);
+        break;
+
+      case WeatherImage.RAINY:
+      case WeatherImage.SNOW:
+        setHomeBackground(R.drawable.background_gradient_rainy);
+        break;
+
+      case WeatherImage.CLOUDY:
+      case WeatherImage.PARTLY_CLOUDY_DAY:
+        setHomeBackground(R.drawable.background_gradient_cloudy);
+        break;
+
+      default:
+        setHomeBackground(R.drawable.background_gradient_default);
+    }
+  }
+
+  private void setHomeBackground(@DrawableRes int drawableId) {
+    llContentFrame.setBackground(getResources().getDrawable(drawableId));
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -217,10 +240,9 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
   }
 
   @Override public void setTodaysForecastDetail(DailyDataEntity dailyDataEntity, int tempUnit) {
-    if(tempUnit == TemperatureUnit.CELSIUS) {
+    if (tempUnit == TemperatureUnit.CELSIUS) {
       detailWind.setBottomText(getString(R.string.format_wind_kph, dailyDataEntity.getWindSpeed()));
-    }
-    else {
+    } else {
       detailWind.setBottomText(getString(R.string.format_wind_mph, dailyDataEntity.getWindSpeed()));
     }
 
