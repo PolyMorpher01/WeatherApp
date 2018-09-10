@@ -39,7 +39,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
             .map(forecast -> {
               defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT; //initialize value again
               return ForecastRealmToEntityMapper.transform(forecast);
-            }));
+            }).debounce(5, TimeUnit.SECONDS));
   }
 
   @Override public void checkUnitConversion(ForecastEntity forecast) {

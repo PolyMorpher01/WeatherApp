@@ -14,15 +14,12 @@ import android.util.AttributeSet;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
-import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
-import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
 
 public class TemperatureTextView extends AppCompatTextView {
 
   private static final float PROPORTION_HALF = 0.5f;
   private int temperatureType;
   private float proportion;
-  private PreferenceRepository preferenceRepository;
 
   public TemperatureTextView(Context context) {
     this(context, null);
@@ -35,13 +32,6 @@ public class TemperatureTextView extends AppCompatTextView {
   public TemperatureTextView(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     init(attrs);
-  }
-
-  private PreferenceRepository getPreferenceRepository() {
-    if (preferenceRepository == null) {
-      preferenceRepository = PreferenceRepositoryImpl.get();
-    }
-    return preferenceRepository;
   }
 
   public void init(AttributeSet attributeSet) {
