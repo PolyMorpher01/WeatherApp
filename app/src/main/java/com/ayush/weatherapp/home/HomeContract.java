@@ -19,6 +19,8 @@ public interface HomeContract {
 
     void setDailyForeCast(List<DailyDataEntity> dailyForecastList);
 
+    void setTodaysForecastDetail(DailyDataEntity dailyDataEntity, @Temperature int tempUnit);
+
     void setHourlyForeCast(List<HourlyDataEntity> hourlyForeCastList);
 
     void setAddress(String address);

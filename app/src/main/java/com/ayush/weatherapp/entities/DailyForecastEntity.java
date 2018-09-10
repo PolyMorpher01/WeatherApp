@@ -6,6 +6,7 @@ public class DailyForecastEntity {
   private String summary;
   private String icon;
   private List<DailyDataEntity> dailyDataEntityList;
+  private static int TODAY_INDEX = 0;
 
   public String getSummary() {
     return summary;
@@ -29,5 +30,9 @@ public class DailyForecastEntity {
 
   public void setDailyDataEntityList(List<DailyDataEntity> dailyDataEntityList) {
     this.dailyDataEntityList = dailyDataEntityList;
+  }
+
+  public DailyDataEntity getTodaysDataEntity() {
+    return dailyDataEntityList.get(TODAY_INDEX);
   }
 }

@@ -204,19 +204,32 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
 
   @Override public void setCurrentTemperature(int temperature, @Temperature int tempUnit) {
     String modifiedTemperature;
-    if (tempUnit == TemperatureUnit.FAHRENHEIT) {
-      modifiedTemperature = getString(R.string.format_temperature_fahrenheit, temperature);
-    } else {
+    if (tempUnit == TemperatureUnit.CELSIUS) {
       modifiedTemperature = getString(R.string.format_temperature_celsius, temperature);
+    } else {
+      modifiedTemperature = getString(R.string.format_temperature_fahrenheit, temperature);
     }
     tvTempCurrent.setText(modifiedTemperature);
   }
 
   @Override public void setDailyForeCast(List<DailyDataEntity> dailyForecastList) {
     tabPagerAdapter.setDailyForecastData(dailyForecastList);
-    //get forecast detail of today
-    DailyDataEntity forecastDetailToday = dailyForecastList.get(TODAY);
-    setTodayForecastDetails(forecastDetailToday);
+  }
+
+  @Override public void setTodaysForecastDetail(DailyDataEntity dailyDataEntity, int tempUnit) {
+    if(tempUnit == TemperatureUnit.CELSIUS) {
+      detailWind.setBottomText(getString(R.string.format_wind_kph, dailyDataEntity.getWindSpeed()));
+    }
+    else {
+      detailWind.setBottomText(getString(R.string.format_wind_mph, dailyDataEntity.getWindSpeed()));
+    }
+
+    detailSun.setTopText((String.valueOf(DateUtils.getTime(dailyDataEntity.getSunriseTime()))));
+    detailSun.setBottomText((DateUtils.getTime(dailyDataEntity.getSunsetTime())));
+    detailTemperature.setTopText(
+        "Max " + getString(R.string.format_temperature, dailyDataEntity.getTemperatureHigh()));
+    detailTemperature.setBottomText(
+        "Min " + getString(R.string.format_temperature, dailyDataEntity.getTemperatureLow()));
   }
 
   @Override public void setHourlyForeCast(List<HourlyDataEntity> hourlyForeCastList) {
@@ -225,17 +238,6 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
 
   @Override public void setAddress(String address) {
     tvLocation.setText(address);
-  }
-
-  private void setTodayForecastDetails(DailyDataEntity todaysForecast) {
-
-    detailSun.setTopText((String.valueOf(DateUtils.getTime(todaysForecast.getSunriseTime()))));
-    detailSun.setBottomText((DateUtils.getTime(todaysForecast.getSunsetTime())));
-    detailWind.setBottomText(getString(R.string.format_wind_mph, todaysForecast.getWindSpeed()));
-    detailTemperature.setTopText(
-        "Max " + getString(R.string.format_temperature, todaysForecast.getTemperatureHigh()));
-    detailTemperature.setBottomText(
-        "Min " + getString(R.string.format_temperature, todaysForecast.getTemperatureLow()));
   }
 
   @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,

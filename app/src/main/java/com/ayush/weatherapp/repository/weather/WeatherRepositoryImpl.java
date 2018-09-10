@@ -46,6 +46,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
   }
 
   @Override public void checkUnitConversion(ForecastEntity forecast) {
+    //TODO logic is not sufficient
     if (preferenceRepository.getTemperatureUnit() != defaultTemperatureUnit) {
       convertCurrentTemperature(forecast.getCurrentForecastEntity());
       convertDailyData(forecast.getDailyForecastEntity().getDailyDataEntityList());

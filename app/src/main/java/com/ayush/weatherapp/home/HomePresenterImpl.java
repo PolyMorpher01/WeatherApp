@@ -284,6 +284,8 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     getView().setCurrentForecast(forecast.getCurrentForecastEntity());
     getView().setCurrentTemperature(forecast.getCurrentForecastEntity().getTemperature(),
         preferenceRepository.getTemperatureUnit());
+    getView().setTodaysForecastDetail(forecast.getDailyForecastEntity().getTodaysDataEntity(),
+        preferenceRepository.getTemperatureUnit());
     getView().setTabLayout();
     changeHomeBackground(forecast.getCurrentForecastEntity());
   }
