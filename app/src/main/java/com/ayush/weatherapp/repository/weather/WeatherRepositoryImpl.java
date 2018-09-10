@@ -15,6 +15,7 @@ import com.ayush.weatherapp.utils.UnitConversionUtils;
 import io.reactivex.Observable;
 import io.realm.Realm;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class WeatherRepositoryImpl implements WeatherRepository {
   @Temperature private static int defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
@@ -29,21 +30,25 @@ public class WeatherRepositoryImpl implements WeatherRepository {
   }
 
   @Override public Observable<ForecastEntity> getForecast(String coordinates) {
-    return Observable.concat(
-        localWeatherRepository.getForecast(coordinates)
-            .map(forecast -> {
-              //initialize value again
-              defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
-              return ForecastRealmToEntityMapper.transform(forecast);
-            }),
+    return Observable.create(emitter -> {
+      localWeatherRepository.getForecast(coordinates)
+          .map(forecast -> {
+            //initialize value again
+            defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
+            return ForecastRealmToEntityMapper.transform(forecast);})
+          .subscribe(emitter::onNext, throwable -> {
+          });
 
-        onlineWeatherRepository.getForecast(coordinates)
-            .doOnNext(this::saveWeatherForecast)
-            .map(forecast -> {
-              //initialize value again
-              defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
-              return ForecastRealmToEntityMapper.transform(forecast);
-            }));
+      onlineWeatherRepository.getForecast(coordinates)
+          .doOnSuccess(this::saveWeatherForecast)
+          .map(forecast -> {
+            //initialize value again
+            defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
+            saveWeatherForecast(forecast);
+            return ForecastRealmToEntityMapper.transform(forecast);
+          })
+          .subscribe(emitter::onNext, emitter::onError);
+    });
   }
 
   @Override public void checkUnitConversion(ForecastEntity forecast) {

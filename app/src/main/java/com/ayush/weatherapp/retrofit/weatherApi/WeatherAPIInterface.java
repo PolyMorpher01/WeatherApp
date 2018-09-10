@@ -8,6 +8,6 @@ import retrofit2.http.Path;
 
 public interface WeatherAPIInterface {
 
-  @GET("{coordinates}?exclude=minutely,alerts,flags") Observable<ForecastDTO> getForecast(
+  @GET("{coordinates}?exclude=minutely,alerts,flags") Single<ForecastDTO> getForecast(
       @Path("coordinates") String coordinates);
 }

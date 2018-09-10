@@ -5,5 +5,5 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 
 public interface WeatherDataStore {
-  Observable<Forecast> getForecast(String coordinates);
+  Single<Forecast> getForecast(String coordinates);
 }

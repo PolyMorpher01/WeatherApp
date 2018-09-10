@@ -15,7 +15,7 @@ public class OnlineWeatherDataStoreImpl implements WeatherDataStore {
     weatherApiInterface = WeatherAPIClient.getClient().create(WeatherAPIInterface.class);
   }
 
-  @Override public Observable<Forecast> getForecast(String coordinates) {
+  @Override public Single<Forecast> getForecast(String coordinates) {
     return weatherApiInterface.getForecast(coordinates).map(ForecastDTOtoRealmMapper::transform);
   }
 }
