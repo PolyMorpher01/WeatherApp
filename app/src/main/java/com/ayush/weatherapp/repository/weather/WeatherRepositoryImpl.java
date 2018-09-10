@@ -15,7 +15,6 @@ import com.ayush.weatherapp.utils.UnitConversionUtils;
 import io.reactivex.Observable;
 import io.realm.Realm;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class WeatherRepositoryImpl implements WeatherRepository {
   @Temperature private static int defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
@@ -35,7 +34,8 @@ public class WeatherRepositoryImpl implements WeatherRepository {
           .map(forecast -> {
             //initialize value again
             defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
-            return ForecastRealmToEntityMapper.transform(forecast);})
+            return ForecastRealmToEntityMapper.transform(forecast);
+          })
           .subscribe(emitter::onNext, throwable -> {
           });
 

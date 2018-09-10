@@ -15,7 +15,6 @@ import com.ayush.weatherapp.customViews.ForecastCompoundView;
 import com.ayush.weatherapp.entities.DailyDataEntity;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.utils.DateUtils;
-import com.ayush.weatherapp.utils.MathUtils;
 import java.util.ArrayList;
 import java.util.List;
 
