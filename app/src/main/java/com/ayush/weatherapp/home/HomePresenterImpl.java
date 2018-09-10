@@ -1,6 +1,7 @@
 package com.ayush.weatherapp.home;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -112,9 +113,26 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
   private void fetchByCurrentLocation() {
     if (isLocationServicesEnabled()) {
-      initLocationRequest();
-      startLocationUpdates();
+      getLastKnownLocation();
     }
+  }
+
+  private void getLastKnownLocation() {
+    if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+        != PackageManager.PERMISSION_GRANTED) {
+      throw new RuntimeException("Location permission not provided");
+    }
+    fusedLocationProviderClient.getLastLocation()
+        .addOnSuccessListener((Activity) getContext(), location -> {
+          if (location == null) {
+            initLocationRequest();
+            startLocationUpdates();
+          } else {
+            String latLng = location.getLatitude() + "," + location.getLongitude();
+            fetchAddress(latLng);
+            fetchWeatherForecast(latLng);
+          }
+        });
   }
 
   private void initLocationRequest() {
