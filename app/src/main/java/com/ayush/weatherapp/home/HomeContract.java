@@ -1,14 +1,10 @@
 package com.ayush.weatherapp.home;
 
-import android.support.annotation.DrawableRes;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.entities.CurrentForecastEntity;
 import com.ayush.weatherapp.entities.DailyDataEntity;
 import com.ayush.weatherapp.entities.HourlyDataEntity;
 import com.ayush.weatherapp.mvp.BaseContract;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecastDTO;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyDataDTO;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyDataDTO;
 import java.util.List;
 
 public interface HomeContract {
