@@ -15,6 +15,7 @@ import com.ayush.weatherapp.utils.UnitConversionUtils;
 import io.reactivex.Observable;
 import io.realm.Realm;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class WeatherRepositoryImpl implements WeatherRepository {
   @Temperature private static int defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
@@ -29,20 +30,16 @@ public class WeatherRepositoryImpl implements WeatherRepository {
   }
 
   @Override public Observable<ForecastEntity> getForecast(String coordinates) {
-    return Observable.create(emitter -> {
-      localWeatherRepository.getForecast(coordinates)
-          .map(ForecastRealmToEntityMapper::transform)
-          .subscribe(emitter::onNext, throwable -> {
-          });
+    return Observable.concat(
+        localWeatherRepository.getForecast(coordinates)
+            .map(ForecastRealmToEntityMapper::transform),
 
-      onlineWeatherRepository.getForecast(coordinates)
-          .map(forecast -> {
-            defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT; //initialize value again
-            saveWeatherForecast(forecast);
-            return ForecastRealmToEntityMapper.transform(forecast);
-          })
-          .subscribe(emitter::onNext, emitter::onError);
-    });
+        onlineWeatherRepository.getForecast(coordinates)
+            .doOnNext(this::saveWeatherForecast)
+            .map(forecast -> {
+              defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT; //initialize value again
+              return ForecastRealmToEntityMapper.transform(forecast);
+            }));
   }
 
   @Override public void checkUnitConversion(ForecastEntity forecast) {
