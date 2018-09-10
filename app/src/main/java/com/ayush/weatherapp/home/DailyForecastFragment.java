@@ -38,7 +38,9 @@ public class DailyForecastFragment extends Fragment {
       Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.forecast_fragment, container, false);
     ButterKnife.bind(this, view);
-    setData(getArguments().getParcelableArrayList(EXTRA_DAILY_FORECAST));
+    if (getArguments() != null) {
+      setData(getArguments().getParcelableArrayList(EXTRA_DAILY_FORECAST));
+    }
     return view;
   }
 

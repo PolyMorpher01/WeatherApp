@@ -60,7 +60,14 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   @Override public void attachView(HomeContract.View view) {
     super.attachView(view);
     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-    preferenceRepository.onPreferenceChangeListener(newTemperature -> setForecastView());//todo
+    preferenceRepository.onPreferenceChangeListener(newTemperature ->
+    {
+      //need null check because change listener gets called in first launch after app data is cleared
+      if (forecast == null) {
+        return;
+      }
+      setForecastView();
+    });//todo
     weatherRepositoryImpl = new WeatherRepositoryImpl();
     geocodingRepository = new GeocodingRepositoryImpl();
   }
