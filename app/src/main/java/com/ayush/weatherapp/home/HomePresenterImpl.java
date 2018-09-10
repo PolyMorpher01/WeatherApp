@@ -23,7 +23,6 @@ import com.ayush.weatherapp.repository.weather.WeatherRepositoryImpl;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.Address;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponents;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocation;
-import com.ayush.weatherapp.utils.UnitConversionUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -64,8 +63,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   @Override public void attachView(HomeContract.View view) {
     super.attachView(view);
     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-    preferenceRepository.onPreferenceChangeListener(newTemperature -> {
-    });//todo
+    preferenceRepository.onPreferenceChangeListener(newTemperature -> setForecastView());//todo
     weatherRepositoryImpl = new WeatherRepositoryImpl();
     geocodingRepository = new GeocodingRepositoryImpl();
   }
@@ -272,32 +270,20 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
   private void setForecast(ForecastEntity forecast, String latLng) {
     this.forecast = forecast;
-    setForecastView(forecast);
+    setForecastView();
     getView().changeErrorVisibility(false);
 
     //save to provide coordinates during refresh
     preferenceRepository.saveCurrentLocationCoordinates(latLng);
   }
 
-  private void setCurrentTemperature(double temperature) {
-    String modifiedTemperature = String.valueOf(Math.round(temperature));
-    //todo: remove this implementation to repository
-    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.FAHRENHEIT) {
-      modifiedTemperature = getString(R.string.format_temperature_fahrenheit, modifiedTemperature);
-    } else {
-      modifiedTemperature = String.valueOf(Math.round(UnitConversionUtils.fahrenheitToCelsius(
-          Double.parseDouble(String.valueOf(modifiedTemperature)))));
-      modifiedTemperature = getString(R.string.format_temperature_celsius, modifiedTemperature);
-    }
-
-    getView().setCurrentTemperature(modifiedTemperature);
-  }
-
-  private void setForecastView(ForecastEntity forecast) {
+  private void setForecastView() {
+    weatherRepositoryImpl.checkUnitConversion(forecast);
     getView().setDailyForeCast(forecast.getDailyForecastEntity().getDailyDataEntityList());
     getView().setHourlyForeCast(forecast.getHourlyForecastEntity().getHourlyDataEntityList());
     getView().setCurrentForecast(forecast.getCurrentForecastEntity());
-    setCurrentTemperature(forecast.getCurrentForecastEntity().getTemperature());
+    getView().setCurrentTemperature(forecast.getCurrentForecastEntity().getTemperature(),
+        preferenceRepository.getTemperatureUnit());
     getView().setTabLayout();
     changeHomeBackground(forecast.getCurrentForecastEntity());
   }

@@ -53,12 +53,12 @@ public class HourlyForecastFragment extends Fragment {
         (ForecastCompoundView) getLayoutInflater().inflate(R.layout.item_forecast_compound_view,
             llForecastDetails, false);
 
-    double hourlyTemperature = hourlyData.getTemperature();
+    long hourlyTemperature = hourlyData.getTemperature();
 
     forecastCompoundView.setTopText(DateUtils.getTime(hourlyData.getTime()));
     forecastCompoundView.setMidImage(
         WeatherImageMapper.getSmallImageResource(hourlyData.getIcon()));
-    forecastCompoundView.setBottomText(String.valueOf(Math.round(hourlyTemperature)));
+    forecastCompoundView.setBottomText(String.valueOf(hourlyTemperature));
 
     llForecastDetails.addView(forecastCompoundView, llForecastDetails.getChildCount());
   }

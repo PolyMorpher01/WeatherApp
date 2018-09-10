@@ -18,13 +18,13 @@ public class HourlyDataEntity implements Parcelable {
   private long time;
   private String summary;
   private String icon;
-  private double temperature;
+  private int temperature;
 
   protected HourlyDataEntity(Parcel in) {
     time = in.readLong();
     summary = in.readString();
     icon = in.readString();
-    temperature = in.readDouble();
+    temperature = in.readInt();
   }
 
   public HourlyDataEntity() {
@@ -54,12 +54,12 @@ public class HourlyDataEntity implements Parcelable {
     this.icon = icon;
   }
 
-  public double getTemperature() {
+  public int getTemperature() {
     return temperature;
   }
 
   public void setTemperature(double temperature) {
-    this.temperature = temperature;
+    this.temperature = (int) temperature;
   }
 
   @Override public int describeContents() {

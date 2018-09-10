@@ -28,6 +28,7 @@ import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import com.ayush.weatherapp.R;
+import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
 import com.ayush.weatherapp.customViews.TemperatureTextView;
@@ -201,8 +202,14 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     ivWeather.setImageResource(WeatherImageMapper.getImageResource(currentForecast.getIcon()));
   }
 
-  @Override public void setCurrentTemperature(String temperature) {
-    tvTempCurrent.setText(temperature);
+  @Override public void setCurrentTemperature(int temperature, @Temperature int tempUnit) {
+    String modifiedTemperature;
+    if (tempUnit == TemperatureUnit.FAHRENHEIT) {
+      modifiedTemperature = getString(R.string.format_temperature_fahrenheit, temperature);
+    } else {
+      modifiedTemperature = getString(R.string.format_temperature_celsius, temperature);
+    }
+    tvTempCurrent.setText(modifiedTemperature);
   }
 
   @Override public void setDailyForeCast(List<DailyDataEntity> dailyForecastList) {
@@ -226,11 +233,9 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     detailSun.setBottomText((DateUtils.getTime(todaysForecast.getSunsetTime())));
     detailWind.setBottomText(getString(R.string.format_wind_mph, todaysForecast.getWindSpeed()));
     detailTemperature.setTopText(
-        "Max " + getString(R.string.format_temperature,
-            Math.round(todaysForecast.getTemperatureHigh())));
+        "Max " + getString(R.string.format_temperature, todaysForecast.getTemperatureHigh()));
     detailTemperature.setBottomText(
-        "Min " + getString(R.string.format_temperature,
-            Math.round(todaysForecast.getTemperatureLow())));
+        "Min " + getString(R.string.format_temperature, todaysForecast.getTemperatureLow()));
   }
 
   @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,

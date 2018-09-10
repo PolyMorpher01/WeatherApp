@@ -15,7 +15,7 @@ public interface HomeContract {
   interface View extends BaseContract.BaseView {
     void setCurrentForecast(CurrentForecastEntity currentForecastDTO);
 
-    void setCurrentTemperature(String temperature);
+    void setCurrentTemperature(int temperature, @Temperature int tempUnit);
 
     void setDailyForeCast(List<DailyDataEntity> dailyForecastList);
 

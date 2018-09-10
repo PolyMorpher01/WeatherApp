@@ -51,17 +51,17 @@ public class DailyForecastFragment extends Fragment {
   }
 
   private void setView(DailyDataEntity dailyData) {
-    double averageTemperature = Math.round(
-        MathUtils.getAverage(dailyData.getTemperatureHigh(), dailyData.getTemperatureLow()));
-
     ForecastCompoundView forecastCompoundView =
         (ForecastCompoundView) getLayoutInflater().inflate(R.layout.item_forecast_compound_view,
             llForecastDetails, false);
 
+    long averageTemperature = Math.round(
+        MathUtils.getAverage(dailyData.getTemperatureHigh(), dailyData.getTemperatureLow()));
+
     forecastCompoundView.setTopText(DateUtils.getDayOfTheWeek(dailyData.getTime()));
     forecastCompoundView.setMidImage(
         WeatherImageMapper.getSmallImageResource(dailyData.getIcon()));
-    forecastCompoundView.setBottomText(String.valueOf(Math.round(averageTemperature)));
+    forecastCompoundView.setBottomText(String.valueOf(averageTemperature));
 
     llForecastDetails.addView(forecastCompoundView, llForecastDetails.getChildCount());
   }
