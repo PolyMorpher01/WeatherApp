@@ -149,7 +149,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   private void fetchAddress(String latLng) {
-    // TODO refactor after mvp complete
     Disposable disposable = geocodingRepository.getLocationDetails(latLng)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -239,8 +238,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   private void fetchWeatherForecast(String latLng) {
-
-    //TODO refactor after mvp complete
     Disposable disposable = weatherRepositoryImpl.getForecast(latLng)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
