@@ -297,7 +297,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   private void setForecastView() {
-    weatherRepositoryImpl.checkUnitConversion(forecast);
+    weatherRepositoryImpl.checkTemperatureUnit(forecast);
     getView().setDailyForeCast(forecast.getDailyForecastEntity().getDailyDataEntityList());
     getView().setHourlyForeCast(forecast.getHourlyForecastEntity().getHourlyDataEntityList());
     getView().setCurrentForecast(forecast.getCurrentForecastEntity());

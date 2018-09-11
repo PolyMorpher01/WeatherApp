@@ -9,5 +9,5 @@ public interface WeatherRepository {
 
   Observable<ForecastEntity> getForecast(String coordinates);
 
-  void checkUnitConversion(ForecastEntity forecastEntity);
+  void checkTemperatureUnit(ForecastEntity forecastEntity);
 }
