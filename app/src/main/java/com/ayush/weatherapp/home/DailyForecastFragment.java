@@ -15,7 +15,6 @@ import com.ayush.weatherapp.customViews.ForecastCompoundView;
 import com.ayush.weatherapp.entities.DailyDataEntity;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.utils.DateUtils;
-import com.ayush.weatherapp.utils.MathUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +37,9 @@ public class DailyForecastFragment extends Fragment {
       Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.forecast_fragment, container, false);
     ButterKnife.bind(this, view);
-    setData(getArguments().getParcelableArrayList(EXTRA_DAILY_FORECAST));
+    if (getArguments() != null) {
+      setData(getArguments().getParcelableArrayList(EXTRA_DAILY_FORECAST));
+    }
     return view;
   }
 
@@ -51,9 +52,6 @@ public class DailyForecastFragment extends Fragment {
   }
 
   private void setView(DailyDataEntity dailyData) {
-    double averageTemperature = Math.round(
-        MathUtils.getAverage(dailyData.getTemperatureHigh(), dailyData.getTemperatureLow()));
-
     ForecastCompoundView forecastCompoundView =
         (ForecastCompoundView) getLayoutInflater().inflate(R.layout.item_forecast_compound_view,
             llForecastDetails, false);
@@ -61,7 +59,7 @@ public class DailyForecastFragment extends Fragment {
     forecastCompoundView.setTopText(DateUtils.getDayOfTheWeek(dailyData.getTime()));
     forecastCompoundView.setMidImage(
         WeatherImageMapper.getSmallImageResource(dailyData.getIcon()));
-    forecastCompoundView.setBottomText(String.valueOf(Math.round(averageTemperature)));
+    forecastCompoundView.setBottomText(String.valueOf(dailyData.getAverageTemperature()));
 
     llForecastDetails.addView(forecastCompoundView, llForecastDetails.getChildCount());
   }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -28,7 +29,9 @@ import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import com.ayush.weatherapp.R;
+import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
+import com.ayush.weatherapp.constants.WeatherImage;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
 import com.ayush.weatherapp.customViews.TemperatureTextView;
 import com.ayush.weatherapp.entities.CurrentForecastEntity;
@@ -132,10 +135,6 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     presenter.onViewRestart();
   }
 
-  @Override public void setHomeBackground(int drawableId) {
-    llContentFrame.setBackground(getResources().getDrawable(drawableId));
-  }
-
   @Override public void showErrorMessage() {
     ivWeather.setImageResource(R.drawable.img_no_connection);
     llContentFrame.setBackground(getResources().getDrawable(R.drawable.background_gradient_error));
@@ -199,17 +198,62 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
   @Override public void setCurrentForecast(CurrentForecastEntity currentForecast) {
     tvCurrentForecastSummary.setText(currentForecast.getSummary());
     ivWeather.setImageResource(WeatherImageMapper.getImageResource(currentForecast.getIcon()));
+    changeHomeBackground(currentForecast);
   }
 
-  @Override public void setCurrentTemperature(String temperature) {
-    tvTempCurrent.setText(temperature);
+  private void changeHomeBackground(CurrentForecastEntity currentForecast) {
+    switch (currentForecast.getIcon()) {
+      case WeatherImage.CLEAR_DAY:
+        setHomeBackground(R.drawable.background_gradient_sunny);
+        break;
+
+      case WeatherImage.RAINY:
+      case WeatherImage.SNOW:
+        setHomeBackground(R.drawable.background_gradient_rainy);
+        break;
+
+      case WeatherImage.CLOUDY:
+      case WeatherImage.PARTLY_CLOUDY_DAY:
+        setHomeBackground(R.drawable.background_gradient_cloudy);
+        break;
+
+      default:
+        setHomeBackground(R.drawable.background_gradient_default);
+    }
+  }
+
+  private void setHomeBackground(@DrawableRes int drawableId) {
+    llContentFrame.setBackground(getResources().getDrawable(drawableId));
+  }
+
+  @Override public void setCurrentTemperature(int temperature, @Temperature int tempUnit) {
+    String modifiedTemperature;
+    if (tempUnit == TemperatureUnit.CELSIUS) {
+      modifiedTemperature = getString(R.string.format_temperature_celsius, temperature);
+    } else {
+      modifiedTemperature = getString(R.string.format_temperature_fahrenheit, temperature);
+    }
+    tvTempCurrent.setText(modifiedTemperature);
   }
 
   @Override public void setDailyForeCast(List<DailyDataEntity> dailyForecastList) {
     tabPagerAdapter.setDailyForecastData(dailyForecastList);
-    //get forecast detail of today
-    DailyDataEntity forecastDetailToday = dailyForecastList.get(TODAY);
-    setTodayForecastDetails(forecastDetailToday);
+  }
+
+  @Override
+  public void setTodaysForecastDetail(DailyDataEntity dailyDataEntity, @Temperature int tempUnit) {
+    if (tempUnit == TemperatureUnit.CELSIUS) {
+      detailWind.setBottomText(getString(R.string.format_wind_kph, dailyDataEntity.getWindSpeed()));
+    } else {
+      detailWind.setBottomText(getString(R.string.format_wind_mph, dailyDataEntity.getWindSpeed()));
+    }
+
+    detailSun.setTopText((String.valueOf(DateUtils.getTime(dailyDataEntity.getSunriseTime()))));
+    detailSun.setBottomText((DateUtils.getTime(dailyDataEntity.getSunsetTime())));
+    detailTemperature.setTopText(
+        "Max " + getString(R.string.format_temperature, dailyDataEntity.getTemperatureHigh()));
+    detailTemperature.setBottomText(
+        "Min " + getString(R.string.format_temperature, dailyDataEntity.getTemperatureLow()));
   }
 
   @Override public void setHourlyForeCast(List<HourlyDataEntity> hourlyForeCastList) {
@@ -218,19 +262,6 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
 
   @Override public void setAddress(String address) {
     tvLocation.setText(address);
-  }
-
-  private void setTodayForecastDetails(DailyDataEntity todaysForecast) {
-
-    detailSun.setTopText((String.valueOf(DateUtils.getTime(todaysForecast.getSunriseTime()))));
-    detailSun.setBottomText((DateUtils.getTime(todaysForecast.getSunsetTime())));
-    detailWind.setBottomText(getString(R.string.format_wind_mph, todaysForecast.getWindSpeed()));
-    detailTemperature.setTopText(
-        "Max " + getString(R.string.format_temperature,
-            Math.round(todaysForecast.getTemperatureHigh())));
-    detailTemperature.setBottomText(
-        "Min " + getString(R.string.format_temperature,
-            Math.round(todaysForecast.getTemperatureLow())));
   }
 
   @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,

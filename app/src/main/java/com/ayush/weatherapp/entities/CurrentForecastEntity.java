@@ -4,7 +4,7 @@ public class CurrentForecastEntity {
   private long time;
   private String summary;
   private String icon;
-  private double temperature;
+  private int temperature;
 
   public long getTime() {
     return time;
@@ -30,11 +30,11 @@ public class CurrentForecastEntity {
     this.icon = icon;
   }
 
-  public double getTemperature() {
+  public int getTemperature() {
     return temperature;
   }
 
   public void setTemperature(double temperature) {
-    this.temperature = temperature;
+    this.temperature = (int) temperature;
   }
 }

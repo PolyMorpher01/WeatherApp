@@ -2,6 +2,7 @@ package com.ayush.weatherapp.entities;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.ayush.weatherapp.utils.MathUtils;
 
 public class DailyDataEntity implements Parcelable {
   public static final Creator<DailyDataEntity> CREATOR = new Creator<DailyDataEntity>() {
@@ -20,8 +21,8 @@ public class DailyDataEntity implements Parcelable {
   private String icon;
   private int sunriseTime;
   private int sunsetTime;
-  private double temperatureHigh;
-  private double temperatureLow;
+  private int temperatureHigh;
+  private int temperatureLow;
   private double windSpeed;
 
   protected DailyDataEntity(Parcel in) {
@@ -30,8 +31,8 @@ public class DailyDataEntity implements Parcelable {
     icon = in.readString();
     sunriseTime = in.readInt();
     sunsetTime = in.readInt();
-    temperatureHigh = in.readDouble();
-    temperatureLow = in.readDouble();
+    temperatureHigh = in.readInt();
+    temperatureLow = in.readInt();
     windSpeed = in.readDouble();
   }
 
@@ -78,20 +79,20 @@ public class DailyDataEntity implements Parcelable {
     this.sunsetTime = sunsetTime;
   }
 
-  public double getTemperatureHigh() {
+  public int getTemperatureHigh() {
     return temperatureHigh;
   }
 
   public void setTemperatureHigh(double temperatureHigh) {
-    this.temperatureHigh = temperatureHigh;
+    this.temperatureHigh = (int) temperatureHigh;
   }
 
-  public double getTemperatureLow() {
+  public int getTemperatureLow() {
     return temperatureLow;
   }
 
   public void setTemperatureLow(double temperatureLow) {
-    this.temperatureLow = temperatureLow;
+    this.temperatureLow = (int) temperatureLow;
   }
 
   public double getWindSpeed() {
@@ -100,6 +101,10 @@ public class DailyDataEntity implements Parcelable {
 
   public void setWindSpeed(double windSpeed) {
     this.windSpeed = windSpeed;
+  }
+
+  public long getAverageTemperature() {
+    return Math.round(MathUtils.getAverage(getTemperatureHigh(), getTemperatureLow()));
   }
 
   @Override public int describeContents() {

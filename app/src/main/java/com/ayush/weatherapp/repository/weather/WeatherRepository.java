@@ -8,4 +8,6 @@ import io.reactivex.Observable;
 public interface WeatherRepository {
 
   Observable<ForecastEntity> getForecast(String coordinates);
+
+  void checkTemperatureUnit(ForecastEntity forecastEntity);
 }

@@ -1,6 +1,7 @@
 package com.ayush.weatherapp.home;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -10,8 +11,6 @@ import android.text.TextUtils;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
-import com.ayush.weatherapp.constants.WeatherImage;
-import com.ayush.weatherapp.entities.CurrentForecastEntity;
 import com.ayush.weatherapp.entities.ForecastEntity;
 import com.ayush.weatherapp.mvp.BasePresenterImpl;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepository;
@@ -23,7 +22,6 @@ import com.ayush.weatherapp.repository.weather.WeatherRepositoryImpl;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.Address;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponents;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocation;
-import com.ayush.weatherapp.utils.UnitConversionUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -38,7 +36,6 @@ import timber.log.Timber;
 
 public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     implements HomeContract.Presenter {
-
   private static final int LOCATION_REQ_INTERVAL = 10000;
   private static final int FASTEST_LOCATION_REQ_INTERVAL = 5000;
 
@@ -64,7 +61,13 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   @Override public void attachView(HomeContract.View view) {
     super.attachView(view);
     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-    preferenceRepository.onPreferenceChangeListener(newTemperature -> {
+    preferenceRepository.onPreferenceChangeListener(newTemperature ->
+    {
+      //need null check because change listener gets called in first launch after app data is cleared
+      if (forecast == null) {
+        return;
+      }
+      setForecastView();
     });//todo
     weatherRepositoryImpl = new WeatherRepositoryImpl();
     geocodingRepository = new GeocodingRepositoryImpl();
@@ -110,9 +113,26 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
   private void fetchByCurrentLocation() {
     if (isLocationServicesEnabled()) {
-      initLocationRequest();
-      startLocationUpdates();
+      getLastKnownLocation();
     }
+  }
+
+  private void getLastKnownLocation() {
+    if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+        != PackageManager.PERMISSION_GRANTED) {
+      throw new RuntimeException("Location permission not provided");
+    }
+    fusedLocationProviderClient.getLastLocation()
+        .addOnSuccessListener((Activity) getContext(), location -> {
+          if (location == null) {
+            initLocationRequest();
+            startLocationUpdates();
+          } else {
+            String latLng = location.getLatitude() + "," + location.getLongitude();
+            fetchAddress(latLng);
+            fetchWeatherForecast(latLng);
+          }
+        });
   }
 
   private void initLocationRequest() {
@@ -154,7 +174,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   private void fetchAddress(String latLng) {
-    // TODO refactor after mvp complete
     Disposable disposable = geocodingRepository.getLocationDetails(latLng)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -244,8 +263,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   private void fetchWeatherForecast(String latLng) {
-
-    //TODO refactor after mvp complete
     Disposable disposable = weatherRepositoryImpl.getForecast(latLng)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -272,55 +289,23 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
   private void setForecast(ForecastEntity forecast, String latLng) {
     this.forecast = forecast;
-    setForecastView(forecast);
+    setForecastView();
     getView().changeErrorVisibility(false);
 
     //save to provide coordinates during refresh
     preferenceRepository.saveCurrentLocationCoordinates(latLng);
   }
 
-  private void setCurrentTemperature(double temperature) {
-    String modifiedTemperature = String.valueOf(Math.round(temperature));
-    //todo: remove this implementation to repository
-    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.FAHRENHEIT) {
-      modifiedTemperature = getString(R.string.format_temperature_fahrenheit, modifiedTemperature);
-    } else {
-      modifiedTemperature = String.valueOf(Math.round(UnitConversionUtils.fahrenheitToCelsius(
-          Double.parseDouble(String.valueOf(modifiedTemperature)))));
-      modifiedTemperature = getString(R.string.format_temperature_celsius, modifiedTemperature);
-    }
-
-    getView().setCurrentTemperature(modifiedTemperature);
-  }
-
-  private void setForecastView(ForecastEntity forecast) {
+  private void setForecastView() {
+    weatherRepositoryImpl.checkTemperatureUnit(forecast);
     getView().setDailyForeCast(forecast.getDailyForecastEntity().getDailyDataEntityList());
     getView().setHourlyForeCast(forecast.getHourlyForecastEntity().getHourlyDataEntityList());
     getView().setCurrentForecast(forecast.getCurrentForecastEntity());
-    setCurrentTemperature(forecast.getCurrentForecastEntity().getTemperature());
+    getView().setCurrentTemperature(forecast.getCurrentForecastEntity().getTemperature(),
+        preferenceRepository.getTemperatureUnit());
+    getView().setTodaysForecastDetail(forecast.getDailyForecastEntity().getTodaysDataEntity(),
+        preferenceRepository.getTemperatureUnit());
     getView().setTabLayout();
-    changeHomeBackground(forecast.getCurrentForecastEntity());
-  }
-
-  private void changeHomeBackground(CurrentForecastEntity currentForecast) {
-    switch (currentForecast.getIcon()) {
-      case WeatherImage.CLEAR_DAY:
-        getView().setHomeBackground(R.drawable.background_gradient_sunny);
-        break;
-
-      case WeatherImage.RAINY:
-      case WeatherImage.SNOW:
-        getView().setHomeBackground(R.drawable.background_gradient_rainy);
-        break;
-
-      case WeatherImage.CLOUDY:
-      case WeatherImage.PARTLY_CLOUDY_DAY:
-        getView().setHomeBackground(R.drawable.background_gradient_cloudy);
-        break;
-
-      default:
-        getView().setHomeBackground(R.drawable.background_gradient_default);
-    }
   }
 
   private boolean isLocationServicesEnabled() {
