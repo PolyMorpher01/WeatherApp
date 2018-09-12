@@ -13,6 +13,10 @@ public class Geometry extends RealmObject {
   public Geometry() {
   }
 
+  public Geometry(long primaryKey) {
+    this.primaryKey = primaryKey;
+  }
+
   public long getPrimaryKey() {
     return primaryKey;
   }

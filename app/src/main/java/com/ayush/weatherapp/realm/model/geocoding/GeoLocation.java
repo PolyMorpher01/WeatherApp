@@ -13,6 +13,10 @@ public class GeoLocation extends RealmObject {
   public GeoLocation() {
   }
 
+  public GeoLocation(long primaryKey) {
+    this.primaryKey = primaryKey;
+  }
+
   public long getPrimaryKey() {
     return primaryKey;
   }

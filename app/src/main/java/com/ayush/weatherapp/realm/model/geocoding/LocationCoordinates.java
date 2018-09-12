@@ -11,6 +11,10 @@ public class LocationCoordinates extends RealmObject {
   public LocationCoordinates() {
   }
 
+  public LocationCoordinates(long primaryKey) {
+    this.primaryKey = primaryKey;
+  }
+
   public long getPrimaryKey() {
     return primaryKey;
   }

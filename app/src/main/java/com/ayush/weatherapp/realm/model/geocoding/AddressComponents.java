@@ -9,9 +9,14 @@ public class AddressComponents extends RealmObject {
   @PrimaryKey private long primaryKey;
   private String longName;
   private String shortName;
-  //private RealmList<String> types;
+  //todo realmlist<String> not supported in old realm version
+  private RealmList<LocationTypes> types;
 
   public AddressComponents() {
+  }
+
+  public AddressComponents(long primaryKey) {
+    this.primaryKey = primaryKey;
   }
 
   public long getPrimaryKey() {
@@ -34,12 +39,15 @@ public class AddressComponents extends RealmObject {
     this.shortName = shortName;
   }
 
-  //public List<String> getTypes() {
-  //  return types;
-  //}
+  public List<String> getTypes() {
+    //return types;
+    return null;
+  }
 
-  //public void setTypes(List<String> types) {
-  //  this.types = new RealmList<>();
-  //  this.types.addAll(types);
-  //}
+  public void setTypes(List<String> types) {
+    //this.types = new RealmList<>();
+    //for(String type: types){
+    //  this.types.;
+    //}
+  }
 }

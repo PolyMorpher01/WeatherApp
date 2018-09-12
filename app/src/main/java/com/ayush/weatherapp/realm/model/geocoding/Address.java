@@ -14,6 +14,10 @@ public class Address extends RealmObject {
   public Address() {
   }
 
+  public Address(long primaryKey) {
+    this.primaryKey = primaryKey;
+  }
+
   public long getPrimaryKey() {
     return primaryKey;
   }
