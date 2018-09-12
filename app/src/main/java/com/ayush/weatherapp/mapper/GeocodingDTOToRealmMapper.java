@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class GeocodingDTOToRealmMapper {
-
-  public GeocodingDTOToRealmMapper() {
+  private GeocodingDTOToRealmMapper() {
   }
 
   public static GeoLocation transform(GeoLocationDTO dto) {
