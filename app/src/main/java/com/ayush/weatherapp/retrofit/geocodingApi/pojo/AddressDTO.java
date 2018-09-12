@@ -6,7 +6,7 @@ import java.util.List;
 public class AddressDTO {
   @SerializedName("address_components") private List<AddressComponentsDTO> addressComponentDTOS;
   @SerializedName("formatted_address") private String formattedAddress;
-  @SerializedName("geometryDTO") private GeometryDTO geometryDTO;
+  @SerializedName("geometry") private GeometryDTO geometryDTO;
 
   public List<AddressComponentsDTO> getAddressComponentDTOS() {
     return addressComponentDTOS;
