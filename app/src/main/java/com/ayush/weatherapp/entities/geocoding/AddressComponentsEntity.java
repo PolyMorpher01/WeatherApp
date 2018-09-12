@@ -1,9 +1,11 @@
 package com.ayush.weatherapp.entities.geocoding;
 
+import java.util.List;
+
 public class AddressComponentsEntity {
   private String longName;
   private String shortName;
-  private String types;
+  private List<String> types;
 
   public String getLongName() {
     return longName;
@@ -21,11 +23,11 @@ public class AddressComponentsEntity {
     this.shortName = shortName;
   }
 
-  public String getTypes() {
+  public List<String> getTypes() {
     return types;
   }
 
-  public void setTypes(String types) {
+  public void setTypes(List<String> types) {
     this.types = types;
   }
 }

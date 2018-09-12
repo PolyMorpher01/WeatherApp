@@ -49,8 +49,7 @@ public final class GeocodingRealmToEntityMapper {
 
     entity.setLongName(addressComponents.getLongName());
     entity.setShortName(addressComponents.getShortName());
-    //todo
-    //entity.setTypes(addressComponents.getTypes());
+    entity.setTypes(addressComponents.getTypes());
     return  entity;
   }
 

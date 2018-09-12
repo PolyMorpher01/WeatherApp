@@ -84,7 +84,7 @@ public final class GeocodingDTOToRealmMapper {
 
   public static AddressComponents transform(AddressComponentsDTO dto, long primaryKey) {
     AddressComponents addressComponents = new AddressComponents(primaryKey);
-    //todo for types
+    addressComponents.setTypes(dto.getTypes());
     addressComponents.setLongName(dto.getLongName());
     addressComponents.setShortName(dto.getShortName());
     return addressComponents;
