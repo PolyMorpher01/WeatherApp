@@ -2,10 +2,10 @@ package com.ayush.weatherapp.repository.weather;
 
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
-import com.ayush.weatherapp.entities.CurrentForecastEntity;
-import com.ayush.weatherapp.entities.DailyDataEntity;
-import com.ayush.weatherapp.entities.ForecastEntity;
-import com.ayush.weatherapp.entities.HourlyDataEntity;
+import com.ayush.weatherapp.entities.forecast.CurrentForecastEntity;
+import com.ayush.weatherapp.entities.forecast.DailyDataEntity;
+import com.ayush.weatherapp.entities.forecast.ForecastEntity;
+import com.ayush.weatherapp.entities.forecast.HourlyDataEntity;
 import com.ayush.weatherapp.mapper.ForecastRealmToEntityMapper;
 import com.ayush.weatherapp.realm.RealmUtils;
 import com.ayush.weatherapp.realm.model.forecast.Forecast;

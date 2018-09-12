@@ -1,4 +1,4 @@
-package com.ayush.weatherapp.entities;
+package com.ayush.weatherapp.entities.forecast;
 
 public class ForecastEntity {
   private double latitude;

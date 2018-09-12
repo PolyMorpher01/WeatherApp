@@ -11,7 +11,7 @@ import android.text.TextUtils;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
-import com.ayush.weatherapp.entities.ForecastEntity;
+import com.ayush.weatherapp.entities.forecast.ForecastEntity;
 import com.ayush.weatherapp.mvp.BasePresenterImpl;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepository;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepositoryImpl;

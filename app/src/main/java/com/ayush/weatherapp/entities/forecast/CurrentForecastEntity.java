@@ -1,4 +1,4 @@
-package com.ayush.weatherapp.entities;
+package com.ayush.weatherapp.entities.forecast;
 
 public class CurrentForecastEntity {
   private long time;
