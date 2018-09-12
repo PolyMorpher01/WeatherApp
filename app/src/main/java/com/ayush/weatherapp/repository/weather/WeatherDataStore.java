@@ -1,7 +1,6 @@
 package com.ayush.weatherapp.repository.weather;
 
-import com.ayush.weatherapp.realm.model.Forecast;
-import io.reactivex.Observable;
+import com.ayush.weatherapp.realm.model.forecast.Forecast;
 import io.reactivex.Single;
 
 public interface WeatherDataStore {

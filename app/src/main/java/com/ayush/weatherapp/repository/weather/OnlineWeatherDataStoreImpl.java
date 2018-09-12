@@ -1,10 +1,9 @@
 package com.ayush.weatherapp.repository.weather;
 
 import com.ayush.weatherapp.mapper.ForecastDTOtoRealmMapper;
-import com.ayush.weatherapp.realm.model.Forecast;
+import com.ayush.weatherapp.realm.model.forecast.Forecast;
 import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIClient;
 import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIInterface;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 
 public class OnlineWeatherDataStoreImpl implements WeatherDataStore {

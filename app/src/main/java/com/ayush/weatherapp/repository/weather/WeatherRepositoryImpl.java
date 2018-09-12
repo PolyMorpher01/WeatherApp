@@ -8,7 +8,7 @@ import com.ayush.weatherapp.entities.ForecastEntity;
 import com.ayush.weatherapp.entities.HourlyDataEntity;
 import com.ayush.weatherapp.mapper.ForecastRealmToEntityMapper;
 import com.ayush.weatherapp.realm.RealmUtils;
-import com.ayush.weatherapp.realm.model.Forecast;
+import com.ayush.weatherapp.realm.model.forecast.Forecast;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
 import com.ayush.weatherapp.utils.UnitConversionUtils;
