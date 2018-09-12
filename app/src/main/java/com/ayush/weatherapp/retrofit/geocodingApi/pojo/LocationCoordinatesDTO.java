@@ -2,7 +2,7 @@ package com.ayush.weatherapp.retrofit.geocodingApi.pojo;
 
 import com.google.gson.annotations.SerializedName;
 
-public class LocationCoordinates {
+public class LocationCoordinatesDTO {
   @SerializedName("lat") private double latitude;
   @SerializedName("lng") private double longitude;
 

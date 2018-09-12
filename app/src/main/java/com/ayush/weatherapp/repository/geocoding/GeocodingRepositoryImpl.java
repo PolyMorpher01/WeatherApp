@@ -2,7 +2,7 @@ package com.ayush.weatherapp.repository.geocoding;
 
 import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIClient;
 import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIInterface;
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocation;
+import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocationDTO;
 import io.reactivex.Observable;
 
 public class GeocodingRepositoryImpl implements GeocodingRepository {
@@ -14,7 +14,7 @@ public class GeocodingRepositoryImpl implements GeocodingRepository {
     geocodingAPIInterface = GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
   }
 
-  @Override public Observable<GeoLocation> getLocationDetails(String latlng) {
+  @Override public Observable<GeoLocationDTO> getLocationDetails(String latlng) {
     return geocodingAPIInterface.getLocationDetails(latlng);
   }
 }

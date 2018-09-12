@@ -19,9 +19,9 @@ import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
 import com.ayush.weatherapp.repository.weather.WeatherRepository;
 import com.ayush.weatherapp.repository.weather.WeatherRepositoryImpl;
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.Address;
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponents;
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocation;
+import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressDTO;
+import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponentsDTO;
+import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocationDTO;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -177,8 +177,8 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     Disposable disposable = geocodingRepository.getLocationDetails(latLng)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(new DisposableObserver<GeoLocation>() {
-          @Override public void onNext(GeoLocation geoLocation) {
+        .subscribeWith(new DisposableObserver<GeoLocationDTO>() {
+          @Override public void onNext(GeoLocationDTO geoLocation) {
             setLocation(geoLocation);
           }
 
@@ -193,9 +193,9 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     addSubscription(disposable);
   }
 
-  private void setLocation(GeoLocation geoLocation) {
-    List<Address> addressList = geoLocation.getAddresses();
-    getView().setAddress(getAddress(addressList));
+  private void setLocation(GeoLocationDTO geoLocationDTO) {
+    List<AddressDTO> addressDTOList = geoLocationDTO.getAddressDTOS();
+    getView().setAddress(getAddress(addressDTOList));
   }
 
   @Override public void searchLocation(double lat, double lng) {
@@ -210,16 +210,17 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     }
   }
 
-  private String getAddress(List<Address> addressList) {
+  private String getAddress(List<AddressDTO> addressDTOList) {
 
-    if (addressList == null || addressList.isEmpty()) {
+    if (addressDTOList == null || addressDTOList.isEmpty()) {
       return getString(R.string.not_available);
     }
 
-    List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
+    List<AddressComponentsDTO>
+        addressComponentsDTOList = addressDTOList.get(0).getAddressComponentDTOS();
 
-    String primaryAddress = getAddressPrimary(addressComponentsList);
-    String secondaryAddress = getAddressSecondary(addressComponentsList);
+    String primaryAddress = getAddressPrimary(addressComponentsDTOList);
+    String secondaryAddress = getAddressSecondary(addressComponentsDTOList);
     String address = "";
 
     if (!TextUtils.isEmpty(primaryAddress)) {
@@ -238,8 +239,8 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     return address;
   }
 
-  private String getAddressPrimary(List<AddressComponents> addressComponentsList) {
-    for (AddressComponents addressComponent : addressComponentsList) {
+  private String getAddressPrimary(List<AddressComponentsDTO> addressComponentsDTOList) {
+    for (AddressComponentsDTO addressComponent : addressComponentsDTOList) {
       if (addressComponent.getTypes().contains(ADDRESS_STREET)) {
         return addressComponent.getLongName();
       }
@@ -247,8 +248,8 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     return "";
   }
 
-  private String getAddressSecondary(List<AddressComponents> addressComponentsList) {
-    for (AddressComponents addressComponent : addressComponentsList) {
+  private String getAddressSecondary(List<AddressComponentsDTO> addressComponentsDTOList) {
+    for (AddressComponentsDTO addressComponent : addressComponentsDTOList) {
       if (addressComponent.getTypes().contains(ADDRESS_CITY)) {
         return addressComponent.getLongName();
       }
