@@ -34,6 +34,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
       localWeatherRepository.getForecast(coordinates)
           .map(forecast -> {
             //todo check if forecast is null
+
             //initialize value again
             defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
             return ForecastRealmToEntityMapper.transform(forecast);
@@ -45,7 +46,6 @@ public class WeatherRepositoryImpl implements WeatherRepository {
           .map(forecast -> {
             //initialize value again
             defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
-            saveWeatherForecast(forecast);
             return ForecastRealmToEntityMapper.transform(forecast);
           })
           .subscribe(emitter::onNext, emitter::onError);
@@ -108,8 +108,6 @@ public class WeatherRepositoryImpl implements WeatherRepository {
   }
 
   private void saveWeatherForecast(Forecast forecast) {
-    RealmUtils.removeAll();
-
     Realm realm = RealmUtils.getRealm();
     realm.executeTransaction(r -> realm.insert(forecast));
     realm.close();
