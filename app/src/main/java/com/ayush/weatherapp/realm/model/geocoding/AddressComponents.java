@@ -11,7 +11,7 @@ public class AddressComponents extends RealmObject {
   private String longName;
   private String shortName;
   //Realmlist<String> not supported in old realm version
-  private RealmList<LocationType> types;
+  private RealmList<LocationTypes> types;
 
   public AddressComponents() {
   }
@@ -42,7 +42,7 @@ public class AddressComponents extends RealmObject {
 
   public List<String> getTypes() {
     List<String> stringList = new ArrayList<>();
-    for (LocationType type : types) {
+    for (LocationTypes type : types) {
       stringList.add(getFromLocationType(type));
     }
     return stringList;
@@ -55,13 +55,13 @@ public class AddressComponents extends RealmObject {
     }
   }
 
-  private LocationType setToLocationType(String string) {
-    LocationType locationType = new LocationType();
+  private LocationTypes setToLocationType(String string) {
+    LocationTypes locationType = new LocationTypes();
     locationType.setValue(string);
     return locationType;
   }
 
-  private String getFromLocationType(LocationType locationType) {
+  private String getFromLocationType(LocationTypes locationType) {
     return locationType.getValue();
   }
 }
