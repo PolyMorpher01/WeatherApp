@@ -11,7 +11,7 @@ public class AddressComponents extends RealmObject {
   @PrimaryKey private long primaryKey;
   private String longName;
   private String shortName;
-  //realmlist<String> not supported in old realm version
+  //Realmlist<String> not supported in old realm version
   private RealmList<RealmString> types;
 
   public AddressComponents() {
