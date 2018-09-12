@@ -10,6 +10,9 @@ public class LocalWeatherDataStoreImpl implements WeatherDataStore {
 
   @Override public Single<Forecast> getForecast(String coordinates) {
     Forecast realmModel = RealmUtils.getRealmModel(Forecast.class);
-    return Single.just(realmModel);
+    if (realmModel != null) {
+      return Single.just(realmModel);
+    }
+    return Single.error(new NullPointerException());
   }
 }
