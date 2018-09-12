@@ -1,11 +1,14 @@
 package com.ayush.weatherapp.repository.weather;
 
+import android.content.Context;
+import com.ayush.weatherapp.WeatherApplication;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.entities.CurrentForecastEntity;
 import com.ayush.weatherapp.entities.DailyDataEntity;
 import com.ayush.weatherapp.entities.ForecastEntity;
 import com.ayush.weatherapp.entities.HourlyDataEntity;
+import com.ayush.weatherapp.injection.module.ApplicationModule;
 import com.ayush.weatherapp.mapper.ForecastRealmToEntityMapper;
 import com.ayush.weatherapp.realm.RealmUtils;
 import com.ayush.weatherapp.realm.model.Forecast;
@@ -15,6 +18,7 @@ import com.ayush.weatherapp.utils.UnitConversionUtils;
 import io.reactivex.Observable;
 import io.realm.Realm;
 import java.util.List;
+import javax.inject.Inject;
 
 public class WeatherRepositoryImpl implements WeatherRepository {
   @Temperature private static int defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
@@ -22,9 +26,14 @@ public class WeatherRepositoryImpl implements WeatherRepository {
   private WeatherDataStore localWeatherRepository;
   private PreferenceRepository preferenceRepository;
 
-  public WeatherRepositoryImpl() {
-    onlineWeatherRepository = new OnlineWeatherDataStoreImpl();
-    localWeatherRepository = new LocalWeatherDataStoreImpl();
+  public WeatherRepositoryImpl(Context context) {
+    WeatherApplication.get(context).getApplicationComponent().inject(this);
+  }
+
+  @Inject public WeatherRepositoryImpl(OnlineWeatherDataStoreImpl onlineWeatherDataStore,
+      LocalWeatherDataStoreImpl localWeatherDataStore) {
+    onlineWeatherRepository = onlineWeatherDataStore;
+    localWeatherRepository = localWeatherDataStore;
     preferenceRepository = PreferenceRepositoryImpl.get();
   }
 

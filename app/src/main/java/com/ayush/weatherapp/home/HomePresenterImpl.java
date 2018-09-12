@@ -69,7 +69,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
       }
       setForecastView();
     });//todo
-    weatherRepositoryImpl = new WeatherRepositoryImpl();
+    weatherRepositoryImpl = new WeatherRepositoryImpl(getContext());
     geocodingRepository = new GeocodingRepositoryImpl();
   }
 
