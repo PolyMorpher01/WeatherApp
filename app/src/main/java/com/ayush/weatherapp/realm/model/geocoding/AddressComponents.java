@@ -1,6 +1,5 @@
 package com.ayush.weatherapp.realm.model.geocoding;
 
-import com.ayush.weatherapp.realm.RealmString;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -12,7 +11,7 @@ public class AddressComponents extends RealmObject {
   private String longName;
   private String shortName;
   //Realmlist<String> not supported in old realm version
-  private RealmList<RealmString> types;
+  private RealmList<LocationType> types;
 
   public AddressComponents() {
   }
@@ -43,8 +42,8 @@ public class AddressComponents extends RealmObject {
 
   public List<String> getTypes() {
     List<String> stringList = new ArrayList<>();
-    for (RealmString type : types) {
-      stringList.add(getFromRealmString(type));
+    for (LocationType type : types) {
+      stringList.add(getFromLocationType(type));
     }
     return stringList;
   }
@@ -52,17 +51,17 @@ public class AddressComponents extends RealmObject {
   public void setTypes(List<String> types) {
     this.types = new RealmList<>();
     for (String type : types) {
-      this.types.add(setToRealmString(type));
+      this.types.add(setToLocationType(type));
     }
   }
 
-  private RealmString setToRealmString(String string) {
-    RealmString realmString = new RealmString();
-    realmString.setValue(string);
-    return realmString;
+  private LocationType setToLocationType(String string) {
+    LocationType locationType = new LocationType();
+    locationType.setValue(string);
+    return locationType;
   }
 
-  private String getFromRealmString(RealmString realmString) {
-    return realmString.getValue();
+  private String getFromLocationType(LocationType locationType) {
+    return locationType.getValue();
   }
 }
