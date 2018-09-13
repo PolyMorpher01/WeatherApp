@@ -183,10 +183,10 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(new DisposableObserver<GeoLocationDTO>() {
           @Override public void onNext(GeoLocationDTO geoLocation) {
+            //todo: do this in repository
             if(!geoLocation.getAddressDTOS().isEmpty()){
               GeoLocation geo = GeocodingDTOToRealmMapper.transform(geoLocation);
               saveGeoLocationDetails(geo);
-              onError(new Throwable("Save Error"));
             }
             setLocation(geoLocation);
           }

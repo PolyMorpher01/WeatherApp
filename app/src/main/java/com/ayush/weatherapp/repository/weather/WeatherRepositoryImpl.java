@@ -29,9 +29,9 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     preferenceRepository = PreferenceRepositoryImpl.get();
   }
 
-  @Override public Observable<ForecastEntity> getForecast(String coordinates) {
+  @Override public Observable<ForecastEntity> getForecast(String latlng) {
     return Observable.create(emitter -> {
-      localWeatherRepository.getForecast(coordinates)
+      localWeatherRepository.getForecast(latlng)
           .map(forecast -> {
             //todo check if forecast is null
 
@@ -41,7 +41,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
           })
           .subscribe(emitter::onNext, throwable -> {});
 
-      onlineWeatherRepository.getForecast(coordinates)
+      onlineWeatherRepository.getForecast(latlng)
           .doOnSuccess(this::saveWeatherForecast)
           .map(forecast -> {
             //initialize value again

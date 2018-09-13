@@ -8,7 +8,7 @@ public class LocalWeatherDataStoreImpl implements WeatherDataStore {
   public LocalWeatherDataStoreImpl() {
   }
 
-  @Override public Single<Forecast> getForecast(String coordinates) {
+  @Override public Single<Forecast> getForecast(String latlng) {
     Forecast realmModel =
         RealmUtils.getRealmModel(Forecast.class, RealmUtils.getMaxIdForPrimaryKey(Forecast.class));
     if (realmModel != null) {
