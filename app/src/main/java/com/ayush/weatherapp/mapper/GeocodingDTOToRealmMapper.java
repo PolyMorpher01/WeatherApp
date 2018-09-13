@@ -50,8 +50,7 @@ public final class GeocodingDTOToRealmMapper {
   }
 
   public static Geometry transform(GeometryDTO dto) {
-    long primaryKey = RealmUtils.getMaxIdForPrimaryKey(Geometry.class);
-    Geometry geometry = new Geometry(++primaryKey);
+    Geometry geometry = new Geometry();
 
     geometry.setLocationCoordinates(transform(dto.getLocationCoordinatesDTO()));
     geometry.setLocationType(dto.getLocationType());
@@ -59,8 +58,9 @@ public final class GeocodingDTOToRealmMapper {
   }
 
   public static LocationCoordinates transform(LocationCoordinatesDTO dto) {
-    long primaryKey = RealmUtils.getMaxIdForPrimaryKey(LocationCoordinates.class);
-    LocationCoordinates locationCoordinates = new LocationCoordinates(++primaryKey);
+    //long primaryKey = RealmUtils.getMaxIdForPrimaryKey(LocationCoordinates.class);
+    //LocationCoordinates locationCoordinates = new LocationCoordinates(++primaryKey);
+    LocationCoordinates locationCoordinates = new LocationCoordinates();
 
     locationCoordinates.setLatitude(dto.getLatitude());
     locationCoordinates.setLongitude(dto.getLongitude());
@@ -72,18 +72,17 @@ public final class GeocodingDTOToRealmMapper {
     if (dtos == null || dtos.isEmpty()) {
       return null;
     }
-    long primaryKey = RealmUtils.getMaxIdForPrimaryKey(AddressComponents.class);
 
     List<AddressComponents> addressComponentsList = new ArrayList<>(dtos.size());
     for (AddressComponentsDTO dto : dtos) {
-      addressComponentsList.add(transform(dto, ++primaryKey));
+      addressComponentsList.add(transform(dto));
     }
 
     return addressComponentsList;
   }
 
-  public static AddressComponents transform(AddressComponentsDTO dto, long primaryKey) {
-    AddressComponents addressComponents = new AddressComponents(primaryKey);
+  public static AddressComponents transform(AddressComponentsDTO dto) {
+    AddressComponents addressComponents = new AddressComponents();
     addressComponents.setTypes(dto.getTypes());
     addressComponents.setLongName(dto.getLongName());
     addressComponents.setShortName(dto.getShortName());

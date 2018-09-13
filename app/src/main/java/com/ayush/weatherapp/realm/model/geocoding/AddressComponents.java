@@ -2,26 +2,16 @@ package com.ayush.weatherapp.realm.model.geocoding;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AddressComponents extends RealmObject {
-  @PrimaryKey private long primaryKey;
   private String longName;
   private String shortName;
   //Realmlist<String> not supported in old realm version
   private RealmList<LocationTypes> types;
 
   public AddressComponents() {
-  }
-
-  public AddressComponents(long primaryKey) {
-    this.primaryKey = primaryKey;
-  }
-
-  public long getPrimaryKey() {
-    return primaryKey;
   }
 
   public String getLongName() {

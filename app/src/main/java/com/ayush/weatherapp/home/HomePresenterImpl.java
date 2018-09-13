@@ -12,15 +12,18 @@ import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.entities.forecast.ForecastEntity;
+import com.ayush.weatherapp.mapper.GeocodingDTOToRealmMapper;
 import com.ayush.weatherapp.mvp.BasePresenterImpl;
+import com.ayush.weatherapp.realm.RealmUtils;
+import com.ayush.weatherapp.realm.model.geocoding.GeoLocation;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepository;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepositoryImpl;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
 import com.ayush.weatherapp.repository.weather.WeatherRepository;
 import com.ayush.weatherapp.repository.weather.WeatherRepositoryImpl;
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressDTO;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponentsDTO;
+import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressDTO;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocationDTO;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -31,6 +34,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
+import io.realm.Realm;
 import java.util.List;
 import timber.log.Timber;
 
@@ -179,6 +183,11 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(new DisposableObserver<GeoLocationDTO>() {
           @Override public void onNext(GeoLocationDTO geoLocation) {
+            if(!geoLocation.getAddressDTOS().isEmpty()){
+              GeoLocation geo = GeocodingDTOToRealmMapper.transform(geoLocation);
+              saveGeoLocationDetails(geo);
+              onError(new Throwable("Save Error"));
+            }
             setLocation(geoLocation);
           }
 
@@ -191,6 +200,12 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
         });
 
     addSubscription(disposable);
+  }
+
+  private void saveGeoLocationDetails(GeoLocation geoLocation) {
+    Realm realm = RealmUtils.getRealm();
+    realm.executeTransaction(r -> realm.insert(geoLocation));
+    realm.close();
   }
 
   private void setLocation(GeoLocationDTO geoLocationDTO) {

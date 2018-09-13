@@ -8,6 +8,9 @@ import io.realm.RealmObject;
 public class LocationTypes extends RealmObject {
   private String val;
 
+  public LocationTypes() {
+  }
+
   public String getValue() {
     return val;
   }
