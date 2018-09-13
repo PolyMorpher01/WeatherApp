@@ -1,12 +1,12 @@
 package com.ayush.weatherapp.mapper;
 
 import com.ayush.weatherapp.realm.RealmUtils;
-import com.ayush.weatherapp.realm.model.CurrentForecast;
-import com.ayush.weatherapp.realm.model.DailyData;
-import com.ayush.weatherapp.realm.model.DailyForecast;
-import com.ayush.weatherapp.realm.model.Forecast;
-import com.ayush.weatherapp.realm.model.HourlyData;
-import com.ayush.weatherapp.realm.model.HourlyForecast;
+import com.ayush.weatherapp.realm.model.forecast.CurrentForecast;
+import com.ayush.weatherapp.realm.model.forecast.DailyData;
+import com.ayush.weatherapp.realm.model.forecast.DailyForecast;
+import com.ayush.weatherapp.realm.model.forecast.Forecast;
+import com.ayush.weatherapp.realm.model.forecast.HourlyData;
+import com.ayush.weatherapp.realm.model.forecast.HourlyForecast;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecastDTO;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyDataDTO;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecastDTO;

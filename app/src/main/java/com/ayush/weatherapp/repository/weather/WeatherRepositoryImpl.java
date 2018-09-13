@@ -2,19 +2,20 @@ package com.ayush.weatherapp.repository.weather;
 
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
-import com.ayush.weatherapp.entities.CurrentForecastEntity;
-import com.ayush.weatherapp.entities.DailyDataEntity;
-import com.ayush.weatherapp.entities.ForecastEntity;
-import com.ayush.weatherapp.entities.HourlyDataEntity;
+import com.ayush.weatherapp.entities.forecast.CurrentForecastEntity;
+import com.ayush.weatherapp.entities.forecast.DailyDataEntity;
+import com.ayush.weatherapp.entities.forecast.ForecastEntity;
+import com.ayush.weatherapp.entities.forecast.HourlyDataEntity;
 import com.ayush.weatherapp.mapper.ForecastRealmToEntityMapper;
 import com.ayush.weatherapp.realm.RealmUtils;
-import com.ayush.weatherapp.realm.model.Forecast;
+import com.ayush.weatherapp.realm.model.forecast.Forecast;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
 import com.ayush.weatherapp.utils.UnitConversionUtils;
 import io.reactivex.Observable;
 import io.realm.Realm;
 import java.util.List;
+import timber.log.Timber;
 
 public class WeatherRepositoryImpl implements WeatherRepository {
   @Temperature private static int defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
@@ -28,23 +29,23 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     preferenceRepository = PreferenceRepositoryImpl.get();
   }
 
-  @Override public Observable<ForecastEntity> getForecast(String coordinates) {
+  @Override public Observable<ForecastEntity> getForecast(String latlng) {
     return Observable.create(emitter -> {
-      localWeatherRepository.getForecast(coordinates)
+      localWeatherRepository.getForecast(latlng)
           .map(forecast -> {
+            //todo check if forecast is null
+
             //initialize value again
             defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
             return ForecastRealmToEntityMapper.transform(forecast);
           })
-          .subscribe(emitter::onNext, throwable -> {
-          });
+          .subscribe(emitter::onNext, throwable -> {});
 
-      onlineWeatherRepository.getForecast(coordinates)
+      onlineWeatherRepository.getForecast(latlng)
           .doOnSuccess(this::saveWeatherForecast)
           .map(forecast -> {
             //initialize value again
             defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
-            saveWeatherForecast(forecast);
             return ForecastRealmToEntityMapper.transform(forecast);
           })
           .subscribe(emitter::onNext, emitter::onError);
@@ -107,8 +108,6 @@ public class WeatherRepositoryImpl implements WeatherRepository {
   }
 
   private void saveWeatherForecast(Forecast forecast) {
-    RealmUtils.removeAll();
-
     Realm realm = RealmUtils.getRealm();
     realm.executeTransaction(r -> realm.insert(forecast));
     realm.close();

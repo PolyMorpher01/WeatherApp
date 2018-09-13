@@ -1,4 +1,4 @@
-package com.ayush.weatherapp.realm.model;
+package com.ayush.weatherapp.realm.model.forecast;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;

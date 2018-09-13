@@ -12,7 +12,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.customViews.ForecastCompoundView;
-import com.ayush.weatherapp.entities.DailyDataEntity;
+import com.ayush.weatherapp.entities.forecast.DailyDataEntity;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.utils.DateUtils;
 import java.util.ArrayList;

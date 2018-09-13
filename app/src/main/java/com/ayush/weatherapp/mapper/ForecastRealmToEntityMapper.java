@@ -1,17 +1,17 @@
 package com.ayush.weatherapp.mapper;
 
-import com.ayush.weatherapp.entities.CurrentForecastEntity;
-import com.ayush.weatherapp.entities.DailyDataEntity;
-import com.ayush.weatherapp.entities.DailyForecastEntity;
-import com.ayush.weatherapp.entities.ForecastEntity;
-import com.ayush.weatherapp.entities.HourlyDataEntity;
-import com.ayush.weatherapp.entities.HourlyForecastEntity;
-import com.ayush.weatherapp.realm.model.CurrentForecast;
-import com.ayush.weatherapp.realm.model.DailyData;
-import com.ayush.weatherapp.realm.model.DailyForecast;
-import com.ayush.weatherapp.realm.model.Forecast;
-import com.ayush.weatherapp.realm.model.HourlyData;
-import com.ayush.weatherapp.realm.model.HourlyForecast;
+import com.ayush.weatherapp.entities.forecast.CurrentForecastEntity;
+import com.ayush.weatherapp.entities.forecast.DailyDataEntity;
+import com.ayush.weatherapp.entities.forecast.DailyForecastEntity;
+import com.ayush.weatherapp.entities.forecast.ForecastEntity;
+import com.ayush.weatherapp.entities.forecast.HourlyDataEntity;
+import com.ayush.weatherapp.entities.forecast.HourlyForecastEntity;
+import com.ayush.weatherapp.realm.model.forecast.CurrentForecast;
+import com.ayush.weatherapp.realm.model.forecast.DailyData;
+import com.ayush.weatherapp.realm.model.forecast.DailyForecast;
+import com.ayush.weatherapp.realm.model.forecast.Forecast;
+import com.ayush.weatherapp.realm.model.forecast.HourlyData;
+import com.ayush.weatherapp.realm.model.forecast.HourlyForecast;
 import java.util.ArrayList;
 import java.util.List;
 
