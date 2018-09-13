@@ -37,7 +37,7 @@ public final class ForecastRealmToEntityMapper {
     entity.setTime(currentForecast.getTime());
     entity.setSummary(currentForecast.getSummary());
     entity.setIcon(currentForecast.getIcon());
-    entity.setTemperature(currentForecast.getTemperature());
+    entity.setTemperature((int) currentForecast.getTemperature());
 
     return entity;
   }
@@ -72,8 +72,8 @@ public final class ForecastRealmToEntityMapper {
     entity.setIcon(dailyData.getIcon());
     entity.setSunriseTime(dailyData.getSunriseTime());
     entity.setSunsetTime(dailyData.getSunsetTime());
-    entity.setTemperatureHigh(dailyData.getTemperatureHigh());
-    entity.setTemperatureLow(dailyData.getTemperatureLow());
+    entity.setTemperatureHigh((int) dailyData.getTemperatureHigh());
+    entity.setTemperatureLow((int) dailyData.getTemperatureLow());
     entity.setWindSpeed(dailyData.getWindSpeed());
 
     return entity;
@@ -109,7 +109,7 @@ public final class ForecastRealmToEntityMapper {
     entity.setTime(hourlyData.getTime());
     entity.setIcon(hourlyData.getIcon());
     entity.setSummary(hourlyData.getSummary());
-    entity.setTemperature(hourlyData.getTemperature());
+    entity.setTemperature((int) hourlyData.getTemperature());
 
     return entity;
   }

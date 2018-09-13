@@ -83,16 +83,16 @@ public class DailyDataEntity implements Parcelable {
     return temperatureHigh;
   }
 
-  public void setTemperatureHigh(double temperatureHigh) {
-    this.temperatureHigh = (int) temperatureHigh;
+  public void setTemperatureHigh(int temperatureHigh) {
+    this.temperatureHigh = temperatureHigh;
   }
 
   public int getTemperatureLow() {
     return temperatureLow;
   }
 
-  public void setTemperatureLow(double temperatureLow) {
-    this.temperatureLow = (int) temperatureLow;
+  public void setTemperatureLow(int temperatureLow) {
+    this.temperatureLow = temperatureLow;
   }
 
   public double getWindSpeed() {
