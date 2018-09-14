@@ -244,6 +244,10 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   private void setForecastView() {
+    if (forecast == null) {
+      throw new RuntimeException("Forecast object is null");
+    }
+
     weatherRepositoryImpl.checkTemperatureUnit(forecast);
     getView().setDailyForeCast(forecast.getDailyForecastEntity().getDailyDataEntityList());
     getView().setHourlyForeCast(forecast.getHourlyForecastEntity().getHourlyDataEntityList());
