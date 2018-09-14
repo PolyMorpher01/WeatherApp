@@ -16,6 +16,7 @@ import io.reactivex.Observable;
 import io.realm.Realm;
 import java.util.List;
 
+//TODO rename weather to forecast
 public class WeatherRepositoryImpl implements WeatherRepository {
   @Temperature private static int defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
   private WeatherDataStore onlineWeatherRepository;

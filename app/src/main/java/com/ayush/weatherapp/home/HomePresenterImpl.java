@@ -35,11 +35,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private static final int LOCATION_REQ_INTERVAL = 10000;
   private static final int FASTEST_LOCATION_REQ_INTERVAL = 5000;
 
-  private static final String ADDRESS_STREET = "route";
-  private static final String ADDRESS_CITY = "locality";
-  private static final String ADDRESS_COUNTRY = "country";
-  private static final String ADDRESS_ADMINISTRATIVE_AREA = "administrative_area_level_1";
-
   private FusedLocationProviderClient fusedLocationProviderClient;
   private LocationRequest locationRequest;
   private LocationCallback locationCallback;
