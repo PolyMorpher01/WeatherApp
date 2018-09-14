@@ -22,26 +22,15 @@ public final class GeocodingDTOToRealmMapper {
     long primaryKey = RealmUtils.getMaxIdForPrimaryKey(GeoLocation.class);
     GeoLocation geoLocation = new GeoLocation(++primaryKey);
 
-    geoLocation.setAddress(transformAddressList(dto.getAddressDTOS()));
+    //we need address detail of only first index
+    geoLocation.setAddress(transform(dto.getAddressDTOS().get(0)));
     geoLocation.setStatus(dto.getStatus());
     return geoLocation;
   }
 
-  public static List<Address> transformAddressList(List<AddressDTO> dtos) {
-    if (dtos == null || dtos.isEmpty()) {
-      return null;
-    }
+  private static Address transform(AddressDTO dto) {
     long primaryKey = RealmUtils.getMaxIdForPrimaryKey(Address.class);
-    List<Address> addressList = new ArrayList<>(dtos.size());
-
-    for (AddressDTO dto : dtos) {
-      addressList.add(transform(dto, ++primaryKey));
-    }
-    return addressList;
-  }
-
-  private static Address transform(AddressDTO dto, long primaryKey) {
-    Address address = new Address(primaryKey);
+    Address address = new Address(++primaryKey);
 
     address.setAddressComponents(transformAddressComponentsList(dto.getAddressComponentDTOS()));
     address.setFormattedAddress(dto.getFormattedAddress());

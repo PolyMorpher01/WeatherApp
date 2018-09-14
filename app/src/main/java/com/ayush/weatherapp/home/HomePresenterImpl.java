@@ -7,24 +7,18 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
-import android.text.TextUtils;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.entities.forecast.ForecastEntity;
-import com.ayush.weatherapp.mapper.GeocodingDTOToRealmMapper;
+import com.ayush.weatherapp.entities.geocoding.GeolocationEntity;
 import com.ayush.weatherapp.mvp.BasePresenterImpl;
-import com.ayush.weatherapp.realm.RealmUtils;
-import com.ayush.weatherapp.realm.model.geocoding.GeoLocation;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepository;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepositoryImpl;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
 import com.ayush.weatherapp.repository.weather.WeatherRepository;
 import com.ayush.weatherapp.repository.weather.WeatherRepositoryImpl;
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponentsDTO;
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressDTO;
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocationDTO;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -34,8 +28,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
-import io.realm.Realm;
-import java.util.List;
 import timber.log.Timber;
 
 public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
@@ -178,21 +170,18 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   private void fetchAddress(String latLng) {
-    Disposable disposable = geocodingRepository.getLocationDetails(latLng)
+    Disposable disposable = geocodingRepository.getLocation(latLng)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(new DisposableObserver<GeoLocationDTO>() {
-          @Override public void onNext(GeoLocationDTO geoLocation) {
-            //todo: do this in repository
-            if(!geoLocation.getAddressDTOS().isEmpty()){
-              GeoLocation geo = GeocodingDTOToRealmMapper.transform(geoLocation);
-              saveGeoLocationDetails(geo);
-            }
+        .subscribeWith(new DisposableObserver<GeolocationEntity>() {
+          @Override public void onNext(GeolocationEntity geoLocation) {
             setLocation(geoLocation);
           }
 
           @Override public void onError(Throwable e) {
             Timber.e(e);
+            e.printStackTrace();
+            getView().setAddress(getString(R.string.not_available));
           }
 
           @Override public void onComplete() {
@@ -200,17 +189,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
         });
 
     addSubscription(disposable);
-  }
-
-  private void saveGeoLocationDetails(GeoLocation geoLocation) {
-    Realm realm = RealmUtils.getRealm();
-    realm.executeTransaction(r -> realm.insert(geoLocation));
-    realm.close();
-  }
-
-  private void setLocation(GeoLocationDTO geoLocationDTO) {
-    List<AddressDTO> addressDTOList = geoLocationDTO.getAddressDTOS();
-    getView().setAddress(getAddress(addressDTOList));
   }
 
   @Override public void searchLocation(double lat, double lng) {
@@ -225,17 +203,21 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     }
   }
 
-  private String getAddress(List<AddressDTO> addressDTOList) {
+  private void setLocation(GeolocationEntity geoLocation) {
+    getView().setAddress(geoLocation.getFullAddress());
+  }
+/*
+  private String getAddress(List<AddressEntity> addressList) {
 
-    if (addressDTOList == null || addressDTOList.isEmpty()) {
+    if (addressList == null || addressList.isEmpty()) {
       return getString(R.string.not_available);
     }
 
-    List<AddressComponentsDTO>
-        addressComponentsDTOList = addressDTOList.get(0).getAddressComponentDTOS();
+    List<AddressComponentsEntity>
+        addressComponentsList = addressList.get(0).getAddressComponents();
 
-    String primaryAddress = getAddressPrimary(addressComponentsDTOList);
-    String secondaryAddress = getAddressSecondary(addressComponentsDTOList);
+    String primaryAddress = getAddressPrimary(addressComponentsList);
+    String secondaryAddress = getAddressSecondary(addressComponentsList);
     String address = "";
 
     if (!TextUtils.isEmpty(primaryAddress)) {
@@ -254,8 +236,8 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     return address;
   }
 
-  private String getAddressPrimary(List<AddressComponentsDTO> addressComponentsDTOList) {
-    for (AddressComponentsDTO addressComponent : addressComponentsDTOList) {
+  private String getAddressPrimary(List<AddressComponentsEntity> addressComponentsList) {
+    for (AddressComponentsEntity addressComponent : addressComponentsList) {
       if (addressComponent.getTypes().contains(ADDRESS_STREET)) {
         return addressComponent.getLongName();
       }
@@ -263,8 +245,8 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     return "";
   }
 
-  private String getAddressSecondary(List<AddressComponentsDTO> addressComponentsDTOList) {
-    for (AddressComponentsDTO addressComponent : addressComponentsDTOList) {
+  private String getAddressSecondary(List<AddressComponentsEntity> addressComponentsList) {
+    for (AddressComponentsEntity addressComponent : addressComponentsList) {
       if (addressComponent.getTypes().contains(ADDRESS_CITY)) {
         return addressComponent.getLongName();
       }
@@ -276,7 +258,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
       }
     }
     return "";
-  }
+  }*/
 
   private void fetchWeatherForecast(String latLng) {
     Disposable disposable = weatherRepositoryImpl.getForecast(latLng)
@@ -286,7 +268,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
         .subscribeWith(new DisposableObserver<ForecastEntity>() {
           @Override public void onNext(ForecastEntity forecast) {
             setForecast(forecast, latLng);
-            getView().hideProgressBar();
           }
 
           @Override public void onError(Throwable e) {
@@ -299,6 +280,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
           }
 
           @Override public void onComplete() {
+            getView().hideProgressBar();
           }
         });
 

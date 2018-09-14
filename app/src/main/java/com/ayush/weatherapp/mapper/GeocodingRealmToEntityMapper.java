@@ -16,7 +16,7 @@ public final class GeocodingRealmToEntityMapper {
   public static GeolocationEntity transform(GeoLocation geolocation) {
     GeolocationEntity entity = new GeolocationEntity();
 
-    entity.setAddress(transformAddressList(geolocation.getAddress()));
+    entity.setAddress(transform(geolocation.getAddress()));
     entity.setStatus(geolocation.getStatus());
 
     return entity;
@@ -31,35 +31,23 @@ public final class GeocodingRealmToEntityMapper {
     return entity;
   }
 
-  public static List<AddressEntity> transformAddressList(List<Address> addresses) {
-    if (addresses == null || addresses.isEmpty()) {
-      return null;
-    }
-
-    List<AddressEntity> entityList = new ArrayList<>(addresses.size());
-
-    for (Address address: addresses){
-      entityList.add(transform(address));
-    }
-    return entityList;
-  }
-
-  public static AddressComponentsEntity transform(AddressComponents addressComponents){
+  public static AddressComponentsEntity transform(AddressComponents addressComponents) {
     AddressComponentsEntity entity = new AddressComponentsEntity();
 
     entity.setLongName(addressComponents.getLongName());
     entity.setShortName(addressComponents.getShortName());
     entity.setTypes(addressComponents.getTypes());
-    return  entity;
+    return entity;
   }
 
-  public static List<AddressComponentsEntity> transformAddressComponentsList(List<AddressComponents> addressComponents){
+  public static List<AddressComponentsEntity> transformAddressComponentsList(
+      List<AddressComponents> addressComponents) {
     if (addressComponents == null || addressComponents.isEmpty()) {
       return null;
     }
     List<AddressComponentsEntity> entityList = new ArrayList<>(addressComponents.size());
 
-    for (AddressComponents components: addressComponents){
+    for (AddressComponents components : addressComponents) {
       entityList.add(transform(components));
     }
     return entityList;
