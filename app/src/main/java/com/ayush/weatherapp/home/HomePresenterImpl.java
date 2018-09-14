@@ -64,7 +64,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
         return;
       }
       setForecastView();
-    });//todo
+    });//todo ask subash
     weatherRepositoryImpl = new WeatherRepositoryImpl();
     geocodingRepository = new GeocodingRepositoryImpl();
   }
@@ -206,59 +206,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private void setLocation(GeolocationEntity geoLocation) {
     getView().setAddress(geoLocation.getFullAddress());
   }
-/*
-  private String getAddress(List<AddressEntity> addressList) {
-
-    if (addressList == null || addressList.isEmpty()) {
-      return getString(R.string.not_available);
-    }
-
-    List<AddressComponentsEntity>
-        addressComponentsList = addressList.get(0).getAddressComponents();
-
-    String primaryAddress = getAddressPrimary(addressComponentsList);
-    String secondaryAddress = getAddressSecondary(addressComponentsList);
-    String address = "";
-
-    if (!TextUtils.isEmpty(primaryAddress)) {
-      address = primaryAddress;
-      if (!TextUtils.isEmpty(secondaryAddress)) {
-        address += ", " + secondaryAddress;
-      }
-      return address;
-    }
-
-    //case when primary address is empty
-    if (!TextUtils.isEmpty(secondaryAddress)) {
-      address = secondaryAddress;
-      return address;
-    }
-    return address;
-  }
-
-  private String getAddressPrimary(List<AddressComponentsEntity> addressComponentsList) {
-    for (AddressComponentsEntity addressComponent : addressComponentsList) {
-      if (addressComponent.getTypes().contains(ADDRESS_STREET)) {
-        return addressComponent.getLongName();
-      }
-    }
-    return "";
-  }
-
-  private String getAddressSecondary(List<AddressComponentsEntity> addressComponentsList) {
-    for (AddressComponentsEntity addressComponent : addressComponentsList) {
-      if (addressComponent.getTypes().contains(ADDRESS_CITY)) {
-        return addressComponent.getLongName();
-      }
-      if (addressComponent.getTypes().contains(ADDRESS_ADMINISTRATIVE_AREA)) {
-        return addressComponent.getLongName();
-      }
-      if (addressComponent.getTypes().contains(ADDRESS_COUNTRY)) {
-        return addressComponent.getLongName();
-      }
-    }
-    return "";
-  }*/
 
   private void fetchWeatherForecast(String latLng) {
     Disposable disposable = weatherRepositoryImpl.getForecast(latLng)
