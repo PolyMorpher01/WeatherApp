@@ -199,7 +199,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   private void setLocation(GeolocationEntity geoLocation) {
-    getView().setAddress(geoLocation.getFullAddress());
+    getView().setAddress(geoLocation.getLocation());
   }
 
   private void fetchWeatherForecast(String latLng) {
