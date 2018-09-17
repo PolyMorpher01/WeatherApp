@@ -33,13 +33,13 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     return Observable.create(emitter -> {
       localWeatherRepository.getForecast(latlng)
           //initialize value again
-          .doOnSubscribe(entity -> defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT)
+          .doOnNext(entity -> defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT)
           .subscribe(emitter::onNext, throwable -> {
           });
 
       onlineWeatherRepository.getForecast(latlng)
           //initialize value again
-          .doOnSubscribe(entity -> defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT)
+          .doOnNext(entity -> defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT)
           .map(entity -> {
             saveWeatherForecast(ForecastEntityToRealmMapper.transform(entity));
             return entity;
