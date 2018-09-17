@@ -118,10 +118,4 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     realm.executeTransaction(r -> realm.insert(forecast));
     realm.close();
   }
-
-  private boolean isSavedLocally() {
-    Realm realm = RealmUtils.getRealm();
-    boolean isSaved = realm.where(Forecast.class).count() > 0;
-    return isSaved;
-  }
 }
