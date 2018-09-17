@@ -1,35 +1,19 @@
 package com.ayush.weatherapp.entities.forecast;
 
+import io.realm.annotations.PrimaryKey;
+
 public class ForecastEntity {
-  private double latitude;
-  private double longitude;
-  private String timezone;
+  @PrimaryKey private long primaryKey;
   private CurrentForecastEntity currentForecastEntity;
   private HourlyForecastEntity hourlyForecastEntity;
   private DailyForecastEntity dailyForecastEntity;
 
-  public double getLatitude() {
-    return latitude;
+  public long getPrimaryKey() {
+    return primaryKey;
   }
 
-  public void setLatitude(double latitude) {
-    this.latitude = latitude;
-  }
-
-  public double getLongitude() {
-    return longitude;
-  }
-
-  public void setLongitude(double longitude) {
-    this.longitude = longitude;
-  }
-
-  public String getTimezone() {
-    return timezone;
-  }
-
-  public void setTimezone(String timezone) {
-    this.timezone = timezone;
+  public void setPrimaryKey(long primaryKey) {
+    this.primaryKey = primaryKey;
   }
 
   public CurrentForecastEntity getCurrentForecastEntity() {

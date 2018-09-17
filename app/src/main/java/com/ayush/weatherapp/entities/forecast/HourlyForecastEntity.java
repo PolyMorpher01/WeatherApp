@@ -1,11 +1,21 @@
 package com.ayush.weatherapp.entities.forecast;
 
+import io.realm.annotations.PrimaryKey;
 import java.util.List;
 
 public class HourlyForecastEntity {
+  @PrimaryKey private long primaryKey;
   private String summary;
   private String icon;
   private List<HourlyDataEntity> hourlyDataEntityList;
+
+  public long getPrimaryKey() {
+    return primaryKey;
+  }
+
+  public void setPrimaryKey(long primaryKey) {
+    this.primaryKey = primaryKey;
+  }
 
   public String getSummary() {
     return summary;

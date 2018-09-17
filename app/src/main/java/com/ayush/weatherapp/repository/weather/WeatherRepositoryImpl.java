@@ -6,7 +6,7 @@ import com.ayush.weatherapp.entities.forecast.CurrentForecastEntity;
 import com.ayush.weatherapp.entities.forecast.DailyDataEntity;
 import com.ayush.weatherapp.entities.forecast.ForecastEntity;
 import com.ayush.weatherapp.entities.forecast.HourlyDataEntity;
-import com.ayush.weatherapp.mapper.ForecastRealmToEntityMapper;
+import com.ayush.weatherapp.mapper.ForecastEntityToRealmMapper;
 import com.ayush.weatherapp.realm.RealmUtils;
 import com.ayush.weatherapp.realm.model.forecast.Forecast;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
@@ -19,8 +19,8 @@ import java.util.List;
 //TODO rename weather to forecast
 public class WeatherRepositoryImpl implements WeatherRepository {
   @Temperature private static int defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
-  private WeatherDataStore onlineWeatherRepository;
-  private WeatherDataStore localWeatherRepository;
+  private WeatherRepository onlineWeatherRepository;
+  private WeatherRepository localWeatherRepository;
   private PreferenceRepository preferenceRepository;
 
   public WeatherRepositoryImpl() {
@@ -32,22 +32,17 @@ public class WeatherRepositoryImpl implements WeatherRepository {
   @Override public Observable<ForecastEntity> getForecast(String latlng) {
     return Observable.create(emitter -> {
       localWeatherRepository.getForecast(latlng)
-          .map(forecast -> {
-            //todo check if forecast is null
-
-            //initialize value again
-            defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
-            return ForecastRealmToEntityMapper.transform(forecast);
-          })
+          //initialize value again
+          .doOnSubscribe(entity -> defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT)
           .subscribe(emitter::onNext, throwable -> {
           });
 
       onlineWeatherRepository.getForecast(latlng)
-          .doOnSuccess(this::saveWeatherForecast)
-          .map(forecast -> {
-            //initialize value again
-            defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
-            return ForecastRealmToEntityMapper.transform(forecast);
+          //initialize value again
+          .doOnSubscribe(entity -> defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT)
+          .map(entity -> {
+            saveWeatherForecast(ForecastEntityToRealmMapper.transform(entity));
+            return entity;
           })
           .subscribe(value -> {
             emitter.onNext(value);
@@ -56,7 +51,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     });
   }
 
-  @Override public void checkTemperatureUnit(ForecastEntity forecast) {
+  public void checkTemperatureUnit(ForecastEntity forecast) {
     //TODO logic is not elegant
     if (preferenceRepository.getTemperatureUnit() != defaultTemperatureUnit) {
       convertCurrentTemperature(forecast.getCurrentForecastEntity());
