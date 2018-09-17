@@ -1,20 +1,22 @@
 package com.ayush.weatherapp.repository.geocoding;
 
+import com.ayush.weatherapp.entities.geocoding.GeolocationEntity;
 import com.ayush.weatherapp.mapper.GeocodingDTOToRealmMapper;
-import com.ayush.weatherapp.realm.model.geocoding.GeoLocation;
+import com.ayush.weatherapp.mapper.GeocodingRealmToEntityMapper;
 import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIClient;
 import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIInterface;
-import io.reactivex.Single;
+import io.reactivex.Observable;
 
-public class OnlineGeocodingDataStoreImpl implements GeocodingDataStore {
+public class OnlineGeocodingRepositoryImpl implements GeocodingRepository {
   private GeocodingAPIInterface geocodingAPIInterface;
 
-  public OnlineGeocodingDataStoreImpl() {
+  public OnlineGeocodingRepositoryImpl() {
     geocodingAPIInterface = GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
   }
 
-  @Override public Single<GeoLocation> getLocation(String latlng) {
+  @Override public Observable<GeolocationEntity> getLocation(String latlng) {
     return geocodingAPIInterface.getLocationDetails(latlng)
-        .map(GeocodingDTOToRealmMapper::transform);
+        .map(GeocodingDTOToRealmMapper::transform)
+        .map(GeocodingRealmToEntityMapper::transform);
   }
 }
