@@ -41,7 +41,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
   private PreferenceRepository preferenceRepository;
   private ForecastEntity forecast;
-  private WeatherRepository weatherRepositoryImpl;
+  private WeatherRepositoryImpl weatherRepositoryImpl;
   private GeocodingRepository geocodingRepository;
 
   // TODO dagger

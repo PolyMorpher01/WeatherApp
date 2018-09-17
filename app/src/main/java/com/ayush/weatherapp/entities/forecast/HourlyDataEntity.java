@@ -2,6 +2,7 @@ package com.ayush.weatherapp.entities.forecast;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import io.realm.annotations.PrimaryKey;
 
 public class HourlyDataEntity implements Parcelable {
   public static final Creator<HourlyDataEntity> CREATOR = new Creator<HourlyDataEntity>() {
@@ -15,12 +16,14 @@ public class HourlyDataEntity implements Parcelable {
       return new HourlyDataEntity[size];
     }
   };
+  @PrimaryKey private long primaryKey;
   private long time;
   private String summary;
   private String icon;
   private int temperature;
 
   protected HourlyDataEntity(Parcel in) {
+    primaryKey = in.readLong();
     time = in.readLong();
     summary = in.readString();
     icon = in.readString();
@@ -28,6 +31,14 @@ public class HourlyDataEntity implements Parcelable {
   }
 
   public HourlyDataEntity() {
+  }
+
+  public long getPrimaryKey() {
+    return primaryKey;
+  }
+
+  public void setPrimaryKey(long primaryKey) {
+    this.primaryKey = primaryKey;
   }
 
   public long getTime() {
@@ -67,6 +78,7 @@ public class HourlyDataEntity implements Parcelable {
   }
 
   @Override public void writeToParcel(Parcel dest, int flags) {
+    dest.writeLong(primaryKey);
     dest.writeLong(time);
     dest.writeString(summary);
     dest.writeString(icon);

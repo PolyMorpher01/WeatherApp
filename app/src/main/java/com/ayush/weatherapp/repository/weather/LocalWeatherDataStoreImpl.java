@@ -1,19 +1,21 @@
 package com.ayush.weatherapp.repository.weather;
 
+import com.ayush.weatherapp.entities.forecast.ForecastEntity;
+import com.ayush.weatherapp.mapper.ForecastRealmToEntityMapper;
 import com.ayush.weatherapp.realm.RealmUtils;
 import com.ayush.weatherapp.realm.model.forecast.Forecast;
-import io.reactivex.Single;
+import io.reactivex.Observable;
 
-public class LocalWeatherDataStoreImpl implements WeatherDataStore {
+public class LocalWeatherDataStoreImpl implements WeatherRepository {
   public LocalWeatherDataStoreImpl() {
   }
 
-  @Override public Single<Forecast> getForecast(String latlng) {
+  @Override public Observable<ForecastEntity> getForecast(String latlng) {
     Forecast realmModel =
         RealmUtils.getRealmModel(Forecast.class, RealmUtils.getMaxIdForPrimaryKey(Forecast.class));
     if (realmModel != null) {
-      return Single.just(realmModel);
+      return Observable.just(realmModel).map(ForecastRealmToEntityMapper::transform);
     }
-    return Single.error(new NullPointerException());
+    return Observable.error(new NullPointerException());
   }
 }
