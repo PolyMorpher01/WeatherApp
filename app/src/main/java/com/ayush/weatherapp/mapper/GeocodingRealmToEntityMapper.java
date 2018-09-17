@@ -9,6 +9,7 @@ public final class GeocodingRealmToEntityMapper {
 
   public static GeolocationEntity transform(GeoLocation geolocation) {
     GeolocationEntity entity = new GeolocationEntity();
+    entity.setPrimaryKey(geolocation.getPrimaryKey());
     entity.setLocation(geolocation.getLocation());
     return entity;
   }
