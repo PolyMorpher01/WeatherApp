@@ -15,8 +15,8 @@ import com.ayush.weatherapp.utils.UnitConversionUtils;
 import io.reactivex.Observable;
 import io.realm.Realm;
 import java.util.List;
-import timber.log.Timber;
 
+//TODO rename weather to forecast
 public class WeatherRepositoryImpl implements WeatherRepository {
   @Temperature private static int defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
   private WeatherDataStore onlineWeatherRepository;
@@ -39,7 +39,8 @@ public class WeatherRepositoryImpl implements WeatherRepository {
             defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
             return ForecastRealmToEntityMapper.transform(forecast);
           })
-          .subscribe(emitter::onNext, throwable -> {});
+          .subscribe(emitter::onNext, throwable -> {
+          });
 
       onlineWeatherRepository.getForecast(latlng)
           .doOnSuccess(this::saveWeatherForecast)
@@ -48,7 +49,10 @@ public class WeatherRepositoryImpl implements WeatherRepository {
             defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
             return ForecastRealmToEntityMapper.transform(forecast);
           })
-          .subscribe(emitter::onNext, emitter::onError);
+          .subscribe(value -> {
+            emitter.onNext(value);
+            emitter.onComplete();
+          }, emitter::onError);
     });
   }
 
@@ -68,17 +72,17 @@ public class WeatherRepositoryImpl implements WeatherRepository {
       for (DailyDataEntity dailyData : dailyDatas) {
         dailyData.setWindSpeed(UnitConversionUtils.mphToKmph(dailyData.getWindSpeed()));
         dailyData.setTemperatureHigh(
-            UnitConversionUtils.fahrenheitToCelsius(dailyData.getTemperatureHigh()));
+            (int) UnitConversionUtils.fahrenheitToCelsius(dailyData.getTemperatureHigh()));
         dailyData.setTemperatureLow(
-            UnitConversionUtils.fahrenheitToCelsius(dailyData.getTemperatureLow()));
+            (int) UnitConversionUtils.fahrenheitToCelsius(dailyData.getTemperatureLow()));
       }
     } else {
       for (DailyDataEntity dailyData : dailyDatas) {
         dailyData.setWindSpeed(UnitConversionUtils.kmphToMph(dailyData.getWindSpeed()));
         dailyData.setTemperatureHigh(
-            UnitConversionUtils.celsiusToFahrenheit(dailyData.getTemperatureHigh()));
+            (int) UnitConversionUtils.celsiusToFahrenheit(dailyData.getTemperatureHigh()));
         dailyData.setTemperatureLow(
-            UnitConversionUtils.celsiusToFahrenheit(dailyData.getTemperatureLow()));
+            (int) UnitConversionUtils.celsiusToFahrenheit(dailyData.getTemperatureLow()));
       }
     }
   }
@@ -87,12 +91,12 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
       for (HourlyDataEntity hourlyData : hourlyDatas) {
         hourlyData.setTemperature(
-            UnitConversionUtils.fahrenheitToCelsius(hourlyData.getTemperature()));
+            (int) UnitConversionUtils.fahrenheitToCelsius(hourlyData.getTemperature()));
       }
     } else {
       for (HourlyDataEntity hourlyData : hourlyDatas) {
         hourlyData.setTemperature(
-            UnitConversionUtils.celsiusToFahrenheit(hourlyData.getTemperature()));
+            (int) UnitConversionUtils.celsiusToFahrenheit(hourlyData.getTemperature()));
       }
     }
   }
@@ -100,10 +104,12 @@ public class WeatherRepositoryImpl implements WeatherRepository {
   private void convertCurrentTemperature(CurrentForecastEntity currentForecast) {
     if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
       currentForecast.setTemperature(
-          (Math.round(UnitConversionUtils.fahrenheitToCelsius(currentForecast.getTemperature()))));
+          (int) Math.round(
+              UnitConversionUtils.fahrenheitToCelsius(currentForecast.getTemperature())));
     } else {
       currentForecast.setTemperature(
-          (Math.round(UnitConversionUtils.celsiusToFahrenheit(currentForecast.getTemperature()))));
+          (int) Math.round(
+              UnitConversionUtils.celsiusToFahrenheit(currentForecast.getTemperature())));
     }
   }
 

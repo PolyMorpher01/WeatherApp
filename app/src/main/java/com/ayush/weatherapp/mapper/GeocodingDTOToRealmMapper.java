@@ -1,20 +1,19 @@
 package com.ayush.weatherapp.mapper;
 
+import android.text.TextUtils;
 import com.ayush.weatherapp.realm.RealmUtils;
-import com.ayush.weatherapp.realm.model.geocoding.Address;
-import com.ayush.weatherapp.realm.model.geocoding.AddressComponents;
 import com.ayush.weatherapp.realm.model.geocoding.GeoLocation;
-import com.ayush.weatherapp.realm.model.geocoding.Geometry;
-import com.ayush.weatherapp.realm.model.geocoding.LocationCoordinates;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponentsDTO;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressDTO;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocationDTO;
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeometryDTO;
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.LocationCoordinatesDTO;
-import java.util.ArrayList;
 import java.util.List;
 
 public final class GeocodingDTOToRealmMapper {
+  private static final String ADDRESS_STREET = "route";
+  private static final String ADDRESS_CITY = "locality";
+  private static final String ADDRESS_COUNTRY = "country";
+  private static final String ADDRESS_ADMINISTRATIVE_AREA = "administrative_area_level_1";
+
   private GeocodingDTOToRealmMapper() {
   }
 
@@ -22,70 +21,55 @@ public final class GeocodingDTOToRealmMapper {
     long primaryKey = RealmUtils.getMaxIdForPrimaryKey(GeoLocation.class);
     GeoLocation geoLocation = new GeoLocation(++primaryKey);
 
-    geoLocation.setAddress(transformAddressList(dto.getAddressDTOS()));
-    geoLocation.setStatus(dto.getStatus());
+    //we need address detail of only first index
+    geoLocation.setLocation(getFullAddress(dto.getAddressDTOS().get(0)));
     return geoLocation;
   }
 
-  public static List<Address> transformAddressList(List<AddressDTO> dtos) {
-    if (dtos == null || dtos.isEmpty()) {
-      return null;
+  private static String getFullAddress(AddressDTO addressDTOS) {
+    List<AddressComponentsDTO> addressComponents = addressDTOS.getAddressComponentDTOS();
+
+    String primaryAddress = getAddressPrimary(addressComponents);
+    String secondaryAddress = getAddressSecondary(addressComponents);
+    String address = "";
+
+    if (!TextUtils.isEmpty(primaryAddress)) {
+      address = primaryAddress;
+      if (!TextUtils.isEmpty(secondaryAddress)) {
+        address += ", " + secondaryAddress;
+      }
+      return address;
     }
-    long primaryKey = RealmUtils.getMaxIdForPrimaryKey(Address.class);
-    List<Address> addressList = new ArrayList<>(dtos.size());
 
-    for (AddressDTO dto : dtos) {
-      addressList.add(transform(dto, ++primaryKey));
+    //case when primary address is empty
+    if (!TextUtils.isEmpty(secondaryAddress)) {
+      address = secondaryAddress;
+      return address;
     }
-    return addressList;
-  }
-
-  private static Address transform(AddressDTO dto, long primaryKey) {
-    Address address = new Address(primaryKey);
-
-    address.setAddressComponents(transformAddressComponentsList(dto.getAddressComponentDTOS()));
-    address.setFormattedAddress(dto.getFormattedAddress());
-    address.setGeometry(transform(dto.getGeometryDTO()));
     return address;
   }
 
-  public static Geometry transform(GeometryDTO dto) {
-    Geometry geometry = new Geometry();
-
-    geometry.setLocationCoordinates(transform(dto.getLocationCoordinatesDTO()));
-    geometry.setLocationType(dto.getLocationType());
-    return geometry;
-  }
-
-  public static LocationCoordinates transform(LocationCoordinatesDTO dto) {
-    //long primaryKey = RealmUtils.getMaxIdForPrimaryKey(LocationCoordinates.class);
-    //LocationCoordinates locationCoordinates = new LocationCoordinates(++primaryKey);
-    LocationCoordinates locationCoordinates = new LocationCoordinates();
-
-    locationCoordinates.setLatitude(dto.getLatitude());
-    locationCoordinates.setLongitude(dto.getLongitude());
-    return locationCoordinates;
-  }
-
-  public static List<AddressComponents> transformAddressComponentsList(
-      List<AddressComponentsDTO> dtos) {
-    if (dtos == null || dtos.isEmpty()) {
-      return null;
+  private static String getAddressPrimary(List<AddressComponentsDTO> addressComponents) {
+    for (AddressComponentsDTO addressComponent : addressComponents) {
+      if (addressComponent.getTypes().contains(ADDRESS_STREET)) {
+        return addressComponent.getLongName();
+      }
     }
-
-    List<AddressComponents> addressComponentsList = new ArrayList<>(dtos.size());
-    for (AddressComponentsDTO dto : dtos) {
-      addressComponentsList.add(transform(dto));
-    }
-
-    return addressComponentsList;
+    return "";
   }
 
-  public static AddressComponents transform(AddressComponentsDTO dto) {
-    AddressComponents addressComponents = new AddressComponents();
-    addressComponents.setTypes(dto.getTypes());
-    addressComponents.setLongName(dto.getLongName());
-    addressComponents.setShortName(dto.getShortName());
-    return addressComponents;
+  private static String getAddressSecondary(List<AddressComponentsDTO> addressComponents) {
+    for (AddressComponentsDTO addressComponent : addressComponents) {
+      if (addressComponent.getTypes().contains(ADDRESS_CITY)) {
+        return addressComponent.getLongName();
+      }
+      if (addressComponent.getTypes().contains(ADDRESS_ADMINISTRATIVE_AREA)) {
+        return addressComponent.getLongName();
+      }
+      if (addressComponent.getTypes().contains(ADDRESS_COUNTRY)) {
+        return addressComponent.getLongName();
+      }
+    }
+    return "";
   }
 }

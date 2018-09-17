@@ -1,24 +1,13 @@
 package com.ayush.weatherapp.entities.geocoding;
 
-import java.util.List;
-
 public class GeolocationEntity {
-  private List<AddressEntity> address;
-  private String status;
+  private String location;
 
-  public List<AddressEntity> getAddress() {
-    return address;
+  public String getLocation() {
+    return location;
   }
 
-  public void setAddress(List<AddressEntity> address) {
-    this.address = address;
-  }
-
-  public String getStatus() {
-    return status;
-  }
-
-  public void setStatus(String status) {
-    this.status = status;
+  public void setLocation(String location) {
+    this.location = location;
   }
 }

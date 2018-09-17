@@ -34,7 +34,7 @@ public class CurrentForecastEntity {
     return temperature;
   }
 
-  public void setTemperature(double temperature) {
-    this.temperature = (int) temperature;
+  public void setTemperature(int temperature) {
+    this.temperature = temperature;
   }
 }

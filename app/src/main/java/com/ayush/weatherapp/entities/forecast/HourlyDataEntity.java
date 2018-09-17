@@ -58,8 +58,8 @@ public class HourlyDataEntity implements Parcelable {
     return temperature;
   }
 
-  public void setTemperature(double temperature) {
-    this.temperature = (int) temperature;
+  public void setTemperature(int temperature) {
+    this.temperature = temperature;
   }
 
   @Override public int describeContents() {
