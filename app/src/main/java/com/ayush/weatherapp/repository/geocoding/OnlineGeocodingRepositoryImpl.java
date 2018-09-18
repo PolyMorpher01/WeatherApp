@@ -14,7 +14,8 @@ public class OnlineGeocodingRepositoryImpl implements GeocodingRepository {
     geocodingAPIInterface = GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
   }
 
-  @Override public Observable<GeolocationEntity> getLocation(String latlng) {
+  @Override
+  public Observable<GeolocationEntity> getLocation(String latlng, boolean isCurrentLocation) {
     return geocodingAPIInterface.getLocationDetails(latlng)
         .map(GeocodingDTOToRealmMapper::transform)
         .map(GeocodingRealmToEntityMapper::transform);

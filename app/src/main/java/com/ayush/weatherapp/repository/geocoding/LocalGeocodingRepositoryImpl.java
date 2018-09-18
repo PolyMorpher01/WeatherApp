@@ -7,7 +7,8 @@ import com.ayush.weatherapp.realm.model.geocoding.GeoLocation;
 import io.reactivex.Observable;
 
 public class LocalGeocodingRepositoryImpl implements GeocodingRepository {
-  @Override public Observable<GeolocationEntity> getLocation(String latlng) {
+  @Override
+  public Observable<GeolocationEntity> getLocation(String latlng, boolean isCurrentLocation) {
     GeoLocation geoLocation = RealmUtils.getRealmModel(GeoLocation.class,
         RealmUtils.getMaxIdForPrimaryKey(GeoLocation.class));
 
