@@ -9,13 +9,13 @@ import io.reactivex.Observable;
 import io.realm.Realm;
 
 public class GeocodingRepositoryImpl implements GeocodingRepository {
-  private GeocodingRepository onlineDataStore;
-  private GeocodingRepository localDataStore;
+  private GeocodingRepository onlineRepository;
+  private GeocodingRepository localRepository;
 
   // TODO provide dependencies using dagger
   public GeocodingRepositoryImpl() {
-    onlineDataStore = new OnlineGeocodingRepositoryImpl();
-    localDataStore = new LocalGeocodingRepositoryImpl();
+    onlineRepository = new OnlineGeocodingRepositoryImpl();
+    localRepository = new LocalGeocodingRepositoryImpl();
   }
 
   @Override
@@ -42,12 +42,12 @@ public class GeocodingRepositoryImpl implements GeocodingRepository {
 
   private Observable<GeolocationEntity> getlocalObservable(String latlng,
       boolean isCurrentLocation) {
-    return localDataStore.getLocation(latlng, isCurrentLocation);
+    return localRepository.getLocation(latlng, isCurrentLocation);
   }
 
   private Observable<GeolocationEntity> getOnlineObservable(String latlng,
       boolean isCurrentLocation) {
-    return onlineDataStore.getLocation(latlng, isCurrentLocation)
+    return onlineRepository.getLocation(latlng, isCurrentLocation)
         .map(geolocation -> {
           //save details of current location only
           if (isCurrentLocation) {
