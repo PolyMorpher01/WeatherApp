@@ -23,6 +23,7 @@ public final class GeocodingDTOToRealmMapper {
 
     //we need address detail of only first index
     geoLocation.setLocation(getFullAddress(dto.getAddressDTOS().get(0)));
+    geoLocation.setCreatedAt(getCurrentTimeStamp());
     return geoLocation;
   }
 
@@ -71,5 +72,9 @@ public final class GeocodingDTOToRealmMapper {
       }
     }
     return "";
+  }
+
+  private static long getCurrentTimeStamp() {
+    return System.currentTimeMillis();
   }
 }

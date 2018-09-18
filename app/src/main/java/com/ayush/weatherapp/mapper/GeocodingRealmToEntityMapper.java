@@ -11,6 +11,7 @@ public final class GeocodingRealmToEntityMapper {
     GeolocationEntity entity = new GeolocationEntity();
     entity.setPrimaryKey(geolocation.getPrimaryKey());
     entity.setLocation(geolocation.getLocation());
+    entity.setCreatedAt(geolocation.getCreatedAt());
     return entity;
   }
 }
