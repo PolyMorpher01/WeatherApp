@@ -11,6 +11,7 @@ import com.ayush.weatherapp.realm.RealmUtils;
 import com.ayush.weatherapp.realm.model.forecast.Forecast;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
+import com.ayush.weatherapp.utils.DateUtils;
 import com.ayush.weatherapp.utils.UnitConversionUtils;
 import io.reactivex.Observable;
 import io.realm.Realm;
@@ -24,31 +25,24 @@ public class WeatherRepositoryImpl implements WeatherRepository {
   private PreferenceRepository preferenceRepository;
 
   public WeatherRepositoryImpl() {
-    onlineWeatherRepository = new OnlineWeatherDataStoreImpl();
-    localWeatherRepository = new LocalWeatherDataStoreImpl();
+    onlineWeatherRepository = new OnlineWeatherRepositoryImpl();
+    localWeatherRepository = new LocalWeatherRepositoryImpl();
     preferenceRepository = PreferenceRepositoryImpl.get();
   }
 
-  @Override public Observable<ForecastEntity> getForecast(String latlng) {
-    return Observable.create(emitter -> {
-      localWeatherRepository.getForecast(latlng)
-          //initialize value again
-          .doOnNext(entity -> defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT)
-          .subscribe(emitter::onNext, throwable -> {
+  @Override
+  public Observable<ForecastEntity> getForecast(String latlng, boolean isCurrentLocation) {
+    if (RealmUtils.isSavedLocally(Forecast.class) && isCurrentLocation) {
+      return getLocalObservable(latlng, isCurrentLocation)
+          .flatMap(entity -> {
+            //fetch from online repository if last row created was more than five minutes ago
+            if (DateUtils.isFiveMinutesAgo(entity.getCreatedAt())) {
+              return getOnlineObservable(latlng, isCurrentLocation);
+            }
+            return getLocalObservable(latlng, isCurrentLocation);
           });
-
-      onlineWeatherRepository.getForecast(latlng)
-          //initialize value again
-          .doOnNext(entity -> defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT)
-          .map(entity -> {
-            saveWeatherForecast(ForecastEntityToRealmMapper.transform(entity));
-            return entity;
-          })
-          .subscribe(value -> {
-            emitter.onNext(value);
-            emitter.onComplete();
-          }, emitter::onError);
-    });
+    }
+    return getOnlineObservable(latlng, isCurrentLocation);
   }
 
   public void checkTemperatureUnit(ForecastEntity forecast) {
@@ -106,6 +100,27 @@ public class WeatherRepositoryImpl implements WeatherRepository {
           (int) Math.round(
               UnitConversionUtils.celsiusToFahrenheit(currentForecast.getTemperature())));
     }
+  }
+
+  private Observable<ForecastEntity> getLocalObservable(String latlng,
+      boolean isCurrentLocation) {
+    return localWeatherRepository.getForecast(latlng, isCurrentLocation)
+        //initialize value again
+        .doOnNext(entity -> defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT);
+  }
+
+  private Observable<ForecastEntity> getOnlineObservable(String latlng,
+      boolean isCurrentLocation) {
+    return onlineWeatherRepository.getForecast(latlng, isCurrentLocation)
+        //initialize value again
+        .doOnNext(entity -> defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT)
+        .map(entity -> {
+          //save details of current location only
+          if (isCurrentLocation) {
+            saveWeatherForecast(ForecastEntityToRealmMapper.transform(entity));
+          }
+          return entity;
+        });
   }
 
   private void saveWeatherForecast(Forecast forecast) {

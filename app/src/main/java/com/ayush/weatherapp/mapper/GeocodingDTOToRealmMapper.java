@@ -6,6 +6,8 @@ import com.ayush.weatherapp.realm.model.geocoding.GeoLocation;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponentsDTO;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressDTO;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocationDTO;
+import com.ayush.weatherapp.utils.DateUtils;
+import java.util.Date;
 import java.util.List;
 
 public final class GeocodingDTOToRealmMapper {
@@ -23,7 +25,7 @@ public final class GeocodingDTOToRealmMapper {
 
     //we need address detail of only first index
     geoLocation.setLocation(getFullAddress(dto.getAddressDTOS().get(0)));
-    geoLocation.setCreatedAt(getCurrentTimeStamp());
+    geoLocation.setCreatedAt(DateUtils.getCurrentTimeStamp());
     return geoLocation;
   }
 
@@ -72,9 +74,5 @@ public final class GeocodingDTOToRealmMapper {
       }
     }
     return "";
-  }
-
-  private static long getCurrentTimeStamp() {
-    return System.currentTimeMillis();
   }
 }

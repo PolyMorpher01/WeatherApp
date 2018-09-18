@@ -24,6 +24,7 @@ public final class ForecastEntityToRealmMapper {
     forecast.setCurrentForecast(transform(entity.getCurrentForecastEntity()));
     forecast.setDailyForecast(transform(entity.getDailyForecastEntity()));
     forecast.setHourlyForecast(transform(entity.getHourlyForecastEntity()));
+    forecast.setCreatedAt(entity.getCreatedAt());
 
     return forecast;
   }

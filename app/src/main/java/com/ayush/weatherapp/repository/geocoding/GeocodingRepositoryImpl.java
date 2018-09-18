@@ -20,27 +20,20 @@ public class GeocodingRepositoryImpl implements GeocodingRepository {
 
   @Override
   public Observable<GeolocationEntity> getLocation(String latlng, boolean isCurrentLocation) {
-    if (isSavedLocally() && isCurrentLocation) {
-      return getlocalObservable(latlng, isCurrentLocation)
+    if (RealmUtils.isSavedLocally(GeoLocation.class) && isCurrentLocation) {
+      return getLocalObservable(latlng, isCurrentLocation)
           .flatMap(entity -> {
             //fetch from online repository if last row created was more than five minutes ago
             if (DateUtils.isFiveMinutesAgo(entity.getCreatedAt())) {
               return getOnlineObservable(latlng, isCurrentLocation);
             }
-            return getlocalObservable(latlng, isCurrentLocation);
+            return getLocalObservable(latlng, isCurrentLocation);
           });
     }
     return getOnlineObservable(latlng, isCurrentLocation);
   }
 
-  private boolean isSavedLocally() {
-    Realm realm = RealmUtils.getRealm();
-    boolean isSavedLocally = realm.where(GeoLocation.class).count() > 0;
-    realm.close();
-    return isSavedLocally;
-  }
-
-  private Observable<GeolocationEntity> getlocalObservable(String latlng,
+  private Observable<GeolocationEntity> getLocalObservable(String latlng,
       boolean isCurrentLocation) {
     return localRepository.getLocation(latlng, isCurrentLocation);
   }

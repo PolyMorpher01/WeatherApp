@@ -9,6 +9,7 @@ public class Forecast extends RealmObject {
   private CurrentForecast currentForecast;
   private HourlyForecast hourlyForecast;
   private DailyForecast dailyForecast;
+  private long createdAt;
 
   public Forecast() {
 
@@ -16,6 +17,14 @@ public class Forecast extends RealmObject {
 
   public Forecast(long primaryKey) {
     this.primaryKey = primaryKey;
+  }
+
+  public long getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(long createdAt) {
+    this.createdAt = createdAt;
   }
 
   public long getPrimaryKey() {
