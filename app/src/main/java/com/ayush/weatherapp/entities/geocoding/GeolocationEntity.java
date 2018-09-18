@@ -5,6 +5,15 @@ import io.realm.annotations.PrimaryKey;
 public class GeolocationEntity {
   @PrimaryKey private long primaryKey;
   private String location;
+  private long createdAt;
+
+  public long getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(long createdAt) {
+    this.createdAt = createdAt;
+  }
 
   public long getPrimaryKey() {
     return primaryKey;

@@ -25,9 +25,6 @@ public final class ForecastDTOtoRealmMapper {
     long primaryKey = RealmUtils.getMaxIdForPrimaryKey(Forecast.class);
     Forecast forecast = new Forecast(++primaryKey);
 
-    forecast.setLatitude(dto.getLatitude());
-    forecast.setLongitude(dto.getLongitude());
-    forecast.setTimezone(dto.getTimezone());
     forecast.setCurrentForecast(transform(dto.getCurrentForecastDTO()));
     forecast.setDailyForecast(transform(dto.getDailyForecastDTO()));
     forecast.setHourlyForecast(transform(dto.getHourlyForecastDTO()));

@@ -120,7 +120,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
             startLocationUpdates();
           } else {
             String latLng = location.getLatitude() + "," + location.getLongitude();
-            fetchAddress(latLng);
+            fetchAddress(latLng, true);
             fetchWeatherForecast(latLng);
           }
         });
@@ -142,7 +142,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
         Location currentLocation = locationResult.getLocations().get(0);
         String latLng = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
 
-        fetchAddress(latLng);
+        fetchAddress(latLng, true);
         fetchWeatherForecast(latLng);
 
         stopLocationUpdates();
@@ -164,8 +164,8 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     }
   }
 
-  private void fetchAddress(String latLng) {
-    Disposable disposable = geocodingRepository.getLocation(latLng)
+  private void fetchAddress(String latLng, boolean isCurrentLocation) {
+    Disposable disposable = geocodingRepository.getLocation(latLng,isCurrentLocation)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(new DisposableObserver<GeolocationEntity>() {
@@ -194,7 +194,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private void fetchByGivenLocation(String latlng) {
     if (isLocationServicesEnabled()) {
       fetchWeatherForecast(latlng);
-      fetchAddress(latlng);
+      fetchAddress(latlng,false);
     }
   }
 
