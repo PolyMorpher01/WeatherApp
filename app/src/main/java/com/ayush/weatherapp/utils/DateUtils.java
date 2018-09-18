@@ -31,6 +31,10 @@ public final class DateUtils {
     return new SimpleDateFormat(HH_MM_AA, Locale.getDefault()).format(date);
   }
 
+  public static long getCurrentTimeStamp() {
+    return System.currentTimeMillis();
+  }
+
   public static boolean isFiveMinutesAgo(long checkTime) {
     long fiveMinutesAgo = System.currentTimeMillis() - FIVE_MINUTES;
     return checkTime < fiveMinutesAgo;

@@ -13,6 +13,7 @@ import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecastDTO;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.ForecastDTO;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyDataDTO;
 import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecastDTO;
+import com.ayush.weatherapp.utils.DateUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public final class ForecastDTOtoRealmMapper {
     forecast.setCurrentForecast(transform(dto.getCurrentForecastDTO()));
     forecast.setDailyForecast(transform(dto.getDailyForecastDTO()));
     forecast.setHourlyForecast(transform(dto.getHourlyForecastDTO()));
+    forecast.setCreatedAt(DateUtils.getCurrentTimeStamp());
 
     return forecast;
   }

@@ -121,7 +121,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
           } else {
             String latLng = location.getLatitude() + "," + location.getLongitude();
             fetchAddress(latLng, true);
-            fetchWeatherForecast(latLng);
+            fetchWeatherForecast(latLng, true);
           }
         });
   }
@@ -143,7 +143,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
         String latLng = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
 
         fetchAddress(latLng, true);
-        fetchWeatherForecast(latLng);
+        fetchWeatherForecast(latLng, true);
 
         stopLocationUpdates();
       }
@@ -193,7 +193,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
   private void fetchByGivenLocation(String latlng) {
     if (isLocationServicesEnabled()) {
-      fetchWeatherForecast(latlng);
+      fetchWeatherForecast(latlng, false);
       fetchAddress(latlng,false);
     }
   }
@@ -202,8 +202,8 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     getView().setAddress(geoLocation.getLocation());
   }
 
-  private void fetchWeatherForecast(String latLng) {
-    Disposable disposable = weatherRepositoryImpl.getForecast(latLng)
+  private void fetchWeatherForecast(String latLng, boolean isCurrentLocation) {
+    Disposable disposable = weatherRepositoryImpl.getForecast(latLng, isCurrentLocation)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .doOnSubscribe(d -> getView().showProgressBar(""))

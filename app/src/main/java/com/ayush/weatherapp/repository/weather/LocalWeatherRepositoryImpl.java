@@ -6,11 +6,11 @@ import com.ayush.weatherapp.realm.RealmUtils;
 import com.ayush.weatherapp.realm.model.forecast.Forecast;
 import io.reactivex.Observable;
 
-public class LocalWeatherDataStoreImpl implements WeatherRepository {
-  public LocalWeatherDataStoreImpl() {
+public class LocalWeatherRepositoryImpl implements WeatherRepository {
+  public LocalWeatherRepositoryImpl() {
   }
 
-  @Override public Observable<ForecastEntity> getForecast(String latlng) {
+  @Override public Observable<ForecastEntity> getForecast(String latlng, boolean isCurrentLocation) {
     Forecast realmModel =
         RealmUtils.getRealmModel(Forecast.class, RealmUtils.getMaxIdForPrimaryKey(Forecast.class));
     if (realmModel != null) {
