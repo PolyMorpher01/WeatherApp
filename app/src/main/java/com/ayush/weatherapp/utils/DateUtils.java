@@ -36,7 +36,7 @@ public final class DateUtils {
   }
 
   public static boolean isFiveMinutesAgo(long checkTime) {
-    long fiveMinutesAgo = System.currentTimeMillis() - FIVE_MINUTES;
+    long fiveMinutesAgo = getCurrentTimeStamp() - FIVE_MINUTES;
     return checkTime < fiveMinutesAgo;
   }
 }
