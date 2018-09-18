@@ -1,7 +1,6 @@
 package com.ayush.weatherapp.entities.geocoding;
 
 import io.realm.annotations.PrimaryKey;
-import java.sql.Timestamp;
 
 public class GeolocationEntity {
   @PrimaryKey private long primaryKey;

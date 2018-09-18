@@ -7,11 +7,10 @@ public final class GeocodingEntityToRealmMapper {
   private GeocodingEntityToRealmMapper() {
   }
 
-  public static GeoLocation transform(GeolocationEntity entity){
+  public static GeoLocation transform(GeolocationEntity entity) {
     GeoLocation geoLocation = new GeoLocation(entity.getPrimaryKey());
     geoLocation.setLocation(entity.getLocation());
     geoLocation.setCreatedAt(entity.getCreatedAt());
     return geoLocation;
   }
-
 }

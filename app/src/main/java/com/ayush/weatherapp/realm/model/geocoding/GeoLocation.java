@@ -2,7 +2,6 @@ package com.ayush.weatherapp.realm.model.geocoding;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
-import java.sql.Timestamp;
 
 public class GeoLocation extends RealmObject {
   @PrimaryKey private long primaryKey;
