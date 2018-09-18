@@ -115,7 +115,10 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         //initialize value again
         .doOnNext(entity -> defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT)
         .map(entity -> {
-          saveWeatherForecast(ForecastEntityToRealmMapper.transform(entity));
+          //save details of current location only
+          if (isCurrentLocation) {
+            saveWeatherForecast(ForecastEntityToRealmMapper.transform(entity));
+          }
           return entity;
         });
   }
