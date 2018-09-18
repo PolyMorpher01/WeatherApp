@@ -4,12 +4,11 @@ import com.ayush.weatherapp.entities.geocoding.GeolocationEntity;
 import com.ayush.weatherapp.mapper.GeocodingEntityToRealmMapper;
 import com.ayush.weatherapp.realm.RealmUtils;
 import com.ayush.weatherapp.realm.model.geocoding.GeoLocation;
+import com.ayush.weatherapp.utils.DateUtils;
 import io.reactivex.Observable;
 import io.realm.Realm;
-import timber.log.Timber;
 
 public class GeocodingRepositoryImpl implements GeocodingRepository {
-  private static final long FIVE_MINUTES = 5 * 60 * 1000;
   private GeocodingRepository onlineDataStore;
   private GeocodingRepository localDataStore;
 
@@ -24,8 +23,8 @@ public class GeocodingRepositoryImpl implements GeocodingRepository {
     if (isSavedLocally() && isCurrentLocation) {
       return getlocalObservable(latlng, isCurrentLocation)
           .flatMap(entity -> {
-            //fetch from online repository if last call was more than five minutes ogo
-            if (isFiveMinutesPassed(entity)) {
+            //fetch from online repository if last row created was more than five minutes ago
+            if (DateUtils.isFiveMinutesAgo(entity.getCreatedAt())) {
               return getOnlineObservable(latlng, isCurrentLocation);
             }
             return getlocalObservable(latlng, isCurrentLocation);
@@ -56,15 +55,6 @@ public class GeocodingRepositoryImpl implements GeocodingRepository {
           }
           return geolocation;
         });
-  }
-
-  private boolean isFiveMinutesPassed(GeolocationEntity entity) {
-    long fiveMinutesAgo = System.currentTimeMillis() - FIVE_MINUTES;
-    if (entity.getCreatedAt() < fiveMinutesAgo) {
-      Timber.e("five minutes Ago!!");
-      return true;
-    }
-    return false;
   }
 
   private void saveGeoLocationDetails(GeoLocation geoLocation) {
