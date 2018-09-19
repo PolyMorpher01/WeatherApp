@@ -1,9 +1,10 @@
 package com.ayush.weatherapp.realm.model.forecast;
 
+import com.ayush.weatherapp.realm.RealmDeletable;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class CurrentForecast extends RealmObject {
+public class CurrentForecast extends RealmObject implements RealmDeletable {
 
   @PrimaryKey private long primaryKey;
   private long time;
@@ -106,5 +107,9 @@ public class CurrentForecast extends RealmObject {
 
   public void setVisibility(double visibility) {
     this.visibility = visibility;
+  }
+
+  @Override public void removeFromRealm() {
+    deleteFromRealm();
   }
 }
