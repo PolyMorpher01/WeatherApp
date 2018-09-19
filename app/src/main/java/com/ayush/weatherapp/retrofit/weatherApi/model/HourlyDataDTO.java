@@ -1,4 +1,4 @@
-package com.ayush.weatherapp.retrofit.weatherApi.pojo;
+package com.ayush.weatherapp.retrofit.weatherApi.model;
 
 import com.google.gson.annotations.SerializedName;
 
