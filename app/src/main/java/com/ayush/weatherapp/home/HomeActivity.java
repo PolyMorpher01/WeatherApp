@@ -294,6 +294,7 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
       new AppSettingsDialog.Builder(this).build().show();
     } else {
+      Toast.makeText(this, "Location permission not granted", Toast.LENGTH_SHORT).show();
       finish();
     }
   }
