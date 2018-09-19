@@ -6,7 +6,6 @@ import com.ayush.weatherapp.realm.model.geocoding.GeoLocation;
 import com.ayush.weatherapp.retrofit.geocodingApi.model.AddressDTO;
 import com.ayush.weatherapp.retrofit.geocodingApi.model.GeoLocationDTO;
 import com.ayush.weatherapp.utils.DateUtils;
-import timber.log.Timber;
 
 public final class GeocodingDTOToRealmMapper {
   private GeocodingDTOToRealmMapper() {
@@ -67,53 +66,4 @@ public final class GeocodingDTOToRealmMapper {
 
     return "";
   }
-
-
-
-  /*private static String getFullAddress(AddressDTO addressDTOS) {
-    List<AddressComponentsDTO> addressComponents = addressDTOS.getAddressComponentDTOS();
-
-    String primaryAddress = getAddressPrimary(addressComponents);
-    String secondaryAddress = getAddressSecondary(addressComponents);
-    String address = "";
-
-    if (!TextUtils.isEmpty(primaryAddress)) {
-      address = primaryAddress;
-      if (!TextUtils.isEmpty(secondaryAddress)) {
-        address += ", " + secondaryAddress;
-      }
-      return address;
-    }
-
-    //case when primary address is empty
-    if (!TextUtils.isEmpty(secondaryAddress)) {
-      address = secondaryAddress;
-      return address;
-    }
-    return address;
-  }
-
-  private static String getAddressPrimary(List<AddressComponentsDTO> addressComponents) {
-    for (AddressComponentsDTO addressComponent : addressComponents) {
-      if (addressComponent.getTypes().contains(ADDRESS_STREET)) {
-        return addressComponent.getLongName();
-      }
-    }
-    return "";
-  }
-
-  private static String getAddressSecondary(List<AddressComponentsDTO> addressComponents) {
-    for (AddressComponentsDTO addressComponent : addressComponents) {
-      if (addressComponent.getTypes().contains(ADDRESS_CITY)) {
-        return addressComponent.getLongName();
-      }
-      if (addressComponent.getTypes().contains(ADDRESS_ADMINISTRATIVE_AREA)) {
-        return addressComponent.getLongName();
-      }
-      if (addressComponent.getTypes().contains(ADDRESS_COUNTRY)) {
-        return addressComponent.getLongName();
-      }
-    }
-    return "";
-  }*/
 }
