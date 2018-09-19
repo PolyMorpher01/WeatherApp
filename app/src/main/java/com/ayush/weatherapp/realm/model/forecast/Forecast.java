@@ -1,9 +1,10 @@
 package com.ayush.weatherapp.realm.model.forecast;
 
+import com.ayush.weatherapp.realm.RealmDeletable;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class Forecast extends RealmObject {
+public class Forecast extends RealmObject implements RealmDeletable {
 
   @PrimaryKey private long primaryKey;
   private CurrentForecast currentForecast;
@@ -53,5 +54,18 @@ public class Forecast extends RealmObject {
 
   public void setDailyForecast(DailyForecast dailyForecast) {
     this.dailyForecast = dailyForecast;
+  }
+
+  @Override public void removeFromRealm() {
+    if (currentForecast != null) {
+      currentForecast.removeFromRealm();
+    }
+    if (hourlyForecast != null) {
+      hourlyForecast.removeFromRealm();
+    }
+    if (dailyForecast != null) {
+      dailyForecast.removeFromRealm();
+    }
+    deleteFromRealm();
   }
 }

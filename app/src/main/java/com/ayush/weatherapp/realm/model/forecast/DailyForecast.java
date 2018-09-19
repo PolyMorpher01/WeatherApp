@@ -1,11 +1,12 @@
 package com.ayush.weatherapp.realm.model.forecast;
 
+import com.ayush.weatherapp.realm.RealmDeletable;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import java.util.List;
 
-public class DailyForecast extends RealmObject {
+public class DailyForecast extends RealmObject implements RealmDeletable {
 
   @PrimaryKey private long primaryKey;
   private String summary;
@@ -46,5 +47,15 @@ public class DailyForecast extends RealmObject {
   public void setDailyDataList(List<DailyData> dailyDataList) {
     this.dailyDataList = new RealmList<>();
     this.dailyDataList.addAll(dailyDataList);
+  }
+
+  @Override public void removeFromRealm() {
+    //todo ask subash
+    if (dailyDataList != null) {
+      for (int i = dailyDataList.size() - 1; i >= 0; i--) {
+        dailyDataList.get(i).removeFromRealm();
+      }
+    }
+    deleteFromRealm();
   }
 }

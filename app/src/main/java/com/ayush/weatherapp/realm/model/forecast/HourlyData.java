@@ -1,15 +1,15 @@
 package com.ayush.weatherapp.realm.model.forecast;
 
+import com.ayush.weatherapp.realm.RealmDeletable;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class HourlyData extends RealmObject {
+public class HourlyData extends RealmObject implements RealmDeletable {
   @PrimaryKey private long primaryKey;
   private long time;
   private String summary;
   private String icon;
   private double temperature;
-  private double apparentTemperature;
 
   public HourlyData() {
   }
@@ -54,11 +54,7 @@ public class HourlyData extends RealmObject {
     this.temperature = temperature;
   }
 
-  public double getApparentTemperature() {
-    return apparentTemperature;
-  }
-
-  public void setApparentTemperature(double apparentTemperature) {
-    this.apparentTemperature = apparentTemperature;
+  @Override public void removeFromRealm() {
+    deleteFromRealm();
   }
 }

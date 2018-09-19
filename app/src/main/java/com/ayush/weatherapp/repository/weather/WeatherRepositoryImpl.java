@@ -16,6 +16,7 @@ import com.ayush.weatherapp.utils.UnitConversionUtils;
 import io.reactivex.Observable;
 import io.realm.Realm;
 import java.util.List;
+import timber.log.Timber;
 
 //TODO rename weather to forecast
 public class WeatherRepositoryImpl implements WeatherRepository {
@@ -125,7 +126,19 @@ public class WeatherRepositoryImpl implements WeatherRepository {
 
   private void saveWeatherForecast(Forecast forecast) {
     Realm realm = RealmUtils.getRealm();
-    realm.executeTransaction(r -> realm.insert(forecast));
+
+    realm.executeTransaction(r -> {
+          // delete all previously saved data and save new data to database
+          List<Forecast> storedForecasts = r.where(Forecast.class).findAll();
+          if (storedForecasts != null) {
+            for (Forecast storedForecast : storedForecasts) {
+              storedForecast.removeFromRealm();
+            }
+          }
+          r.insert(forecast);
+        }
+    );
+
     realm.close();
   }
 }

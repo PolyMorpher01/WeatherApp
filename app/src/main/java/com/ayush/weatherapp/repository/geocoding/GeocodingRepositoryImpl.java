@@ -7,6 +7,7 @@ import com.ayush.weatherapp.realm.model.geocoding.GeoLocation;
 import com.ayush.weatherapp.utils.DateUtils;
 import io.reactivex.Observable;
 import io.realm.Realm;
+import java.util.List;
 
 public class GeocodingRepositoryImpl implements GeocodingRepository {
   private GeocodingRepository onlineRepository;
@@ -52,7 +53,17 @@ public class GeocodingRepositoryImpl implements GeocodingRepository {
 
   private void saveGeoLocationDetails(GeoLocation geoLocation) {
     Realm realm = RealmUtils.getRealm();
-    realm.executeTransaction(r -> realm.insert(geoLocation));
+    realm.executeTransaction(r -> {
+      // delete all previously saved data and save new data to database
+      List<GeoLocation> storedGeoLocations = r.where(GeoLocation.class).findAll();
+      if (storedGeoLocations != null) {
+        for (GeoLocation storedGeoLocation : storedGeoLocations) {
+          storedGeoLocation.removeFromRealm();
+        }
+      }
+      r.insert(geoLocation);
+    });
+
     realm.close();
   }
 }
