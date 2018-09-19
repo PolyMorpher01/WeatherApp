@@ -3,36 +3,74 @@ package com.ayush.weatherapp.mapper;
 import android.text.TextUtils;
 import com.ayush.weatherapp.realm.RealmUtils;
 import com.ayush.weatherapp.realm.model.geocoding.GeoLocation;
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponentsDTO;
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressDTO;
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocationDTO;
+import com.ayush.weatherapp.retrofit.geocodingApi.model.AddressDTO;
+import com.ayush.weatherapp.retrofit.geocodingApi.model.GeoLocationDTO;
 import com.ayush.weatherapp.utils.DateUtils;
-import java.util.List;
+import timber.log.Timber;
 
 public final class GeocodingDTOToRealmMapper {
-  private static final String ADDRESS_STREET = "route";
-  private static final String ADDRESS_CITY = "locality";
-  private static final String ADDRESS_COUNTRY = "country";
-  private static final String ADDRESS_ADMINISTRATIVE_AREA = "administrative_area_level_1";
-
   private GeocodingDTOToRealmMapper() {
   }
 
   public static GeoLocation transform(GeoLocationDTO dto) {
-    if (dto.getAddressDTOS() == null || dto.getAddressDTOS().isEmpty()) {
-      return null;
-    }
-
     long primaryKey = RealmUtils.getMaxIdForPrimaryKey(GeoLocation.class);
     GeoLocation geoLocation = new GeoLocation(++primaryKey);
 
-    //we need address detail of only first index
-    geoLocation.setLocation(getFullAddress(dto.getAddressDTOS().get(0)));
+    geoLocation.setLocation(getFullAddress(dto));
     geoLocation.setCreatedAt(DateUtils.getCurrentTimeStamp());
     return geoLocation;
   }
 
-  private static String getFullAddress(AddressDTO addressDTOS) {
+  private static String getFullAddress(GeoLocationDTO dto) {
+    String primaryAddress = getPrimaryAddress(dto.getAddressDTO());
+    String secondaryAddress = getSecondaryAddress(dto.getAddressDTO());
+    String fullAddress = "";
+
+    if (!TextUtils.isEmpty(primaryAddress)) {
+      fullAddress = primaryAddress;
+      if (!TextUtils.isEmpty(secondaryAddress)) {
+        fullAddress = primaryAddress + ", " + secondaryAddress;
+      }
+      return fullAddress;
+    }
+
+    //case when primary Address is empty
+    if (!TextUtils.isEmpty(secondaryAddress)) {
+      return secondaryAddress;
+    }
+
+    //case when both are empty
+    if (!TextUtils.isEmpty(dto.getDisplayName())) {
+      return dto.getDisplayName();
+    }
+
+    return fullAddress;
+  }
+
+  private static String getPrimaryAddress(AddressDTO address) {
+    return address.getStreet();
+  }
+
+  private static String getSecondaryAddress(AddressDTO address) {
+
+    if (!TextUtils.isEmpty(address.getCity())) {
+      return address.getCity();
+    }
+
+    if (!TextUtils.isEmpty(address.getStateDistrict())) {
+      return address.getStateDistrict();
+    }
+
+    if (!TextUtils.isEmpty(address.getCountry())) {
+      return address.getCountry();
+    }
+
+    return "";
+  }
+
+
+
+  /*private static String getFullAddress(AddressDTO addressDTOS) {
     List<AddressComponentsDTO> addressComponents = addressDTOS.getAddressComponentDTOS();
 
     String primaryAddress = getAddressPrimary(addressComponents);
@@ -77,5 +115,5 @@ public final class GeocodingDTOToRealmMapper {
       }
     }
     return "";
-  }
+  }*/
 }

@@ -20,28 +20,29 @@ public class GeocodingRepositoryImpl implements GeocodingRepository {
   }
 
   @Override
-  public Observable<GeolocationEntity> getLocation(String latlng, boolean isCurrentLocation) {
+  public Observable<GeolocationEntity> getLocation(double lat, double lng,
+      boolean isCurrentLocation) {
     if (RealmUtils.isSavedLocally(GeoLocation.class) && isCurrentLocation) {
-      return getLocalObservable(latlng, isCurrentLocation)
+      return getLocalObservable(lat, lng, isCurrentLocation)
           .flatMap(entity -> {
             //fetch from online repository if last row created was more than five minutes ago
             if (DateUtils.isFiveMinutesAgo(entity.getCreatedAt())) {
-              return getOnlineObservable(latlng, isCurrentLocation);
+              return getOnlineObservable(lat, lng, isCurrentLocation);
             }
-            return getLocalObservable(latlng, isCurrentLocation);
+            return getLocalObservable(lat, lng, isCurrentLocation);
           });
     }
-    return getOnlineObservable(latlng, isCurrentLocation);
+    return getOnlineObservable(lat, lng, isCurrentLocation);
   }
 
-  private Observable<GeolocationEntity> getLocalObservable(String latlng,
+  private Observable<GeolocationEntity> getLocalObservable(double lat, double lng,
       boolean isCurrentLocation) {
-    return localRepository.getLocation(latlng, isCurrentLocation);
+    return localRepository.getLocation(lat, lng, isCurrentLocation);
   }
 
-  private Observable<GeolocationEntity> getOnlineObservable(String latlng,
+  private Observable<GeolocationEntity> getOnlineObservable(double lat, double lng,
       boolean isCurrentLocation) {
-    return onlineRepository.getLocation(latlng, isCurrentLocation)
+    return onlineRepository.getLocation(lat, lng, isCurrentLocation)
         .map(geolocation -> {
           //save details of current location only
           if (isCurrentLocation) {

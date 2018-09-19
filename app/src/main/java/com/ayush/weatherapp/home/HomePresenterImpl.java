@@ -17,7 +17,6 @@ import com.ayush.weatherapp.repository.geocoding.GeocodingRepository;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepositoryImpl;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
-import com.ayush.weatherapp.repository.weather.WeatherRepository;
 import com.ayush.weatherapp.repository.weather.WeatherRepositoryImpl;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -90,7 +89,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   @Override public void onSwipeRefresh() {
-    fetchByGivenLocation(preferenceRepository.getCurrentLocationCoordinates());
+    //fetchByGivenLocation(preferenceRepository.getCurrentLocationCoordinates());
   }
 
   @Override public void onCurrentLocationClicked() {
@@ -120,7 +119,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
             startLocationUpdates();
           } else {
             String latLng = location.getLatitude() + "," + location.getLongitude();
-            fetchAddress(latLng, true);
+            fetchAddress(location.getLatitude(), location.getLongitude(), true);
             fetchWeatherForecast(latLng, true);
           }
         });
@@ -142,7 +141,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
         Location currentLocation = locationResult.getLocations().get(0);
         String latLng = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
 
-        fetchAddress(latLng, true);
+        fetchAddress(currentLocation.getLatitude(), currentLocation.getLongitude(), true);
         fetchWeatherForecast(latLng, true);
 
         stopLocationUpdates();
@@ -164,8 +163,8 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     }
   }
 
-  private void fetchAddress(String latLng, boolean isCurrentLocation) {
-    Disposable disposable = geocodingRepository.getLocation(latLng,isCurrentLocation)
+  private void fetchAddress(double lat, double lng, boolean isCurrentLocation) {
+    Disposable disposable = geocodingRepository.getLocation(lat, lng, isCurrentLocation)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(new DisposableObserver<GeolocationEntity>() {
@@ -188,13 +187,13 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
   @Override public void searchLocation(double lat, double lng) {
     String latlng = lat + "," + lng;
-    fetchByGivenLocation(latlng);
+    fetchByGivenLocation(latlng, lat, lng);
   }
 
-  private void fetchByGivenLocation(String latlng) {
+  private void fetchByGivenLocation(String latlng, double lat, double lng) {
     if (isLocationServicesEnabled()) {
       fetchWeatherForecast(latlng, false);
-      fetchAddress(latlng,false);
+      fetchAddress(lat, lng, false);
     }
   }
 

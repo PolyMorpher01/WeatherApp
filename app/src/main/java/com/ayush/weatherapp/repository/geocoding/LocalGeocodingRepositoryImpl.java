@@ -8,7 +8,7 @@ import io.reactivex.Observable;
 
 public class LocalGeocodingRepositoryImpl implements GeocodingRepository {
   @Override
-  public Observable<GeolocationEntity> getLocation(String latlng, boolean isCurrentLocation) {
+  public Observable<GeolocationEntity> getLocation(double lat, double lng, boolean isCurrentLocation) {
     GeoLocation geoLocation = RealmUtils.getRealmModel(GeoLocation.class,
         RealmUtils.getMaxIdForPrimaryKey(GeoLocation.class));
 
