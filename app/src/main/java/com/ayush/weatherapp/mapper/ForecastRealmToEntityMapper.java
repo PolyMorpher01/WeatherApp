@@ -92,6 +92,8 @@ public final class ForecastRealmToEntityMapper {
     if (hourlyDatas == null || hourlyDatas.isEmpty()) {
       return null;
     }
+    //we need only six data for the hourly forecast
+    hourlyDatas = new ArrayList<>(hourlyDatas.subList(0, 6));
 
     List<HourlyDataEntity> entityList = new ArrayList<>(hourlyDatas.size());
 

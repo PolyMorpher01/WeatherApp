@@ -4,12 +4,9 @@ import com.ayush.weatherapp.realm.RealmDeletable;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
-import java.util.ArrayList;
 import java.util.List;
 
 public class HourlyForecast extends RealmObject implements RealmDeletable {
-  private static final int MAX_NUMBER_OF_DATA = 6;
-
   @PrimaryKey private long primaryKey;
   private String summary;
   private String icon;
@@ -43,7 +40,7 @@ public class HourlyForecast extends RealmObject implements RealmDeletable {
   }
 
   public List<HourlyData> getHourlyDataList() {
-    return new ArrayList<>(hourlyDataList.subList(0, MAX_NUMBER_OF_DATA));
+    return hourlyDataList;
   }
 
   public void setHourlyDataList(List<HourlyData> hourlyDataList) {
