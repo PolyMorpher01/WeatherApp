@@ -7,7 +7,7 @@ import java.util.Locale;
 import static android.text.format.DateUtils.isToday;
 
 public final class DateUtils {
-  private static final long FIVE_MINUTES = 1 * 30 * 1000;
+  private static final long FIVE_MINUTES = 5 * 60 * 1000;
   private static final String DAY_OF_THE_WEEK = "EE";
   private static final String HH_MM_AA = "hh:mm aa";
 
