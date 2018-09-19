@@ -129,7 +129,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
 
     realm.executeTransaction(r -> {
           // delete all previously saved data and save new data to database
-          List<Forecast> storedForecasts = realm.where(Forecast.class).findAll();
+          List<Forecast> storedForecasts = r.where(Forecast.class).findAll();
           if (storedForecasts != null) {
             for (Forecast storedForecast : storedForecasts) {
               storedForecast.removeFromRealm();

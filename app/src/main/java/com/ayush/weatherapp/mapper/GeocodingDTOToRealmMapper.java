@@ -7,7 +7,6 @@ import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponentsDTO;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressDTO;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocationDTO;
 import com.ayush.weatherapp.utils.DateUtils;
-import java.util.Date;
 import java.util.List;
 
 public final class GeocodingDTOToRealmMapper {
@@ -20,6 +19,10 @@ public final class GeocodingDTOToRealmMapper {
   }
 
   public static GeoLocation transform(GeoLocationDTO dto) {
+    if (dto.getAddressDTOS() == null || dto.getAddressDTOS().isEmpty()) {
+      return null;
+    }
+
     long primaryKey = RealmUtils.getMaxIdForPrimaryKey(GeoLocation.class);
     GeoLocation geoLocation = new GeoLocation(++primaryKey);
 
