@@ -43,6 +43,7 @@ import com.ayush.weatherapp.utils.DateUtils;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
@@ -345,8 +346,14 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
 
   private void startPlaceAutoCompleteActivity() {
     try {
-      Intent intent =
-          new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN).build(this);
+      AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+          .setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE)
+          .build();
+
+      Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+          .setFilter(typeFilter)
+          .build(this);
+
       startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
     } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
       Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
