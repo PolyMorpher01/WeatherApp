@@ -89,7 +89,8 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   @Override public void onSwipeRefresh() {
-    //fetchByGivenLocation(preferenceRepository.getCurrentLocationCoordinates());
+    fetchByGivenLocation(preferenceRepository.getCurrentLocationCoordinates(),
+        preferenceRepository.getLatitude(), preferenceRepository.getLongitude());
   }
 
   @Override public void onCurrentLocationClicked() {
@@ -170,6 +171,10 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
         .subscribeWith(new DisposableObserver<GeolocationEntity>() {
           @Override public void onNext(GeolocationEntity geoLocation) {
             setLocation(geoLocation);
+
+            //todo refactor
+            preferenceRepository.saveLatitude(lat);
+            preferenceRepository.saveLongitude(lng);
           }
 
           @Override public void onError(Throwable e) {
@@ -186,6 +191,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   @Override public void searchLocation(double lat, double lng) {
+    //todo refator to use only lat and lng not latlng
     String latlng = lat + "," + lng;
     fetchByGivenLocation(latlng, lat, lng);
   }

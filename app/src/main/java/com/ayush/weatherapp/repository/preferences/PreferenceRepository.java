@@ -9,5 +9,13 @@ public interface PreferenceRepository {
 
   String getCurrentLocationCoordinates();
 
+  void saveLatitude(double lat);
+
+  void saveLongitude(double lng);
+
+  double getLatitude();
+
+  double getLongitude();
+
   void onPreferenceChangeListener(PreferenceChangeListener changeListener);
 }
