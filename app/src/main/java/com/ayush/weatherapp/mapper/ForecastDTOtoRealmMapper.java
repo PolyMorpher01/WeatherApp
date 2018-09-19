@@ -42,13 +42,6 @@ public final class ForecastDTOtoRealmMapper {
     currentForecast.setSummary(dto.getSummary());
     currentForecast.setIcon(dto.getIcon());
     currentForecast.setTemperature(dto.getTemperature());
-    currentForecast.setApparentTemperature(dto.getApparentTemperature());
-    currentForecast.setDewPoint(dto.getDewPoint());
-    currentForecast.setHumidity(dto.getHumidity());
-    currentForecast.setPressure(dto.getHumidity());
-    currentForecast.setPressure(dto.getPressure());
-    currentForecast.setWindSpeed(dto.getWindSpeed());
-    currentForecast.setVisibility(dto.getVisibility());
 
     return currentForecast;
   }
@@ -92,8 +85,6 @@ public final class ForecastDTOtoRealmMapper {
     dailyData.setSunsetTime(dto.getSunsetTime());
     dailyData.setTemperatureHigh(dto.getTemperatureHigh());
     dailyData.setTemperatureLow(dto.getTemperatureLow());
-    dailyData.setApparentTemperatureHigh(dto.getApparentTemperatureHigh());
-    dailyData.setApparentTemperatureLow(dto.getApparentTemperatureLow());
     dailyData.setWindSpeed(dto.getWindSpeed());
 
     return dailyData;
@@ -130,7 +121,6 @@ public final class ForecastDTOtoRealmMapper {
     hourlyData.setTime(dto.getTime());
     hourlyData.setSummary(dto.getSummary());
     hourlyData.setTemperature(dto.getTemperature());
-    hourlyData.setApparentTemperature(dto.getApparentTemperature());
 
     return hourlyData;
   }

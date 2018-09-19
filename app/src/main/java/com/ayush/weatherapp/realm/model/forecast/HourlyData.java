@@ -10,7 +10,6 @@ public class HourlyData extends RealmObject implements RealmDeletable {
   private String summary;
   private String icon;
   private double temperature;
-  private double apparentTemperature;
 
   public HourlyData() {
   }
@@ -53,14 +52,6 @@ public class HourlyData extends RealmObject implements RealmDeletable {
 
   public void setTemperature(double temperature) {
     this.temperature = temperature;
-  }
-
-  public double getApparentTemperature() {
-    return apparentTemperature;
-  }
-
-  public void setApparentTemperature(double apparentTemperature) {
-    this.apparentTemperature = apparentTemperature;
   }
 
   @Override public void removeFromRealm() {

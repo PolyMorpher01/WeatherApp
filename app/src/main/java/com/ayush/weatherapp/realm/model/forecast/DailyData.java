@@ -14,8 +14,6 @@ public class DailyData extends RealmObject implements RealmDeletable {
   private int sunsetTime;
   private double temperatureHigh;
   private double temperatureLow;
-  private double apparentTemperatureHigh;
-  private double apparentTemperatureLow;
   private double windSpeed;
 
   public DailyData() {
@@ -83,22 +81,6 @@ public class DailyData extends RealmObject implements RealmDeletable {
 
   public void setTemperatureLow(double temperatureLow) {
     this.temperatureLow = temperatureLow;
-  }
-
-  public double getApparentTemperatureHigh() {
-    return apparentTemperatureHigh;
-  }
-
-  public void setApparentTemperatureHigh(double apparentTemperatureHigh) {
-    this.apparentTemperatureHigh = apparentTemperatureHigh;
-  }
-
-  public double getApparentTemperatureLow() {
-    return apparentTemperatureLow;
-  }
-
-  public void setApparentTemperatureLow(double apparentTemperatureLow) {
-    this.apparentTemperatureLow = apparentTemperatureLow;
   }
 
   public double getWindSpeed() {

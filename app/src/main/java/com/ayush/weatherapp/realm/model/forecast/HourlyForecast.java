@@ -53,8 +53,8 @@ public class HourlyForecast extends RealmObject implements RealmDeletable {
 
   @Override public void removeFromRealm() {
     if (hourlyDataList != null) {
-      for (HourlyData hourlyData : hourlyDataList) {
-        hourlyData.removeFromRealm();
+      for (int i = hourlyDataList.size() - 1; i >= 0; i--) {
+        hourlyDataList.get(i).removeFromRealm();
       }
     }
     deleteFromRealm();
