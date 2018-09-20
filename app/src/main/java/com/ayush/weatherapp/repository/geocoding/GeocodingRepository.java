@@ -5,5 +5,5 @@ import io.reactivex.Observable;
 
 public interface GeocodingRepository {
 
-  Observable<GeolocationEntity> getLocation(String latlng, boolean isCurrentLocation);
+  Observable<GeolocationEntity> getLocation(double lat, double lng, boolean isCurrentLocation);
 }
