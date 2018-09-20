@@ -5,5 +5,5 @@ import io.reactivex.Observable;
 
 public interface WeatherRepository {
 
-  Observable<ForecastEntity> getForecast(String latlng, boolean isCurrentLocation);
+  Observable<ForecastEntity> getForecast(double lat, double lng, boolean isCurrentLocation);
 }

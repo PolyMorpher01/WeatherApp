@@ -15,8 +15,9 @@ public class OnlineWeatherRepositoryImpl implements WeatherRepository {
     weatherApiInterface = WeatherAPIClient.getClient().create(WeatherAPIInterface.class);
   }
 
-  @Override public Observable<ForecastEntity> getForecast(String latlng, boolean isCurrentLocation) {
-    return weatherApiInterface.getForecast(latlng).map(ForecastDTOtoRealmMapper::transform).map(
+  @Override
+  public Observable<ForecastEntity> getForecast(double lat, double lng, boolean isCurrentLocation) {
+    return weatherApiInterface.getForecast(lat, lng).map(ForecastDTOtoRealmMapper::transform).map(
         ForecastRealmToEntityMapper::transform);
   }
 }

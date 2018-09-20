@@ -89,8 +89,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   @Override public void onSwipeRefresh() {
-    fetchByGivenLocation(preferenceRepository.getCurrentLocationCoordinates(),
-        preferenceRepository.getLatitude(), preferenceRepository.getLongitude());
+    fetchByGivenLocation(preferenceRepository.getLatitude(), preferenceRepository.getLongitude());
   }
 
   @Override public void onCurrentLocationClicked() {
@@ -119,9 +118,11 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
             initLocationRequest();
             startLocationUpdates();
           } else {
-            String latLng = location.getLatitude() + "," + location.getLongitude();
-            fetchAddress(location.getLatitude(), location.getLongitude(), true);
-            fetchWeatherForecast(latLng, true);
+            double lat = location.getLatitude();
+            double lng = location.getLongitude();
+
+            fetchAddress(lat, lng, true);
+            fetchWeatherForecast(lat, lng, true);
           }
         });
   }
@@ -140,10 +141,12 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
         }
         //get only first location
         Location currentLocation = locationResult.getLocations().get(0);
-        String latLng = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
 
-        fetchAddress(currentLocation.getLatitude(), currentLocation.getLongitude(), true);
-        fetchWeatherForecast(latLng, true);
+        double lat = currentLocation.getLatitude();
+        double lng = currentLocation.getLongitude();
+
+        fetchAddress(lat, lng, true);
+        fetchWeatherForecast(lat, lng, true);
 
         stopLocationUpdates();
       }
@@ -171,10 +174,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
         .subscribeWith(new DisposableObserver<GeolocationEntity>() {
           @Override public void onNext(GeolocationEntity geoLocation) {
             setLocation(geoLocation);
-
-            //todo refactor
-            preferenceRepository.saveLatitude(lat);
-            preferenceRepository.saveLongitude(lng);
           }
 
           @Override public void onError(Throwable e) {
@@ -191,14 +190,12 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   @Override public void searchLocation(double lat, double lng) {
-    //todo refator to use only lat and lng not latlng
-    String latlng = lat + "," + lng;
-    fetchByGivenLocation(latlng, lat, lng);
+    fetchByGivenLocation(lat, lng);
   }
 
-  private void fetchByGivenLocation(String latlng, double lat, double lng) {
+  private void fetchByGivenLocation(double lat, double lng) {
     if (isLocationServicesEnabled()) {
-      fetchWeatherForecast(latlng, false);
+      fetchWeatherForecast(lat, lng, false);
       fetchAddress(lat, lng, false);
     }
   }
@@ -207,14 +204,18 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     getView().setAddress(geoLocation.getLocation());
   }
 
-  private void fetchWeatherForecast(String latLng, boolean isCurrentLocation) {
-    Disposable disposable = weatherRepositoryImpl.getForecast(latLng, isCurrentLocation)
+  private void fetchWeatherForecast(double lat, double lng, boolean isCurrentLocation) {
+    Disposable disposable = weatherRepositoryImpl.getForecast(lat, lng, isCurrentLocation)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .doOnSubscribe(d -> getView().showProgressBar(""))
         .subscribeWith(new DisposableObserver<ForecastEntity>() {
           @Override public void onNext(ForecastEntity forecast) {
-            setForecast(forecast, latLng);
+            setForecast(forecast, lat, lng);
+
+            //save to provide coordinates during refresh
+            preferenceRepository.saveLatitude(lat);
+            preferenceRepository.saveLongitude(lng);
           }
 
           @Override public void onError(Throwable e) {
@@ -234,13 +235,10 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     addSubscription(disposable);
   }
 
-  private void setForecast(ForecastEntity forecast, String latLng) {
+  private void setForecast(ForecastEntity forecast, double lat, double lng) {
     this.forecast = forecast;
     setForecastView();
     getView().changeErrorVisibility(false);
-
-    //save to provide coordinates during refresh
-    preferenceRepository.saveCurrentLocationCoordinates(latLng);
   }
 
   private void setForecastView() {

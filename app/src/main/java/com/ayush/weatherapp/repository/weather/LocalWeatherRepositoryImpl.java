@@ -10,7 +10,7 @@ public class LocalWeatherRepositoryImpl implements WeatherRepository {
   public LocalWeatherRepositoryImpl() {
   }
 
-  @Override public Observable<ForecastEntity> getForecast(String latlng, boolean isCurrentLocation) {
+  @Override public Observable<ForecastEntity> getForecast(double lat, double lng, boolean isCurrentLocation) {
     Forecast realmModel =
         RealmUtils.getRealmModel(Forecast.class, RealmUtils.getMaxIdForPrimaryKey(Forecast.class));
     if (realmModel != null) {
