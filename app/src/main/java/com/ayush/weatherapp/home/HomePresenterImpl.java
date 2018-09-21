@@ -215,6 +215,8 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
             Timber.e(e);
             e.printStackTrace();
             getView().onFailure("Error fetching new data");
+
+            //todo remove comment
           /*  getView().changeErrorVisibility(true);
             getView().showErrorMessage();*/
             getView().hideProgressBar();
@@ -228,6 +230,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     addSubscription(disposable);
   }
 
+  //todo refactor
   private void setForecast(ForecastEntity forecast, double lat, double lng) {
     this.forecast = forecast;
     setForecastView();

@@ -43,12 +43,12 @@ public class GeocodingRepositoryImpl implements GeocodingRepository {
   private Observable<GeolocationEntity> getOnlineObservable(double lat, double lng,
       boolean isCurrentLocation) {
     return onlineRepository.getLocation(lat, lng, isCurrentLocation)
-        .map(geolocation -> {
+        .doOnNext(geoLocation -> {
+
           //save details of current location only
           if (isCurrentLocation) {
-            saveGeoLocationDetails(GeocodingEntityToRealmMapper.transform(geolocation));
+            saveGeoLocationDetails(GeocodingEntityToRealmMapper.transform(geoLocation));
           }
-          return geolocation;
         });
   }
 

@@ -54,14 +54,14 @@ public class ForecastRepositoryImpl implements ForecastRepository {
   private Observable<ForecastEntity> getOnlineObservable(double lat, double lng,
       boolean isCurrentLocation) {
     return onlineForecastRepository.getForecast(lat, lng, isCurrentLocation)
-        //initialize value again
-        .doOnNext(entity -> defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT)
-        .map(entity -> {
+        .doOnNext(entity -> {
+          //initialize value again
+          defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
+
           //save details of current location only
           if (isCurrentLocation) {
             saveWeatherForecast(ForecastEntityToRealmMapper.transform(entity));
           }
-          return entity;
         });
   }
 
