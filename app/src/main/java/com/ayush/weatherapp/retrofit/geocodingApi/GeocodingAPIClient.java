@@ -10,8 +10,7 @@ public class GeocodingAPIClient {
 
   //source: https://wiki.openstreetmap.org/wiki/Nominatim#Reverse_Geocoding
 
-  private static final String API_BASE_URL =
-      "https://nominatim.openstreetmap.org/";
+  private static final String API_BASE_URL = "https://nominatim.openstreetmap.org/";
 
   private GeocodingAPIClient() {
   }

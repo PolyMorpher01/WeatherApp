@@ -1,4 +1,4 @@
-package com.ayush.weatherapp.repository.weather;
+package com.ayush.weatherapp.repository.forecast;
 
 import com.ayush.weatherapp.entities.forecast.ForecastEntity;
 import com.ayush.weatherapp.mapper.ForecastDTOtoRealmMapper;
@@ -7,16 +7,17 @@ import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIClient;
 import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIInterface;
 import io.reactivex.Observable;
 
-public class OnlineWeatherRepositoryImpl implements WeatherRepository {
+public class OnlineForecastRepositoryImpl implements ForecastRepository {
   private WeatherAPIInterface weatherApiInterface;
 
   // TODO provide dependencies using dagger
-  public OnlineWeatherRepositoryImpl() {
+  public OnlineForecastRepositoryImpl() {
     weatherApiInterface = WeatherAPIClient.getClient().create(WeatherAPIInterface.class);
   }
 
-  @Override public Observable<ForecastEntity> getForecast(String latlng, boolean isCurrentLocation) {
-    return weatherApiInterface.getForecast(latlng).map(ForecastDTOtoRealmMapper::transform).map(
+  @Override
+  public Observable<ForecastEntity> getForecast(double lat, double lng, boolean isCurrentLocation) {
+    return weatherApiInterface.getForecast(lat, lng).map(ForecastDTOtoRealmMapper::transform).map(
         ForecastRealmToEntityMapper::transform);
   }
 }

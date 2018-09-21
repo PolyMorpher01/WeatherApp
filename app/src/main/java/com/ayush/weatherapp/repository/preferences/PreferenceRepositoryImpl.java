@@ -8,7 +8,6 @@ public final class PreferenceRepositoryImpl implements PreferenceRepository {
 
   private static final String APP_PREF_NAME = "APP_PREF_NAME";
   private static final String TEMP_UNIT = "TEMP_UNIT";
-  private static final String CURRENT_COORDINATES = "CURRENT_COORDINATES";
   private static final String CURRENT_LATITUDE = "CURRENT_LATITUDE";
   private static final String CURRENT_LONGITUDE = "CURRENT_LONGITUDE";
 
@@ -43,16 +42,6 @@ public final class PreferenceRepositoryImpl implements PreferenceRepository {
 
   @Override public int getTemperatureUnit() {
     return sharedPreferences.getInt(TEMP_UNIT, TemperatureUnit.CELSIUS);
-  }
-
-  @Override public void saveCurrentLocationCoordinates(String latlng) {
-    SharedPreferences.Editor editor = sharedPreferences.edit();
-    editor.putString(CURRENT_COORDINATES, latlng);
-    editor.apply();
-  }
-
-  @Override public String getCurrentLocationCoordinates() {
-    return sharedPreferences.getString(CURRENT_COORDINATES, null);
   }
 
   @Override public void saveLatitude(double lat) {

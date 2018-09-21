@@ -57,8 +57,6 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     implements HomeContract.View, EasyPermissions.PermissionCallbacks {
 
   private static final int RC_LOCATION_PERM = 123;
-  // Todo remove
-  private static final int TODAY = 0;
   private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
 
   @BindView(R.id.layout_drawer) DrawerLayout drawerLayout;
