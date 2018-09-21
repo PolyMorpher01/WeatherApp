@@ -1,4 +1,4 @@
-package com.ayush.weatherapp.repository.weather;
+package com.ayush.weatherapp.repository.forecast;
 
 import com.ayush.weatherapp.entities.forecast.ForecastEntity;
 import com.ayush.weatherapp.mapper.ForecastRealmToEntityMapper;
@@ -6,8 +6,8 @@ import com.ayush.weatherapp.realm.RealmUtils;
 import com.ayush.weatherapp.realm.model.forecast.Forecast;
 import io.reactivex.Observable;
 
-public class LocalWeatherRepositoryImpl implements WeatherRepository {
-  public LocalWeatherRepositoryImpl() {
+public class LocalForecastRepositoryImpl implements ForecastRepository {
+  public LocalForecastRepositoryImpl() {
   }
 
   @Override public Observable<ForecastEntity> getForecast(double lat, double lng, boolean isCurrentLocation) {

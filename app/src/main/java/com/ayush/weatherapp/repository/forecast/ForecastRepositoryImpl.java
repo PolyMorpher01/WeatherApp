@@ -1,4 +1,4 @@
-package com.ayush.weatherapp.repository.weather;
+package com.ayush.weatherapp.repository.forecast;
 
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
@@ -17,16 +17,15 @@ import io.reactivex.Observable;
 import io.realm.Realm;
 import java.util.List;
 
-//TODO rename weather to forecast
-public class WeatherRepositoryImpl implements WeatherRepository {
+public class ForecastRepositoryImpl implements ForecastRepository {
   @Temperature private static int defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
-  private WeatherRepository onlineWeatherRepository;
-  private WeatherRepository localWeatherRepository;
+  private ForecastRepository onlineForecastRepository;
+  private ForecastRepository localForecastRepository;
   private PreferenceRepository preferenceRepository;
 
-  public WeatherRepositoryImpl() {
-    onlineWeatherRepository = new OnlineWeatherRepositoryImpl();
-    localWeatherRepository = new LocalWeatherRepositoryImpl();
+  public ForecastRepositoryImpl() {
+    onlineForecastRepository = new OnlineForecastRepositoryImpl();
+    localForecastRepository = new LocalForecastRepositoryImpl();
     preferenceRepository = PreferenceRepositoryImpl.get();
   }
 
@@ -47,14 +46,14 @@ public class WeatherRepositoryImpl implements WeatherRepository {
 
   private Observable<ForecastEntity> getLocalObservable(double lat, double lng,
       boolean isCurrentLocation) {
-    return localWeatherRepository.getForecast(lat, lng, isCurrentLocation)
+    return localForecastRepository.getForecast(lat, lng, isCurrentLocation)
         //initialize value again
         .doOnNext(entity -> defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT);
   }
 
   private Observable<ForecastEntity> getOnlineObservable(double lat, double lng,
       boolean isCurrentLocation) {
-    return onlineWeatherRepository.getForecast(lat, lng, isCurrentLocation)
+    return onlineForecastRepository.getForecast(lat, lng, isCurrentLocation)
         //initialize value again
         .doOnNext(entity -> defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT)
         .map(entity -> {

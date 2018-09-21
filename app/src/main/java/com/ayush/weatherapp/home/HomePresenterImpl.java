@@ -17,7 +17,7 @@ import com.ayush.weatherapp.repository.geocoding.GeocodingRepository;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepositoryImpl;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
-import com.ayush.weatherapp.repository.weather.WeatherRepositoryImpl;
+import com.ayush.weatherapp.repository.forecast.ForecastRepositoryImpl;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -40,7 +40,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
   private PreferenceRepository preferenceRepository;
   private ForecastEntity forecast;
-  private WeatherRepositoryImpl weatherRepositoryImpl;
+  private ForecastRepositoryImpl weatherRepositoryImpl;
   private GeocodingRepository geocodingRepository;
 
   // TODO dagger
@@ -52,7 +52,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     super.attachView(view);
     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
     preferenceRepository.onPreferenceChangeListener(newTemperature -> setForecastView());
-    weatherRepositoryImpl = new WeatherRepositoryImpl();
+    weatherRepositoryImpl = new ForecastRepositoryImpl();
     geocodingRepository = new GeocodingRepositoryImpl();
   }
 
