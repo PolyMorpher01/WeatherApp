@@ -1,6 +1,8 @@
 package com.ayush.weatherapp.repository.forecast;
 
 import com.ayush.weatherapp.entities.forecast.ForecastEntity;
+import com.ayush.weatherapp.injection.annotations.Local;
+import com.ayush.weatherapp.injection.annotations.Remote;
 import com.ayush.weatherapp.mapper.ForecastEntityToRealmMapper;
 import com.ayush.weatherapp.realm.RealmUtils;
 import com.ayush.weatherapp.realm.model.forecast.Forecast;
@@ -14,8 +16,8 @@ public class ForecastRepositoryImpl implements ForecastRepository {
   private ForecastRepository remoteForecastRepository;
   private ForecastRepository localForecastRepository;
 
-  @Inject public ForecastRepositoryImpl(LocalForecastRepositoryImpl localForecastRepository,
-      RemoteForecastRepositoryImpl remoteForecastRepository) {
+  @Inject public ForecastRepositoryImpl(@Local LocalForecastRepositoryImpl localForecastRepository,
+     @Remote RemoteForecastRepositoryImpl remoteForecastRepository) {
     this.localForecastRepository = localForecastRepository;
     this.remoteForecastRepository = remoteForecastRepository;
   }

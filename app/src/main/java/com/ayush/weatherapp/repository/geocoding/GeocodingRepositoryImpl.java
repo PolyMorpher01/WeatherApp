@@ -10,12 +10,12 @@ import io.realm.Realm;
 import java.util.List;
 
 public class GeocodingRepositoryImpl implements GeocodingRepository {
-  private GeocodingRepository onlineRepository;
+  private GeocodingRepository remoteRepository;
   private GeocodingRepository localRepository;
 
   // TODO provide dependencies using dagger
   public GeocodingRepositoryImpl() {
-    onlineRepository = new OnlineGeocodingRepositoryImpl();
+    remoteRepository = new RemoteGeocodingRepositoryImpl();
     localRepository = new LocalGeocodingRepositoryImpl();
   }
 
@@ -23,26 +23,26 @@ public class GeocodingRepositoryImpl implements GeocodingRepository {
   public Observable<GeolocationEntity> getLocation(double lat, double lng,
       boolean isCurrentLocation) {
     if (RealmUtils.isSavedLocally(GeoLocation.class) && isCurrentLocation) {
-      return getLocalObservable(lat, lng, isCurrentLocation)
+      return getLocalGeolocation(lat, lng, isCurrentLocation)
           .flatMap(entity -> {
             //fetch from online repository if last row created was more than five minutes ago
             if (DateUtils.isFiveMinutesAgo(entity.getCreatedAt())) {
-              return getOnlineObservable(lat, lng, isCurrentLocation);
+              return getRemoteGeolocation(lat, lng, isCurrentLocation);
             }
-            return getLocalObservable(lat, lng, isCurrentLocation);
+            return getLocalGeolocation(lat, lng, isCurrentLocation);
           });
     }
-    return getOnlineObservable(lat, lng, isCurrentLocation);
+    return getRemoteGeolocation(lat, lng, isCurrentLocation);
   }
 
-  private Observable<GeolocationEntity> getLocalObservable(double lat, double lng,
+  private Observable<GeolocationEntity> getLocalGeolocation(double lat, double lng,
       boolean isCurrentLocation) {
     return localRepository.getLocation(lat, lng, isCurrentLocation);
   }
 
-  private Observable<GeolocationEntity> getOnlineObservable(double lat, double lng,
+  private Observable<GeolocationEntity> getRemoteGeolocation(double lat, double lng,
       boolean isCurrentLocation) {
-    return onlineRepository.getLocation(lat, lng, isCurrentLocation)
+    return remoteRepository.getLocation(lat, lng, isCurrentLocation)
         .doOnNext(geoLocation -> {
 
           //save details of current location only

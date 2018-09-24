@@ -7,10 +7,10 @@ import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIClient;
 import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIInterface;
 import io.reactivex.Observable;
 
-public class OnlineGeocodingRepositoryImpl implements GeocodingRepository {
+public class RemoteGeocodingRepositoryImpl implements GeocodingRepository {
   private GeocodingAPIInterface geocodingAPIInterface;
 
-  public OnlineGeocodingRepositoryImpl() {
+  public RemoteGeocodingRepositoryImpl() {
     geocodingAPIInterface = GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
   }
 
