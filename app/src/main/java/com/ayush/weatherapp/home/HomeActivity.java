@@ -29,6 +29,7 @@ import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import com.ayush.weatherapp.R;
+import com.ayush.weatherapp.WeatherApplication;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.constants.WeatherImage;
@@ -47,6 +48,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
 import java.util.List;
+import javax.inject.Inject;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -59,6 +61,7 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
   // Todo remove
   private static final int TODAY = 0;
   private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+
 
   @BindView(R.id.layout_drawer) DrawerLayout drawerLayout;
   @BindView(R.id.nav_view) NavigationView navigationView;
@@ -81,10 +84,6 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
   @BindView(R.id.ll_msg_error) LinearLayout llMessageError;
 
   private TabPagerAdapter tabPagerAdapter;
-
-  @Override public HomePresenterImpl getPresenter() {
-    return new HomePresenterImpl();
-  }
 
   @Override protected int getLayoutId() {
     return R.layout.activity_home;
@@ -110,8 +109,13 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     drawerLayout.closeDrawers();
   }
 
+  @Override public void injectDagger() {
+    ((WeatherApplication)getApplication()).getApplicationComponent().inject(this);
+  }
+
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
     initToolbar(toolbar);
     showTitleBar(false);
     tabPagerAdapter = new TabPagerAdapter(getSupportFragmentManager());

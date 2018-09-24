@@ -1,14 +1,11 @@
 package com.ayush.weatherapp.repository.weather;
 
-import android.content.Context;
-import com.ayush.weatherapp.WeatherApplication;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.entities.CurrentForecastEntity;
 import com.ayush.weatherapp.entities.DailyDataEntity;
 import com.ayush.weatherapp.entities.ForecastEntity;
 import com.ayush.weatherapp.entities.HourlyDataEntity;
-import com.ayush.weatherapp.injection.module.ApplicationModule;
 import com.ayush.weatherapp.mapper.ForecastRealmToEntityMapper;
 import com.ayush.weatherapp.realm.RealmUtils;
 import com.ayush.weatherapp.realm.model.Forecast;
@@ -26,10 +23,6 @@ public class WeatherRepositoryImpl implements WeatherRepository {
   private WeatherDataStore localWeatherRepository;
   private PreferenceRepository preferenceRepository;
 
-  public WeatherRepositoryImpl(Context context) {
-    WeatherApplication.get(context).getApplicationComponent().inject(this);
-  }
-
   @Inject public WeatherRepositoryImpl(OnlineWeatherDataStoreImpl onlineWeatherDataStore,
       LocalWeatherDataStoreImpl localWeatherDataStore) {
     onlineWeatherRepository = onlineWeatherDataStore;
@@ -39,14 +32,14 @@ public class WeatherRepositoryImpl implements WeatherRepository {
 
   @Override public Observable<ForecastEntity> getForecast(String coordinates) {
     return Observable.create(emitter -> {
-      localWeatherRepository.getForecast(coordinates)
-          .map(forecast -> {
-            //initialize value again
-            defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
-            return ForecastRealmToEntityMapper.transform(forecast);
-          })
-          .subscribe(emitter::onNext, throwable -> {
-          });
+      //localWeatherRepository.getForecast(coordinates)
+      //    .map(forecast -> {
+      //      //initialize value again
+      //      defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
+      //      return ForecastRealmToEntityMapper.transform(forecast);
+      //    })
+      //    .subscribe(emitter::onNext, throwable -> {
+      //    });
 
       onlineWeatherRepository.getForecast(coordinates)
           .doOnSuccess(this::saveWeatherForecast)

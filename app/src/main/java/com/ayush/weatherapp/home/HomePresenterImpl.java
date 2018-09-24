@@ -18,7 +18,6 @@ import com.ayush.weatherapp.repository.geocoding.GeocodingRepositoryImpl;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
 import com.ayush.weatherapp.repository.weather.WeatherRepository;
-import com.ayush.weatherapp.repository.weather.WeatherRepositoryImpl;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.Address;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponents;
 import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocation;
@@ -32,6 +31,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import java.util.List;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
@@ -50,12 +50,14 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
   private PreferenceRepository preferenceRepository;
   private ForecastEntity forecast;
-  private WeatherRepository weatherRepositoryImpl;
+
   private GeocodingRepository geocodingRepository;
+  private WeatherRepository weatherRepository;
 
   // TODO dagger
-  public HomePresenterImpl() {
+  @Inject public HomePresenterImpl(WeatherRepository weatherRepository) {
     preferenceRepository = PreferenceRepositoryImpl.get();
+    this.weatherRepository = weatherRepository;
   }
 
   @Override public void attachView(HomeContract.View view) {
@@ -69,7 +71,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
       }
       setForecastView();
     });//todo
-    weatherRepositoryImpl = new WeatherRepositoryImpl(getContext());
+    //weatherRepositoryImpl = new WeatherRepositoryImpl(getContext());
     geocodingRepository = new GeocodingRepositoryImpl();
   }
 
@@ -184,6 +186,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
           @Override public void onError(Throwable e) {
             Timber.e(e);
+            e.printStackTrace();
           }
 
           @Override public void onComplete() {
@@ -263,7 +266,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   private void fetchWeatherForecast(String latLng) {
-    Disposable disposable = weatherRepositoryImpl.getForecast(latLng)
+    Disposable disposable = weatherRepository.getForecast(latLng)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .doOnSubscribe(d -> getView().showProgressBar(""))
@@ -275,6 +278,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
           @Override public void onError(Throwable e) {
             getView().onFailure("Error fetching new data");
+            e.printStackTrace();
           /*  getView().changeErrorVisibility(true);
             getView().showErrorMessage();*/
             getView().hideProgressBar();
@@ -297,7 +301,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   private void setForecastView() {
-    weatherRepositoryImpl.checkTemperatureUnit(forecast);
+    weatherRepository.checkTemperatureUnit(forecast);
     getView().setDailyForeCast(forecast.getDailyForecastEntity().getDailyDataEntityList());
     getView().setHourlyForeCast(forecast.getHourlyForecastEntity().getHourlyDataEntityList());
     getView().setCurrentForecast(forecast.getCurrentForecastEntity());

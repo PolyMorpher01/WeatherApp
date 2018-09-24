@@ -3,16 +3,18 @@ package com.ayush.weatherapp.mvp;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import javax.inject.Inject;
 
 public abstract class MVPBaseActivity<T extends BasePresenterImpl> extends BaseActivity
     implements BaseContract.BaseView {
-  protected T presenter;
 
-  public abstract T getPresenter();
+  @Inject protected T presenter;
+
+  public abstract void injectDagger();
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    presenter = getPresenter();
+    injectDagger();
     presenter.attachView(this);
   }
 
