@@ -7,11 +7,11 @@ import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIClient;
 import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIInterface;
 import io.reactivex.Observable;
 
-public class OnlineForecastRepositoryImpl implements ForecastRepository {
+public class RemoteForecastRepositoryImpl implements ForecastRepository {
   private WeatherAPIInterface weatherApiInterface;
 
   // TODO provide dependencies using dagger
-  public OnlineForecastRepositoryImpl() {
+  public RemoteForecastRepositoryImpl() {
     weatherApiInterface = WeatherAPIClient.getClient().create(WeatherAPIInterface.class);
   }
 

@@ -30,8 +30,6 @@ public class WeatherApplication extends Application {
     initializeStetho();
 
     initApplicationComponent();
-
-    //PreferenceRepositoryImpl.init(this);
   }
 
   private void initializeRealm() {
@@ -46,9 +44,6 @@ public class WeatherApplication extends Application {
             .build());
   }
 
-  public Application getApplicationObject() {
-    return this;
-  }
 
   public void initApplicationComponent() {
     if (applicationComponent == null) {

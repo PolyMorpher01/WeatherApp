@@ -38,7 +38,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     implements HomeContract.Presenter {
   private static final int LOCATION_REQ_INTERVAL = 10000;
   private static final int FASTEST_LOCATION_REQ_INTERVAL = 5000;
-  @Temperature private static int defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
+  @Temperature private int defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
   private FusedLocationProviderClient fusedLocationProviderClient;
   private LocationRequest locationRequest;
   private LocationCallback locationCallback;
@@ -178,7 +178,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
           @Override public void onError(Throwable e) {
             Timber.e(e);
-            e.printStackTrace();
 
             getView().setAddress(getString(R.string.not_available));
           }
@@ -224,7 +223,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
 
           @Override public void onError(Throwable e) {
             Timber.e(e);
-            e.printStackTrace();
             getView().onFailure("Error fetching new data");
 
             //todo remove comment
@@ -295,7 +293,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private void convertDailyData(List<DailyDataEntity> dailyDatas) {
     if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
       for (DailyDataEntity dailyData : dailyDatas) {
-        dailyData.setWindSpeed(UnitConversionUtils.mphToKmph(dailyData.getWindSpeed()));
         dailyData.setTemperatureHigh(
             (int) UnitConversionUtils.fahrenheitToCelsius(dailyData.getTemperatureHigh()));
         dailyData.setTemperatureLow(
@@ -303,7 +300,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
       }
     } else {
       for (DailyDataEntity dailyData : dailyDatas) {
-        dailyData.setWindSpeed(UnitConversionUtils.kmphToMph(dailyData.getWindSpeed()));
         dailyData.setTemperatureHigh(
             (int) UnitConversionUtils.celsiusToFahrenheit(dailyData.getTemperatureHigh()));
         dailyData.setTemperatureLow(

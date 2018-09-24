@@ -109,7 +109,7 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
   }
 
   @Override public void injectDagger() {
-    ((WeatherApplication)getApplication()).getApplicationComponent().inject(this);
+    getActivityComponent().inject(this);
   }
 
   @Override protected void onCreate(Bundle savedInstanceState) {

@@ -2,10 +2,11 @@ package com.ayush.weatherapp.injection.module;
 
 import android.app.Application;
 import android.content.Context;
+import com.ayush.weatherapp.injection.annotations.ApplicationContext;
 import com.ayush.weatherapp.repository.forecast.ForecastRepository;
 import com.ayush.weatherapp.repository.forecast.ForecastRepositoryImpl;
 import com.ayush.weatherapp.repository.forecast.LocalForecastRepositoryImpl;
-import com.ayush.weatherapp.repository.forecast.OnlineForecastRepositoryImpl;
+import com.ayush.weatherapp.repository.forecast.RemoteForecastRepositoryImpl;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
 import dagger.Module;
@@ -20,7 +21,7 @@ import javax.inject.Singleton;
     mApplication = application;
   }
 
-  @Provides Application provideApplication() {
+  @Provides @ApplicationContext Application provideApplication() {
     return mApplication;
   }
 
@@ -30,7 +31,7 @@ import javax.inject.Singleton;
 
   @Provides ForecastRepository provideWeatherDataStore(
       LocalForecastRepositoryImpl localForecastRepository,
-      OnlineForecastRepositoryImpl onlineForecastRepository) {
+      RemoteForecastRepositoryImpl onlineForecastRepository) {
     return new ForecastRepositoryImpl(localForecastRepository, onlineForecastRepository);
   }
 
@@ -38,8 +39,8 @@ import javax.inject.Singleton;
     return new LocalForecastRepositoryImpl();
   }
 
-  @Provides OnlineForecastRepositoryImpl provideOnlineWeatherRepository() {
-    return new OnlineForecastRepositoryImpl();
+  @Provides RemoteForecastRepositoryImpl provideOnlineWeatherRepository() {
+    return new RemoteForecastRepositoryImpl();
   }
 
   @Singleton @Provides PreferenceRepository providePreferenceRepository(Context context) {
