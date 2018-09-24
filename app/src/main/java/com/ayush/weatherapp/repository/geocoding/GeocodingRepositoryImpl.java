@@ -1,6 +1,8 @@
 package com.ayush.weatherapp.repository.geocoding;
 
 import com.ayush.weatherapp.entities.geocoding.GeolocationEntity;
+import com.ayush.weatherapp.injection.annotations.Local;
+import com.ayush.weatherapp.injection.annotations.Remote;
 import com.ayush.weatherapp.mapper.GeocodingEntityToRealmMapper;
 import com.ayush.weatherapp.realm.RealmUtils;
 import com.ayush.weatherapp.realm.model.geocoding.GeoLocation;
@@ -8,15 +10,17 @@ import com.ayush.weatherapp.utils.DateUtils;
 import io.reactivex.Observable;
 import io.realm.Realm;
 import java.util.List;
+import javax.inject.Inject;
 
 public class GeocodingRepositoryImpl implements GeocodingRepository {
   private GeocodingRepository remoteRepository;
   private GeocodingRepository localRepository;
 
-  // TODO provide dependencies using dagger
-  public GeocodingRepositoryImpl() {
-    remoteRepository = new RemoteGeocodingRepositoryImpl();
-    localRepository = new LocalGeocodingRepositoryImpl();
+  @Inject
+  public GeocodingRepositoryImpl(@Local LocalGeocodingRepositoryImpl localGeocodingRepository,
+      @Remote RemoteGeocodingRepositoryImpl remoteGeocodingRepository) {
+    localRepository = localGeocodingRepository;
+    remoteRepository = remoteGeocodingRepository;
   }
 
   @Override

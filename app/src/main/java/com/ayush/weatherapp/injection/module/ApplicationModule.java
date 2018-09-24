@@ -7,6 +7,10 @@ import com.ayush.weatherapp.repository.forecast.ForecastRepository;
 import com.ayush.weatherapp.repository.forecast.ForecastRepositoryImpl;
 import com.ayush.weatherapp.repository.forecast.LocalForecastRepositoryImpl;
 import com.ayush.weatherapp.repository.forecast.RemoteForecastRepositoryImpl;
+import com.ayush.weatherapp.repository.geocoding.GeocodingRepository;
+import com.ayush.weatherapp.repository.geocoding.GeocodingRepositoryImpl;
+import com.ayush.weatherapp.repository.geocoding.LocalGeocodingRepositoryImpl;
+import com.ayush.weatherapp.repository.geocoding.RemoteGeocodingRepositoryImpl;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
 import dagger.Module;
@@ -29,21 +33,35 @@ import javax.inject.Singleton;
     return mApplication;
   }
 
-  @Provides ForecastRepository provideWeatherDataStore(
+  @Singleton @Provides PreferenceRepository providePreferenceRepository(Context context) {
+    return new PreferenceRepositoryImpl(context);
+  }
+
+  @Provides ForecastRepository provideForecastRepository(
       LocalForecastRepositoryImpl localForecastRepository,
       RemoteForecastRepositoryImpl onlineForecastRepository) {
     return new ForecastRepositoryImpl(localForecastRepository, onlineForecastRepository);
   }
 
-  @Provides LocalForecastRepositoryImpl provideLocalWeatherRepository() {
+  @Provides LocalForecastRepositoryImpl provideLocalForecastRepository() {
     return new LocalForecastRepositoryImpl();
   }
 
-  @Provides RemoteForecastRepositoryImpl provideOnlineWeatherRepository() {
+  @Provides RemoteForecastRepositoryImpl provideOnlineForecastRepository() {
     return new RemoteForecastRepositoryImpl();
   }
 
-  @Singleton @Provides PreferenceRepository providePreferenceRepository(Context context) {
-    return new PreferenceRepositoryImpl(context);
+  @Provides GeocodingRepository provideGeocodingRepository(
+      LocalGeocodingRepositoryImpl localGeocodingRepository,
+      RemoteGeocodingRepositoryImpl remoteGeocodingRepository) {
+    return new GeocodingRepositoryImpl(localGeocodingRepository, remoteGeocodingRepository);
+  }
+
+  @Provides LocalGeocodingRepositoryImpl provideLocalGeocodingRepository() {
+    return new LocalGeocodingRepositoryImpl();
+  }
+
+  @Provides RemoteGeocodingRepositoryImpl provideRemoteGeocodingRepository() {
+    return new RemoteGeocodingRepositoryImpl();
   }
 }
