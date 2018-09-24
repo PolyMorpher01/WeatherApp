@@ -6,12 +6,13 @@ import com.ayush.weatherapp.mapper.GeocodingRealmToEntityMapper;
 import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIClient;
 import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIInterface;
 import io.reactivex.Observable;
+import javax.inject.Inject;
 
 public class RemoteGeocodingRepositoryImpl implements GeocodingRepository {
   private GeocodingAPIInterface geocodingAPIInterface;
 
-  public RemoteGeocodingRepositoryImpl() {
-    geocodingAPIInterface = GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
+ @Inject public RemoteGeocodingRepositoryImpl(GeocodingAPIInterface geocodingAPIInterface) {
+    this.geocodingAPIInterface = geocodingAPIInterface;
   }
 
   @Override

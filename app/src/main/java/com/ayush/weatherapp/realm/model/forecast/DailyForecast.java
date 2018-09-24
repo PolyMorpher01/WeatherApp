@@ -50,7 +50,6 @@ public class DailyForecast extends RealmObject implements RealmDeletable {
   }
 
   @Override public void removeFromRealm() {
-    //todo ask subash
     if (dailyDataList != null) {
       for (int i = dailyDataList.size() - 1; i >= 0; i--) {
         dailyDataList.get(i).removeFromRealm();

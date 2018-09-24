@@ -222,10 +222,6 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
           @Override public void onError(Throwable e) {
             Timber.e(e);
             getView().onFailure("Error fetching new data");
-
-            //todo remove comment
-          /*  getView().changeErrorVisibility(true);
-            getView().showErrorMessage();*/
             getView().hideProgressBar();
           }
 

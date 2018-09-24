@@ -13,6 +13,10 @@ import com.ayush.weatherapp.repository.geocoding.LocalGeocodingRepositoryImpl;
 import com.ayush.weatherapp.repository.geocoding.RemoteGeocodingRepositoryImpl;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
+import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIClient;
+import com.ayush.weatherapp.retrofit.geocodingApi.GeocodingAPIInterface;
+import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIClient;
+import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIInterface;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -47,8 +51,9 @@ import javax.inject.Singleton;
     return new LocalForecastRepositoryImpl();
   }
 
-  @Provides RemoteForecastRepositoryImpl provideOnlineForecastRepository() {
-    return new RemoteForecastRepositoryImpl();
+  @Provides RemoteForecastRepositoryImpl provideOnlineForecastRepository(
+      WeatherAPIInterface weatherAPIInterface) {
+    return new RemoteForecastRepositoryImpl(weatherAPIInterface);
   }
 
   @Provides GeocodingRepository provideGeocodingRepository(
@@ -61,7 +66,16 @@ import javax.inject.Singleton;
     return new LocalGeocodingRepositoryImpl();
   }
 
-  @Provides RemoteGeocodingRepositoryImpl provideRemoteGeocodingRepository() {
-    return new RemoteGeocodingRepositoryImpl();
+  @Provides RemoteGeocodingRepositoryImpl provideRemoteGeocodingRepository(
+      GeocodingAPIInterface geocodingAPIInterface) {
+    return new RemoteGeocodingRepositoryImpl(geocodingAPIInterface);
+  }
+
+  @Singleton @Provides WeatherAPIInterface getWeatherApiInterface() {
+    return WeatherAPIClient.getClient().create(WeatherAPIInterface.class);
+  }
+
+  @Singleton @Provides GeocodingAPIInterface getGeocodingApiInterface() {
+    return GeocodingAPIClient.getClient().create(GeocodingAPIInterface.class);
   }
 }
