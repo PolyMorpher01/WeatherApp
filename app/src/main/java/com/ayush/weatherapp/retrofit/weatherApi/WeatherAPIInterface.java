@@ -1,13 +1,12 @@
 package com.ayush.weatherapp.retrofit.weatherApi;
 
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.ForecastDTO;
+import com.ayush.weatherapp.retrofit.weatherApi.model.ForecastDTO;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
 public interface WeatherAPIInterface {
 
-  @GET("{coordinates}?exclude=minutely,alerts,flags") Single<ForecastDTO> getForecast(
-      @Path("coordinates") String coordinates);
+  @GET("{lat},{lng}?exclude=minutely,alerts,flags") Observable<ForecastDTO> getForecast(
+      @Path("lat") double lat, @Path("lng") double lng);
 }

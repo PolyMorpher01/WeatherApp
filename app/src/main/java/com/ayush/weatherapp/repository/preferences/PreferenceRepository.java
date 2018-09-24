@@ -5,9 +5,13 @@ public interface PreferenceRepository {
 
   int getTemperatureUnit();
 
-  void saveCurrentLocationCoordinates(String latlng);
+  void saveLatitude(double lat);
 
-  String getCurrentLocationCoordinates();
+  void saveLongitude(double lng);
+
+  double getLatitude();
+
+  double getLongitude();
 
   void onPreferenceChangeListener(PreferenceChangeListener changeListener);
 }

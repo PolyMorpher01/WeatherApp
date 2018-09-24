@@ -22,7 +22,8 @@
   <string name="location_services_not_enabled">Please enable location services</string>
   <string name="open_location_settings">Open location settings</string>
 
-  <string name="google_places_api_key">AIzaSyDCRsLiCmzX3f4oL5iLJMrhLfe9iOE5o60</string>
+  //use server key
+  <string name="google_places_api_key">AIzaSyAKYfbFODULhRV1rpYhT14xvFC5d_65TNc</string>
   <string name="current_location">Current Location</string>
   <string name="error_heading">It feels terrible.</string>
   <string name="error_subheading">Something went wrong</string>

@@ -7,8 +7,10 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GeocodingAPIClient {
-  private static final String API_BASE_URL =
-      "https://maps.googleapis.com/maps/api/geocode/";
+
+  //source: https://wiki.openstreetmap.org/wiki/Nominatim#Reverse_Geocoding
+
+  private static final String API_BASE_URL = "https://nominatim.openstreetmap.org/";
 
   private GeocodingAPIClient() {
   }

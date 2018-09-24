@@ -7,7 +7,7 @@ import java.util.Locale;
 import static android.text.format.DateUtils.isToday;
 
 public final class DateUtils {
-
+  private static final long FIVE_MINUTES = 5 * 60 * 1000;
   private static final String DAY_OF_THE_WEEK = "EE";
   private static final String HH_MM_AA = "hh:mm aa";
 
@@ -29,5 +29,14 @@ public final class DateUtils {
     Date date = new Date(timeStamp * 1000);
 
     return new SimpleDateFormat(HH_MM_AA, Locale.getDefault()).format(date);
+  }
+
+  public static long getCurrentTimeStamp() {
+    return System.currentTimeMillis();
+  }
+
+  public static boolean isFiveMinutesAgo(long checkTime) {
+    long fiveMinutesAgo = getCurrentTimeStamp() - FIVE_MINUTES;
+    return checkTime < fiveMinutesAgo;
   }
 }

@@ -1,6 +1,7 @@
 package com.ayush.weatherapp.realm;
 
 import android.support.annotation.Nullable;
+import com.ayush.weatherapp.realm.model.forecast.Forecast;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmModel;
@@ -62,6 +63,13 @@ public final class RealmUtils {
     }
     realm.close();
     return realmModelCopy;
+  }
+
+  public static <E extends RealmModel> boolean isSavedLocally(Class<E> mClass) {
+    Realm realm = RealmUtils.getRealm();
+    boolean isSavedLocally = realm.where(mClass).count() > 0;
+    realm.close();
+    return isSavedLocally;
   }
 
   public static void removeAll() {

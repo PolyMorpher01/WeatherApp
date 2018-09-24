@@ -1,9 +1,9 @@
 package com.ayush.weatherapp.repository.geocoding;
 
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocation;
+import com.ayush.weatherapp.entities.geocoding.GeolocationEntity;
 import io.reactivex.Observable;
 
 public interface GeocodingRepository {
 
-  Observable<GeoLocation> getLocationDetails(String latlng);
+  Observable<GeolocationEntity> getLocation(double lat, double lng, boolean isCurrentLocation);
 }

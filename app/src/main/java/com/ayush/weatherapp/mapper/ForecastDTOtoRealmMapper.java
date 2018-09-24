@@ -1,18 +1,19 @@
 package com.ayush.weatherapp.mapper;
 
 import com.ayush.weatherapp.realm.RealmUtils;
-import com.ayush.weatherapp.realm.model.CurrentForecast;
-import com.ayush.weatherapp.realm.model.DailyData;
-import com.ayush.weatherapp.realm.model.DailyForecast;
-import com.ayush.weatherapp.realm.model.Forecast;
-import com.ayush.weatherapp.realm.model.HourlyData;
-import com.ayush.weatherapp.realm.model.HourlyForecast;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.CurrentForecastDTO;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyDataDTO;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.DailyForecastDTO;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.ForecastDTO;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyDataDTO;
-import com.ayush.weatherapp.retrofit.weatherApi.pojo.HourlyForecastDTO;
+import com.ayush.weatherapp.realm.model.forecast.CurrentForecast;
+import com.ayush.weatherapp.realm.model.forecast.DailyData;
+import com.ayush.weatherapp.realm.model.forecast.DailyForecast;
+import com.ayush.weatherapp.realm.model.forecast.Forecast;
+import com.ayush.weatherapp.realm.model.forecast.HourlyData;
+import com.ayush.weatherapp.realm.model.forecast.HourlyForecast;
+import com.ayush.weatherapp.retrofit.weatherApi.model.CurrentForecastDTO;
+import com.ayush.weatherapp.retrofit.weatherApi.model.DailyDataDTO;
+import com.ayush.weatherapp.retrofit.weatherApi.model.DailyForecastDTO;
+import com.ayush.weatherapp.retrofit.weatherApi.model.ForecastDTO;
+import com.ayush.weatherapp.retrofit.weatherApi.model.HourlyDataDTO;
+import com.ayush.weatherapp.retrofit.weatherApi.model.HourlyForecastDTO;
+import com.ayush.weatherapp.utils.DateUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,12 +26,10 @@ public final class ForecastDTOtoRealmMapper {
     long primaryKey = RealmUtils.getMaxIdForPrimaryKey(Forecast.class);
     Forecast forecast = new Forecast(++primaryKey);
 
-    forecast.setLatitude(dto.getLatitude());
-    forecast.setLongitude(dto.getLongitude());
-    forecast.setTimezone(dto.getTimezone());
     forecast.setCurrentForecast(transform(dto.getCurrentForecastDTO()));
     forecast.setDailyForecast(transform(dto.getDailyForecastDTO()));
     forecast.setHourlyForecast(transform(dto.getHourlyForecastDTO()));
+    forecast.setCreatedAt(DateUtils.getCurrentTimeStamp());
 
     return forecast;
   }
@@ -43,13 +42,6 @@ public final class ForecastDTOtoRealmMapper {
     currentForecast.setSummary(dto.getSummary());
     currentForecast.setIcon(dto.getIcon());
     currentForecast.setTemperature(dto.getTemperature());
-    currentForecast.setApparentTemperature(dto.getApparentTemperature());
-    currentForecast.setDewPoint(dto.getDewPoint());
-    currentForecast.setHumidity(dto.getHumidity());
-    currentForecast.setPressure(dto.getHumidity());
-    currentForecast.setPressure(dto.getPressure());
-    currentForecast.setWindSpeed(dto.getWindSpeed());
-    currentForecast.setVisibility(dto.getVisibility());
 
     return currentForecast;
   }
@@ -93,8 +85,6 @@ public final class ForecastDTOtoRealmMapper {
     dailyData.setSunsetTime(dto.getSunsetTime());
     dailyData.setTemperatureHigh(dto.getTemperatureHigh());
     dailyData.setTemperatureLow(dto.getTemperatureLow());
-    dailyData.setApparentTemperatureHigh(dto.getApparentTemperatureHigh());
-    dailyData.setApparentTemperatureLow(dto.getApparentTemperatureLow());
     dailyData.setWindSpeed(dto.getWindSpeed());
 
     return dailyData;
@@ -131,7 +121,6 @@ public final class ForecastDTOtoRealmMapper {
     hourlyData.setTime(dto.getTime());
     hourlyData.setSummary(dto.getSummary());
     hourlyData.setTemperature(dto.getTemperature());
-    hourlyData.setApparentTemperature(dto.getApparentTemperature());
 
     return hourlyData;
   }

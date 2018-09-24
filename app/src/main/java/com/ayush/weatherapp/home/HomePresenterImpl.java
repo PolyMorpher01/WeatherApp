@@ -7,20 +7,20 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
-import android.text.TextUtils;
 import com.ayush.weatherapp.R;
 import com.ayush.weatherapp.constants.Temperature;
 import com.ayush.weatherapp.constants.TemperatureUnit;
-import com.ayush.weatherapp.entities.ForecastEntity;
+import com.ayush.weatherapp.entities.forecast.CurrentForecastEntity;
+import com.ayush.weatherapp.entities.forecast.DailyDataEntity;
+import com.ayush.weatherapp.entities.forecast.ForecastEntity;
+import com.ayush.weatherapp.entities.forecast.HourlyDataEntity;
+import com.ayush.weatherapp.entities.geocoding.GeolocationEntity;
 import com.ayush.weatherapp.mvp.BasePresenterImpl;
+import com.ayush.weatherapp.repository.forecast.ForecastRepository;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepository;
 import com.ayush.weatherapp.repository.geocoding.GeocodingRepositoryImpl;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
-import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
-import com.ayush.weatherapp.repository.weather.WeatherRepository;
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.Address;
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.AddressComponents;
-import com.ayush.weatherapp.retrofit.geocodingApi.pojo.GeoLocation;
+import com.ayush.weatherapp.utils.UnitConversionUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -38,12 +38,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     implements HomeContract.Presenter {
   private static final int LOCATION_REQ_INTERVAL = 10000;
   private static final int FASTEST_LOCATION_REQ_INTERVAL = 5000;
-
-  private static final String ADDRESS_STREET = "route";
-  private static final String ADDRESS_CITY = "locality";
-  private static final String ADDRESS_COUNTRY = "country";
-  private static final String ADDRESS_ADMINISTRATIVE_AREA = "administrative_area_level_1";
-
+  @Temperature private static int defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
   private FusedLocationProviderClient fusedLocationProviderClient;
   private LocationRequest locationRequest;
   private LocationCallback locationCallback;
@@ -51,27 +46,20 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private PreferenceRepository preferenceRepository;
   private ForecastEntity forecast;
 
+  private ForecastRepository forecastRepository;
   private GeocodingRepository geocodingRepository;
-  private WeatherRepository weatherRepository;
 
   // TODO dagger
-  @Inject public HomePresenterImpl(WeatherRepository weatherRepository, PreferenceRepository preferenceRepository) {
-    this.weatherRepository = weatherRepository;
+  @Inject public HomePresenterImpl(ForecastRepository forecastRepository,
+      PreferenceRepository preferenceRepository) {
+    this.forecastRepository = forecastRepository;
     this.preferenceRepository = preferenceRepository;
   }
 
   @Override public void attachView(HomeContract.View view) {
     super.attachView(view);
     fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-    preferenceRepository.onPreferenceChangeListener(newTemperature ->
-    {
-      //need null check because change listener gets called in first launch after app data is cleared
-      if (forecast == null) {
-        return;
-      }
-      setForecastView();
-    });//todo
-    //weatherRepositoryImpl = new WeatherRepositoryImpl(getContext());
+    preferenceRepository.onPreferenceChangeListener(newTemperature -> setForecastView());
     geocodingRepository = new GeocodingRepositoryImpl();
   }
 
@@ -101,7 +89,7 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   }
 
   @Override public void onSwipeRefresh() {
-    fetchByGivenLocation(preferenceRepository.getCurrentLocationCoordinates());
+    fetchByGivenLocation(preferenceRepository.getLatitude(), preferenceRepository.getLongitude());
   }
 
   @Override public void onCurrentLocationClicked() {
@@ -130,9 +118,11 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
             initLocationRequest();
             startLocationUpdates();
           } else {
-            String latLng = location.getLatitude() + "," + location.getLongitude();
-            fetchAddress(latLng);
-            fetchWeatherForecast(latLng);
+            double lat = location.getLatitude();
+            double lng = location.getLongitude();
+
+            fetchAddress(lat, lng, true);
+            fetchWeatherForecast(lat, lng, true);
           }
         });
   }
@@ -151,10 +141,12 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
         }
         //get only first location
         Location currentLocation = locationResult.getLocations().get(0);
-        String latLng = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
 
-        fetchAddress(latLng);
-        fetchWeatherForecast(latLng);
+        double lat = currentLocation.getLatitude();
+        double lng = currentLocation.getLongitude();
+
+        fetchAddress(lat, lng, true);
+        fetchWeatherForecast(lat, lng, true);
 
         stopLocationUpdates();
       }
@@ -175,18 +167,20 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     }
   }
 
-  private void fetchAddress(String latLng) {
-    Disposable disposable = geocodingRepository.getLocationDetails(latLng)
+  private void fetchAddress(double lat, double lng, boolean isCurrentLocation) {
+    Disposable disposable = geocodingRepository.getLocation(lat, lng, isCurrentLocation)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(new DisposableObserver<GeoLocation>() {
-          @Override public void onNext(GeoLocation geoLocation) {
+        .subscribeWith(new DisposableObserver<GeolocationEntity>() {
+          @Override public void onNext(GeolocationEntity geoLocation) {
             setLocation(geoLocation);
           }
 
           @Override public void onError(Throwable e) {
             Timber.e(e);
             e.printStackTrace();
+
+            getView().setAddress(getString(R.string.not_available));
           }
 
           @Override public void onComplete() {
@@ -196,112 +190,70 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
     addSubscription(disposable);
   }
 
-  private void setLocation(GeoLocation geoLocation) {
-    List<Address> addressList = geoLocation.getAddresses();
-    getView().setAddress(getAddress(addressList));
-  }
-
   @Override public void searchLocation(double lat, double lng) {
-    String latlng = lat + "," + lng;
-    fetchByGivenLocation(latlng);
+    fetchByGivenLocation(lat, lng);
   }
 
-  private void fetchByGivenLocation(String latlng) {
+  private void fetchByGivenLocation(double lat, double lng) {
     if (isLocationServicesEnabled()) {
-      fetchWeatherForecast(latlng);
-      fetchAddress(latlng);
+      fetchWeatherForecast(lat, lng, false);
+      fetchAddress(lat, lng, false);
     }
   }
 
-  private String getAddress(List<Address> addressList) {
-
-    if (addressList == null || addressList.isEmpty()) {
-      return getString(R.string.not_available);
-    }
-
-    List<AddressComponents> addressComponentsList = addressList.get(0).getAddressComponents();
-
-    String primaryAddress = getAddressPrimary(addressComponentsList);
-    String secondaryAddress = getAddressSecondary(addressComponentsList);
-    String address = "";
-
-    if (!TextUtils.isEmpty(primaryAddress)) {
-      address = primaryAddress;
-      if (!TextUtils.isEmpty(secondaryAddress)) {
-        address += ", " + secondaryAddress;
-      }
-      return address;
-    }
-
-    //case when primary address is empty
-    if (!TextUtils.isEmpty(secondaryAddress)) {
-      address = secondaryAddress;
-      return address;
-    }
-    return address;
+  private void setLocation(GeolocationEntity geoLocation) {
+    getView().setAddress(geoLocation.getLocation());
   }
 
-  private String getAddressPrimary(List<AddressComponents> addressComponentsList) {
-    for (AddressComponents addressComponent : addressComponentsList) {
-      if (addressComponent.getTypes().contains(ADDRESS_STREET)) {
-        return addressComponent.getLongName();
-      }
-    }
-    return "";
-  }
-
-  private String getAddressSecondary(List<AddressComponents> addressComponentsList) {
-    for (AddressComponents addressComponent : addressComponentsList) {
-      if (addressComponent.getTypes().contains(ADDRESS_CITY)) {
-        return addressComponent.getLongName();
-      }
-      if (addressComponent.getTypes().contains(ADDRESS_ADMINISTRATIVE_AREA)) {
-        return addressComponent.getLongName();
-      }
-      if (addressComponent.getTypes().contains(ADDRESS_COUNTRY)) {
-        return addressComponent.getLongName();
-      }
-    }
-    return "";
-  }
-
-  private void fetchWeatherForecast(String latLng) {
-    Disposable disposable = weatherRepository.getForecast(latLng)
+  private void fetchWeatherForecast(double lat, double lng, boolean isCurrentLocation) {
+    Disposable disposable = forecastRepository.getForecast(lat, lng, isCurrentLocation)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .doOnSubscribe(d -> getView().showProgressBar(""))
         .subscribeWith(new DisposableObserver<ForecastEntity>() {
           @Override public void onNext(ForecastEntity forecast) {
-            setForecast(forecast, latLng);
-            getView().hideProgressBar();
+            //initialize value
+            defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
+
+            setForecast(forecast, lat, lng);
+
+            //save to provide coordinates during refresh
+            preferenceRepository.saveLatitude(lat);
+            preferenceRepository.saveLongitude(lng);
           }
 
           @Override public void onError(Throwable e) {
-            getView().onFailure("Error fetching new data");
+            Timber.e(e);
             e.printStackTrace();
+            getView().onFailure("Error fetching new data");
+
+            //todo remove comment
           /*  getView().changeErrorVisibility(true);
             getView().showErrorMessage();*/
             getView().hideProgressBar();
           }
 
           @Override public void onComplete() {
+            getView().hideProgressBar();
           }
         });
 
     addSubscription(disposable);
   }
 
-  private void setForecast(ForecastEntity forecast, String latLng) {
+  //todo refactor
+  private void setForecast(ForecastEntity forecast, double lat, double lng) {
     this.forecast = forecast;
     setForecastView();
     getView().changeErrorVisibility(false);
-
-    //save to provide coordinates during refresh
-    preferenceRepository.saveCurrentLocationCoordinates(latLng);
   }
 
   private void setForecastView() {
-    weatherRepository.checkTemperatureUnit(forecast);
+    if (forecast == null) {
+      return;
+    }
+
+    checkTemperatureUnit(forecast);
     getView().setDailyForeCast(forecast.getDailyForecastEntity().getDailyDataEntityList());
     getView().setHourlyForeCast(forecast.getHourlyForecastEntity().getHourlyDataEntityList());
     getView().setCurrentForecast(forecast.getCurrentForecastEntity());
@@ -327,5 +279,62 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
       return false;
     }
     return true;
+  }
+
+  public void checkTemperatureUnit(ForecastEntity forecast) {
+    //TODO logic is not elegant
+    if (preferenceRepository.getTemperatureUnit() != defaultTemperatureUnit) {
+      convertCurrentTemperature(forecast.getCurrentForecastEntity());
+      convertDailyData(forecast.getDailyForecastEntity().getDailyDataEntityList());
+      convertHourlyData(forecast.getHourlyForecastEntity().getHourlyDataEntityList());
+
+      defaultTemperatureUnit = preferenceRepository.getTemperatureUnit();
+    }
+  }
+
+  private void convertDailyData(List<DailyDataEntity> dailyDatas) {
+    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
+      for (DailyDataEntity dailyData : dailyDatas) {
+        dailyData.setWindSpeed(UnitConversionUtils.mphToKmph(dailyData.getWindSpeed()));
+        dailyData.setTemperatureHigh(
+            (int) UnitConversionUtils.fahrenheitToCelsius(dailyData.getTemperatureHigh()));
+        dailyData.setTemperatureLow(
+            (int) UnitConversionUtils.fahrenheitToCelsius(dailyData.getTemperatureLow()));
+      }
+    } else {
+      for (DailyDataEntity dailyData : dailyDatas) {
+        dailyData.setWindSpeed(UnitConversionUtils.kmphToMph(dailyData.getWindSpeed()));
+        dailyData.setTemperatureHigh(
+            (int) UnitConversionUtils.celsiusToFahrenheit(dailyData.getTemperatureHigh()));
+        dailyData.setTemperatureLow(
+            (int) UnitConversionUtils.celsiusToFahrenheit(dailyData.getTemperatureLow()));
+      }
+    }
+  }
+
+  private void convertHourlyData(List<HourlyDataEntity> hourlyDatas) {
+    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
+      for (HourlyDataEntity hourlyData : hourlyDatas) {
+        hourlyData.setTemperature(
+            (int) UnitConversionUtils.fahrenheitToCelsius(hourlyData.getTemperature()));
+      }
+    } else {
+      for (HourlyDataEntity hourlyData : hourlyDatas) {
+        hourlyData.setTemperature(
+            (int) UnitConversionUtils.celsiusToFahrenheit(hourlyData.getTemperature()));
+      }
+    }
+  }
+
+  private void convertCurrentTemperature(CurrentForecastEntity currentForecast) {
+    if (preferenceRepository.getTemperatureUnit() == TemperatureUnit.CELSIUS) {
+      currentForecast.setTemperature(
+          (int) Math.round(
+              UnitConversionUtils.fahrenheitToCelsius(currentForecast.getTemperature())));
+    } else {
+      currentForecast.setTemperature(
+          (int) Math.round(
+              UnitConversionUtils.celsiusToFahrenheit(currentForecast.getTemperature())));
+    }
   }
 }

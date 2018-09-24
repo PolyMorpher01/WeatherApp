@@ -1,9 +1,9 @@
 package com.ayush.weatherapp.home;
 
 import com.ayush.weatherapp.constants.Temperature;
-import com.ayush.weatherapp.entities.CurrentForecastEntity;
-import com.ayush.weatherapp.entities.DailyDataEntity;
-import com.ayush.weatherapp.entities.HourlyDataEntity;
+import com.ayush.weatherapp.entities.forecast.CurrentForecastEntity;
+import com.ayush.weatherapp.entities.forecast.DailyDataEntity;
+import com.ayush.weatherapp.entities.forecast.HourlyDataEntity;
 import com.ayush.weatherapp.mvp.BaseContract;
 import java.util.List;
 

@@ -35,15 +35,16 @@ import com.ayush.weatherapp.constants.TemperatureUnit;
 import com.ayush.weatherapp.constants.WeatherImage;
 import com.ayush.weatherapp.customViews.ForecastDetailCompoundView;
 import com.ayush.weatherapp.customViews.TemperatureTextView;
-import com.ayush.weatherapp.entities.CurrentForecastEntity;
-import com.ayush.weatherapp.entities.DailyDataEntity;
-import com.ayush.weatherapp.entities.HourlyDataEntity;
+import com.ayush.weatherapp.entities.forecast.CurrentForecastEntity;
+import com.ayush.weatherapp.entities.forecast.DailyDataEntity;
+import com.ayush.weatherapp.entities.forecast.HourlyDataEntity;
 import com.ayush.weatherapp.mapper.WeatherImageMapper;
 import com.ayush.weatherapp.mvp.MVPBaseActivity;
 import com.ayush.weatherapp.utils.DateUtils;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
@@ -58,8 +59,6 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     implements HomeContract.View, EasyPermissions.PermissionCallbacks {
 
   private static final int RC_LOCATION_PERM = 123;
-  // Todo remove
-  private static final int TODAY = 0;
   private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
 
 
@@ -298,6 +297,7 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
     if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
       new AppSettingsDialog.Builder(this).build().show();
     } else {
+      Toast.makeText(this, "Location permission not granted", Toast.LENGTH_SHORT).show();
       finish();
     }
   }
@@ -348,8 +348,14 @@ public class HomeActivity extends MVPBaseActivity<HomePresenterImpl>
 
   private void startPlaceAutoCompleteActivity() {
     try {
-      Intent intent =
-          new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(this);
+      AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+          .setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE)
+          .build();
+
+      Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+          .setFilter(typeFilter)
+          .build(this);
+
       startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
     } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
       Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
