@@ -5,7 +5,6 @@ import android.content.Context;
 import com.ayush.weatherapp.injection.component.ApplicationComponent;
 import com.ayush.weatherapp.injection.component.DaggerApplicationComponent;
 import com.ayush.weatherapp.injection.module.ApplicationModule;
-import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
 import com.facebook.stetho.Stetho;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 import io.realm.Realm;
@@ -32,7 +31,7 @@ public class WeatherApplication extends Application {
 
     initApplicationComponent();
 
-    PreferenceRepositoryImpl.init(this);
+    //PreferenceRepositoryImpl.init(this);
   }
 
   private void initializeRealm() {

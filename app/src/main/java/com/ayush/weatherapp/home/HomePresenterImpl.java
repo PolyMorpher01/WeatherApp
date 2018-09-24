@@ -55,9 +55,9 @@ public class HomePresenterImpl extends BasePresenterImpl<HomeContract.View>
   private WeatherRepository weatherRepository;
 
   // TODO dagger
-  @Inject public HomePresenterImpl(WeatherRepository weatherRepository) {
-    preferenceRepository = PreferenceRepositoryImpl.get();
+  @Inject public HomePresenterImpl(WeatherRepository weatherRepository, PreferenceRepository preferenceRepository) {
     this.weatherRepository = weatherRepository;
+    this.preferenceRepository = preferenceRepository;
   }
 
   @Override public void attachView(HomeContract.View view) {

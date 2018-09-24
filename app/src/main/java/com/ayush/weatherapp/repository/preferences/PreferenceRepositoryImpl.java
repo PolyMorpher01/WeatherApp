@@ -3,6 +3,7 @@ package com.ayush.weatherapp.repository.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 import com.ayush.weatherapp.constants.TemperatureUnit;
+import javax.inject.Inject;
 
 public final class PreferenceRepositoryImpl implements PreferenceRepository {
 
@@ -15,7 +16,7 @@ public final class PreferenceRepositoryImpl implements PreferenceRepository {
   private PreferenceChangeListener preferenceChangeListener;
   private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener;
 
-  private PreferenceRepositoryImpl(Context context) {
+ public PreferenceRepositoryImpl(Context context) {
     sharedPreferences = context.getSharedPreferences(APP_PREF_NAME, Context.MODE_PRIVATE);
     sharedPreferenceChangeListener = (sharedPreferences, key) -> {
       if (key.equals(TEMP_UNIT)) {
@@ -25,13 +26,13 @@ public final class PreferenceRepositoryImpl implements PreferenceRepository {
     sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
   }
 
-  public static void init(Context context) {
+/*  public static void init(Context context) {
     preferenceRepository = new PreferenceRepositoryImpl(context);
-  }
+  }*/
 
-  public static PreferenceRepository get() {
-    return preferenceRepository;
-  }
+  //public static PreferenceRepository get() {
+  //  return preferenceRepository;
+  //}
 
   @Override public void saveTemperatureUnit(int value) {
     SharedPreferences.Editor editor = sharedPreferences.edit();

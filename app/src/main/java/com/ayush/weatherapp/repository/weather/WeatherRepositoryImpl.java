@@ -10,7 +10,6 @@ import com.ayush.weatherapp.mapper.ForecastRealmToEntityMapper;
 import com.ayush.weatherapp.realm.RealmUtils;
 import com.ayush.weatherapp.realm.model.Forecast;
 import com.ayush.weatherapp.repository.preferences.PreferenceRepository;
-import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
 import com.ayush.weatherapp.utils.UnitConversionUtils;
 import io.reactivex.Observable;
 import io.realm.Realm;
@@ -19,15 +18,15 @@ import javax.inject.Inject;
 
 public class WeatherRepositoryImpl implements WeatherRepository {
   @Temperature private static int defaultTemperatureUnit = TemperatureUnit.FAHRENHEIT;
+  private PreferenceRepository preferenceRepository;
   private WeatherDataStore onlineWeatherRepository;
   private WeatherDataStore localWeatherRepository;
-  private PreferenceRepository preferenceRepository;
 
   @Inject public WeatherRepositoryImpl(OnlineWeatherDataStoreImpl onlineWeatherDataStore,
-      LocalWeatherDataStoreImpl localWeatherDataStore) {
-    onlineWeatherRepository = onlineWeatherDataStore;
-    localWeatherRepository = localWeatherDataStore;
-    preferenceRepository = PreferenceRepositoryImpl.get();
+      LocalWeatherDataStoreImpl localWeatherDataStore, PreferenceRepository preferenceRepository) {
+    this.onlineWeatherRepository = onlineWeatherDataStore;
+    this.localWeatherRepository = localWeatherDataStore;
+    this.preferenceRepository = preferenceRepository;
   }
 
   @Override public Observable<ForecastEntity> getForecast(String coordinates) {
