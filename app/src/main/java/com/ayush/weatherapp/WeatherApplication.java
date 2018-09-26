@@ -1,7 +1,10 @@
 package com.ayush.weatherapp;
 
 import android.app.Application;
-import com.ayush.weatherapp.repository.preferences.PreferenceRepositoryImpl;
+import android.content.Context;
+import com.ayush.weatherapp.injection.component.ApplicationComponent;
+import com.ayush.weatherapp.injection.component.DaggerApplicationComponent;
+import com.ayush.weatherapp.injection.module.ApplicationModule;
 import com.facebook.stetho.Stetho;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 import io.realm.Realm;
@@ -9,6 +12,12 @@ import timber.log.Timber;
 import timber.log.Timber.DebugTree;
 
 public class WeatherApplication extends Application {
+
+  private ApplicationComponent applicationComponent;
+
+  public static WeatherApplication get(Context context) {
+    return (WeatherApplication) context.getApplicationContext();
+  }
 
   @Override public void onCreate() {
     super.onCreate();
@@ -20,7 +29,7 @@ public class WeatherApplication extends Application {
 
     initializeStetho();
 
-    PreferenceRepositoryImpl.init(this);
+    initApplicationComponent();
   }
 
   private void initializeRealm() {
@@ -33,5 +42,18 @@ public class WeatherApplication extends Application {
             .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
             .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
             .build());
+  }
+
+
+  public void initApplicationComponent() {
+    if (applicationComponent == null) {
+      applicationComponent = DaggerApplicationComponent.builder()
+          .applicationModule(new ApplicationModule(this))
+          .build();
+    }
+  }
+
+  public ApplicationComponent getApplicationComponent() {
+    return applicationComponent;
   }
 }

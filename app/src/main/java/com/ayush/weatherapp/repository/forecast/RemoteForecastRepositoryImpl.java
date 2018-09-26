@@ -6,13 +6,13 @@ import com.ayush.weatherapp.mapper.ForecastRealmToEntityMapper;
 import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIClient;
 import com.ayush.weatherapp.retrofit.weatherApi.WeatherAPIInterface;
 import io.reactivex.Observable;
+import javax.inject.Inject;
 
-public class OnlineForecastRepositoryImpl implements ForecastRepository {
+public class RemoteForecastRepositoryImpl implements ForecastRepository {
   private WeatherAPIInterface weatherApiInterface;
 
-  // TODO provide dependencies using dagger
-  public OnlineForecastRepositoryImpl() {
-    weatherApiInterface = WeatherAPIClient.getClient().create(WeatherAPIInterface.class);
+  @Inject public RemoteForecastRepositoryImpl(WeatherAPIInterface weatherAPIInterface) {
+    this.weatherApiInterface = weatherAPIInterface;
   }
 
   @Override

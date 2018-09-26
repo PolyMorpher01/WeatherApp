@@ -11,12 +11,11 @@ public final class PreferenceRepositoryImpl implements PreferenceRepository {
   private static final String CURRENT_LATITUDE = "CURRENT_LATITUDE";
   private static final String CURRENT_LONGITUDE = "CURRENT_LONGITUDE";
 
-  private static PreferenceRepositoryImpl preferenceRepository;
   private SharedPreferences sharedPreferences;
   private PreferenceChangeListener preferenceChangeListener;
   private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener;
 
-  private PreferenceRepositoryImpl(Context context) {
+  public PreferenceRepositoryImpl(Context context) {
     sharedPreferences = context.getSharedPreferences(APP_PREF_NAME, Context.MODE_PRIVATE);
     sharedPreferenceChangeListener = (sharedPreferences, key) -> {
       if (key.equals(TEMP_UNIT)) {
@@ -24,14 +23,6 @@ public final class PreferenceRepositoryImpl implements PreferenceRepository {
       }
     };
     sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
-  }
-
-  public static void init(Context context) {
-    preferenceRepository = new PreferenceRepositoryImpl(context);
-  }
-
-  public static PreferenceRepository get() {
-    return preferenceRepository;
   }
 
   @Override public void saveTemperatureUnit(int value) {
